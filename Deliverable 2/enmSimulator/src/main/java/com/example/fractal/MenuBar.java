@@ -37,7 +37,7 @@ public class MenuBar {
         MenuItem light = new MenuItem("Light");
         MenuItem dark = new MenuItem("Dark");
 
-
+        // LIGHT THEME
         light.setOnAction(e -> {
             if (!"light".equals(currentTheme)) { // Only switch if the current theme isn't light
                 scene.getStylesheets().remove(Objects.requireNonNull(getClass().getResource("dark-mode.css")).toExternalForm()); // Remove dark theme
@@ -46,7 +46,7 @@ public class MenuBar {
             }
         });
 
-        // Switch to dark theme
+        // DARK THEME
         dark.setOnAction(e -> {
             if (!"dark".equals(currentTheme)) { // Only switch if the current theme isn't dark
                 scene.getStylesheets().remove(Objects.requireNonNull(getClass().getResource("light-mode.css")).toExternalForm()); // Remove light theme
@@ -55,6 +55,7 @@ public class MenuBar {
             }
         });
 
+        // COMIC SANS FONT
         comicSans.setOnAction(e -> {
             if (!"Comic Sans".equals(currentFont)) {
                 scene.getStylesheets().remove(Objects.requireNonNull(getClass().getResource("monospace.css")).toExternalForm());
@@ -63,6 +64,7 @@ public class MenuBar {
             }
         });
 
+        // MONOSPACE FONT
         monospace.setOnAction(e -> {
             if (!"Monospace".equals(currentFont)) {
                 scene.getStylesheets().remove(Objects.requireNonNull(getClass().getResource("comic-sans.css")).toExternalForm());
@@ -76,6 +78,7 @@ public class MenuBar {
 
         options.getItems().addAll(theme, font);
 
+        // FEEDBACK IN MENU
         Menu help = new Menu("Help");
         MenuItem sendFeedback = new MenuItem("Send Feedback");
         sendFeedback.setOnAction(e -> {
@@ -89,6 +92,8 @@ public class MenuBar {
             );
             codeDialog.show();
         });
+
+        // MENU GUIDE
         MenuItem guide = new MenuItem("Guide");
         guide.setOnAction(e -> {
             Alert codeDialog = new Alert(Alert.AlertType.INFORMATION);

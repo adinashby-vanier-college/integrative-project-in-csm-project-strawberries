@@ -1,5 +1,6 @@
 package com.example.fractal;
 
+import com.example.fractal.Components.Resistor;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -21,7 +22,7 @@ public class Main extends Application {
         CircuitPane circuitPane = new CircuitPane();
         VBox paramPane = circuitPane.displayParamPane();
 
-        DisplayPane displayPane = new DisplayPane();
+        ButtonPane displayPane = new ButtonPane();
         VBox display = displayPane.ButtonsAndGraphs();
 
         HBox pains = new HBox(paramPane, display);

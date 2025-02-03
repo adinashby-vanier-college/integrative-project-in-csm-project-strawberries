@@ -7,16 +7,17 @@ import javafx.scene.control.Slider;
 import javafx.scene.layout.VBox;
 
 public class CircuitPane {
-
     public VBox displayParamPane() {
         VBox parameterPane = new VBox();
         parameterPane.setStyle("-fx-padding: 50;");
 
+        // TITLE
         Label title = new Label("EnM simulator");
         title.setStyle("-fx-font-size: 50");
         title.setAlignment(Pos.TOP_LEFT);
         parameterPane.getChildren().add(title);
 
+        // SETTINGS
         parameterPane.setAlignment(Pos.CENTER);
         parameterPane.setSpacing(10);
         parameterPane.setPadding(new Insets(10, 10, 10, 10));
