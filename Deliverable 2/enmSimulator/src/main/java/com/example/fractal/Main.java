@@ -44,7 +44,7 @@ public class Main extends Application {
         //Vbox1: Menu bar & Hbox1
         outerOuterbox.getChildren().addAll(menuBar, outerbox);
 
-        // Vbox settings
+        // Vbox settings 
 
         primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("strawberryy.jpg"))));
         primaryStage.setScene(scene);
