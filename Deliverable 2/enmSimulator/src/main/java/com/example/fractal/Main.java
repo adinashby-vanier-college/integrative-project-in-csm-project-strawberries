@@ -1,33 +1,32 @@
 package com.example.fractal;
 
-import com.example.fractal.Components.Resistor;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
 import java.util.Objects;
 
 public class Main extends Application {
+
+//    public static DrawingArea area = new DrawingArea(); // Static so it can be accessed everywhere
+
     public void start(Stage primaryStage) {
         VBox outerOuterbox = new VBox(); // Outer Vbox
         Scene scene = new Scene(outerOuterbox);
 
         // Circuit pane init
         DrawingArea area = new DrawingArea();
-        VBox drawArea = area.displayDrawArea();
+//        area.getChildren().add(new Circle(200,200,1)); // Reference point
 
         // Toolbar init
-        ToolBar tools = new ToolBar();
-        ScrollPane toolbarr = tools.displayToolBar();
+        ToolBar toolbar = new ToolBar();
 
         // Button pane init
-        SidePanel displayPane = new SidePanel();
-        VBox buttons = displayPane.ButtonsAndGraphs();
-
+        SidePanel sidePanel = new SidePanel();
 
         // Menu bar init
         javafx.scene.control.MenuBar menuBar = new MenuBar(scene).make();
@@ -35,11 +34,11 @@ public class Main extends Application {
 
         //Vbox2: ToolBar & Drawing Area
         VBox circuitPane = new VBox();
-        circuitPane.getChildren().addAll(toolbarr, drawArea);
+        circuitPane.getChildren().addAll(toolbar, area);
 
         //Hbox1: Vbox2 & Button pane
         HBox outerbox = new HBox();
-        outerbox.getChildren().addAll(circuitPane, buttons);
+        outerbox.getChildren().addAll(circuitPane, sidePanel);
 
         //Vbox1: Menu bar & Hbox1
         outerOuterbox.getChildren().addAll(menuBar, outerbox);

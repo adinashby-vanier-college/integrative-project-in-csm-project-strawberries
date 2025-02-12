@@ -2,31 +2,23 @@ package com.example.fractal;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.Rectangle;
 
-public class SidePanel {
+public class SidePanel extends VBox {
 
-    public VBox ButtonsAndGraphs() {
-        VBox side = new VBox();
+    public SidePanel() {
 
         // Name of circuit
         TextField circuitName = new TextField("Circuit #1");
 
         // Export Button
         Button exportButton = new Button("Export");
-        exportButton.setOnAction(e -> {
+        exportButton.setOnAction(_-> {
             System.out.println(circuitName.getText());
         });
         Label s = new Label("");
@@ -103,13 +95,11 @@ public class SidePanel {
         mini.setPadding(new Insets(10, 10, 10 ,0));
 
         // SETTINGS
-        side.getChildren().addAll(circuitName, exportButton, s, viewChoose, comboBox, s1, colorChoose, picker, s2, checkbox, s3, status, mini);
+        this.getChildren().addAll(circuitName, exportButton, s, viewChoose, comboBox, s1, colorChoose, picker, s2, checkbox, s3, status, mini);
 
-        side.setAlignment(Pos.BASELINE_LEFT);
-        side.setSpacing(0);
-        side.setPadding(new Insets(10, 10, 10, 10));
-        side.setMinWidth(200);
-
-        return side;
+        this.setAlignment(Pos.BASELINE_LEFT);
+        this.setSpacing(0);
+        this.setPadding(new Insets(10, 10, 10, 10));
+        this.setMinWidth(200);
     }
 }

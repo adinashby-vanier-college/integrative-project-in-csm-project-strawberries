@@ -8,11 +8,6 @@ public class Resistor extends Component {
     }
 
     @Override
-    public String getSymbol() {
-        return "-v^v^v-";
-    }
-
-    @Override
     public void draw() {
         System.out.println("Resistor from " + begin + " to " + end);
     }

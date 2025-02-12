@@ -8,11 +8,6 @@ public class Capacitor extends Component {
     }
 
     @Override
-    public String getSymbol() {
-        return "--| |--";
-    }
-
-    @Override
     public void draw() {
         System.out.println("Capacitor from " + begin + " to " + end);
     }

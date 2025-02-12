@@ -1,27 +1,18 @@
 package com.example.fractal;
 
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Paint;
-import javafx.stage.Stage;
 
-import java.util.Objects;
+public class ToolBar extends ScrollPane {
 
-public class ToolBar {
-    public ScrollPane displayToolBar() {
-
+    public ToolBar() {
+        // initialization and settings
         HBox toolBar = new HBox();
+        this.setContent(toolBar);
 
-        // Scrollpane init and settings
-        ScrollPane toolz = new ScrollPane(toolBar);
-        toolz.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
-        toolz.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-
+        this.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        this.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
         //BUTTONS
         Button zoomIn = new Button("Zoom in");
@@ -52,7 +43,5 @@ public class ToolBar {
 
         // SETTINGS
         toolBar.setAlignment(Pos.TOP_LEFT);
-
-        return toolz;
     }
 }

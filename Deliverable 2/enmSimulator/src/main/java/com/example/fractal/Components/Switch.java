@@ -14,11 +14,6 @@ public class Switch extends Component {
     }
 
     @Override
-    public String getSymbol() {
-        return isClosed ? "---—---" : "--/ ---";
-    }
-
-    @Override
     public void draw() {
         System.out.println("Switch (" + (isClosed ? "Closed" : "Open") + ") from " + begin + " to " + end);
     }
