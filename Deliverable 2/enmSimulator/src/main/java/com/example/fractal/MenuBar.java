@@ -1,9 +1,9 @@
 package com.example.fractal;
 
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.util.Objects;
@@ -22,49 +22,114 @@ public class MenuBar {
     public javafx.scene.control.MenuBar make() {
         javafx.scene.control.MenuBar menuBar = new javafx.scene.control.MenuBar();
 
+        // File Menu
         Menu file = new Menu("File");
-        MenuItem quit = new MenuItem("Quit");
-        quit.setOnAction(e -> System.exit(0));
-        MenuItem newWindow = new MenuItem("New Window");
-        newWindow.setOnAction(e -> (new Main()).start(new Stage()));
-        file.getItems().addAll(newWindow, quit);
+        MenuItem about = new MenuItem("About");
+        about.setOnAction(e -> {
+            Alert aboutDialog = new Alert(Alert.AlertType.INFORMATION);
+            aboutDialog.setTitle("About");
+            aboutDialog.setHeaderText("Fractal Application");
+            aboutDialog.setContentText("This is a simple fractal generation application.\nVersion 1.0");
+            aboutDialog.show();
+        });
 
-        Menu options = new Menu("Options");
+        MenuItem importFile = new MenuItem("Import");
+        MenuItem exportFile = new MenuItem("Export");
+        MenuItem save = new MenuItem("Save");
+        MenuItem saveAs = new MenuItem("Save As");
+        file.getItems().addAll(about, importFile, exportFile, save, saveAs);
+
+        // Settings Menu
+        Menu settings = new Menu("Settings");
+        // Preferences Window
+        MenuItem preferences = new MenuItem("Preferences");
+        preferences.setOnAction(e -> {
+            Stage preferencesStage = new Stage();
+            preferencesStage.setTitle("Preferences");
+
+            VBox layout = new VBox(10);
+            layout.setPadding(new Insets(10));
+
+            // Elements
+            Label label = new Label("Modify your preferences here.");
+            Button saveButton = new Button("Save");
+
+            layout.getChildren().addAll(label, saveButton);
+            Scene preferencesScene = new Scene(layout, 300, 200);
+            preferencesStage.setScene(preferencesScene);
+            preferencesStage.show();
+        });
+
+        Menu view = new Menu("View");
+        MenuItem showToolbar = new MenuItem("Show Toolbar");
+        MenuItem hideToolbar = new MenuItem("Hide Toolbar");
+        Menu theme = new Menu("Theme");
+        MenuItem light = new MenuItem("Light");
+        MenuItem dark = new MenuItem("Dark");
         Menu font = new Menu("Font");
         MenuItem comicSans = new MenuItem("Comic Sans");
         MenuItem monospace = new MenuItem("Monospace");
-        Menu theme = new Menu("Change Theme");
-        MenuItem light = new MenuItem("Light");
-        MenuItem dark = new MenuItem("Dark");
+        MenuItem fitToScreen = new MenuItem("Fit to Screen");
+        MenuItem zoomIn = new MenuItem("Zoom In");
+        MenuItem zoomOut = new MenuItem("Zoom Out");
+        MenuItem toggleGrid = new MenuItem("Toggle Grid");
+        MenuItem resourcesAndReferences = new MenuItem("Resources and References");
 
-        // LIGHT THEME
+        // Insert Menu
+        Menu insert = new Menu("Insert");
+        MenuItem wire = new MenuItem("Wire");
+        MenuItem resistor = new MenuItem("Resistor");
+        MenuItem switchItem = new MenuItem("Switch");
+        MenuItem battery = new MenuItem("Battery");
+        MenuItem voltmeter = new MenuItem("Voltmeter");
+        MenuItem ampmeter = new MenuItem("Ammeter");
+        Menu lightbulb = new Menu("Lightbulb");
+        MenuItem lightbulbYellow = new MenuItem("Yellow");
+        MenuItem lightbulbRed = new MenuItem("Red");
+        MenuItem lightbulbGreen = new MenuItem("Green");
+        MenuItem lightbulbBlue = new MenuItem("Blue");
+        MenuItem lightbulbCustom = new MenuItem("Custom");
+        lightbulb.getItems().addAll(lightbulbYellow, lightbulbRed, lightbulbGreen, lightbulbBlue, lightbulbCustom);
+
+        // Edit Menu
+        Menu edit = new Menu("Edit");
+        MenuItem copy = new MenuItem("Copy");
+        MenuItem paste = new MenuItem("Paste");
+        MenuItem duplicate = new MenuItem("Duplicate");
+        MenuItem undo = new MenuItem("Undo");
+        MenuItem redo = new MenuItem("Redo");
+
+        // Help Menu
+        Menu help = new Menu("Help");
+        MenuItem howToUse = new MenuItem("How to Use");
+        MenuItem faq = new MenuItem("FAQ");
+
+        // Themes
         light.setOnAction(e -> {
-            if (!"light".equals(currentTheme)) { // Only switch if the current theme isn't light
-                scene.getStylesheets().remove(Objects.requireNonNull(getClass().getResource("dark-mode.css")).toExternalForm()); // Remove dark theme
-                scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("light-mode.css")).toExternalForm()); // Add light theme
-                currentTheme = "light"; // Update the current theme
+            if (!"light".equals(currentTheme)) {
+                scene.getStylesheets().remove(Objects.requireNonNull(getClass().getResource("dark-mode.css")).toExternalForm());
+                scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("light-mode.css")).toExternalForm());
+                currentTheme = "light";
             }
         });
 
-        // DARK THEME
         dark.setOnAction(e -> {
-            if (!"dark".equals(currentTheme)) { // Only switch if the current theme isn't dark
-                scene.getStylesheets().remove(Objects.requireNonNull(getClass().getResource("light-mode.css")).toExternalForm()); // Remove light theme
-                scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("dark-mode.css")).toExternalForm()); // Add dark theme
-                currentTheme = "dark"; // Update the current theme
+            if (!"dark".equals(currentTheme)) {
+                scene.getStylesheets().remove(Objects.requireNonNull(getClass().getResource("light-mode.css")).toExternalForm());
+                scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("dark-mode.css")).toExternalForm());
+                currentTheme = "dark";
             }
         });
 
-        // COMIC SANS FONT
+        // Fonts
         comicSans.setOnAction(e -> {
             if (!"Comic Sans".equals(currentFont)) {
                 scene.getStylesheets().remove(Objects.requireNonNull(getClass().getResource("monospace.css")).toExternalForm());
                 scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("comic-sans.css")).toExternalForm());
-                currentFont = "Comic Sans"; // Update the current theme
+                currentFont = "Comic Sans";
             }
         });
 
-        // MONOSPACE FONT
         monospace.setOnAction(e -> {
             if (!"Monospace".equals(currentFont)) {
                 scene.getStylesheets().remove(Objects.requireNonNull(getClass().getResource("comic-sans.css")).toExternalForm());
@@ -73,42 +138,33 @@ public class MenuBar {
             }
         });
 
+        // Help Menu Actions
+        howToUse.setOnAction(e -> {
+            Alert howToUseDialog = new Alert(Alert.AlertType.INFORMATION);
+            howToUseDialog.setTitle("How to Use");
+            howToUseDialog.setHeaderText("User Guide");
+            howToUseDialog.setContentText("Follow the instructions to get started.\nFor further assistance, consult the FAQ.");
+            howToUseDialog.show();
+        });
+
+        faq.setOnAction(e -> {
+            Alert faqDialog = new Alert(Alert.AlertType.INFORMATION);
+            faqDialog.setTitle("FAQ");
+            faqDialog.setHeaderText("Frequently Asked Questions");
+            faqDialog.setContentText("Check here for answers to common questions.\nIf you need more help, contact support.");
+            faqDialog.show();
+        });
+
+        // Adding everything together
         theme.getItems().addAll(light, dark);
         font.getItems().addAll(comicSans, monospace);
+        view.getItems().addAll(showToolbar, hideToolbar);
+        settings.getItems().addAll(preferences, view, theme, font, fitToScreen, zoomIn, zoomOut, toggleGrid, resourcesAndReferences);
+        insert.getItems().addAll(wire, resistor, switchItem, battery, voltmeter, ampmeter, lightbulb);
+        edit.getItems().addAll(copy, paste, duplicate, undo, redo);
+        help.getItems().addAll(howToUse, faq);
 
-        options.getItems().addAll(theme, font);
-
-        // FEEDBACK IN MENU
-        Menu help = new Menu("Help");
-        MenuItem sendFeedback = new MenuItem("Send Feedback");
-        sendFeedback.setOnAction(e -> {
-            Alert codeDialog = new Alert(Alert.AlertType.INFORMATION);
-            codeDialog.setTitle("Send Feedback");
-            codeDialog.setHeight(350);
-            codeDialog.setWidth(500);
-            codeDialog.setHeaderText("We sincerely apologize.");
-            codeDialog.setContentText(
-                    "We currently do not accept feedback."
-            );
-            codeDialog.show();
-        });
-
-        // MENU GUIDE
-        MenuItem guide = new MenuItem("Guide");
-        guide.setOnAction(e -> {
-            Alert codeDialog = new Alert(Alert.AlertType.INFORMATION);
-            codeDialog.setTitle("Simple Guide");
-            codeDialog.setHeight(350);
-            codeDialog.setWidth(500);
-            codeDialog.setHeaderText("Lorem Ipsum");
-            codeDialog.setContentText(
-                    "Hi guys\n"
-            );
-            codeDialog.show();
-        });
-        help.getItems().addAll(guide, sendFeedback);
-
-        menuBar.getMenus().addAll(file, options, help);
+        menuBar.getMenus().addAll(file, settings, insert, edit, help);
         return menuBar;
     }
 }

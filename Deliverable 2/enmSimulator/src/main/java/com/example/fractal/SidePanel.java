@@ -1,13 +1,27 @@
 package com.example.fractal;
 
+import javafx.animation.AnimationTimer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+import javafx.scene.text.TextFlow;
+import javafx.stage.Stage;
+
+import javax.swing.text.Element;
+import javax.swing.text.html.ImageView;
+import java.util.Objects;
 
 public class SidePanel extends VBox {
 
@@ -60,8 +74,77 @@ public class SidePanel extends VBox {
         });
         Label s3 = new Label("");
 
-        // Formulas and more info
+        // Formulas
 
+        // More information button pop up
+        Button popup = new Button("More information");
+        popup.setOnAction(e -> {
+            Stage codeStage = new Stage();
+            codeStage.setTitle("More information");
+            codeStage.setHeight(400);
+            codeStage.setWidth(500);
+
+            // Create text display, add dynamic variables
+            TextFlow infoText = new TextFlow(
+                    new Text("Total Resistance:\nBranch Voltage:\nBranch Current:\n")
+            );
+            infoText.setTextAlignment(TextAlignment.LEFT);
+
+            // Graph title
+            Label graphTitle = new Label("Sine Wave Graph");
+            graphTitle.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+
+            // Placeholder graph: sine wave animation
+            Canvas canvas = new Canvas(400, 200);
+            GraphicsContext gc = canvas.getGraphicsContext2D();
+
+            // Animation
+            AnimationTimer timer = new AnimationTimer() {
+                private double phase = 0;
+
+                @Override
+                public void handle(long now) {
+                    gc.clearRect(0, 0, 400, 200);
+                    gc.setStroke(Color.BLUE);
+                    gc.setLineWidth(2);
+                    double centerY = 100; // Half of canvas height
+
+                    gc.beginPath();
+                    gc.moveTo(0, centerY);
+
+                    for (int x = 0; x < 400; x++) {
+                        double y = centerY + 50 * Math.sin(0.05 * x + phase);
+                        gc.lineTo(x, y);
+                    }
+
+                    gc.stroke();
+                    phase += 0.1;
+                }
+            };
+            timer.start();
+
+            // Elements
+            VBox content = new VBox(10, infoText, graphTitle, canvas);
+            content.setPadding(new Insets(10, 10, 10, 10));
+            content.setAlignment(Pos.CENTER_LEFT);
+            Scene scene = new Scene(content);
+            codeStage.setScene(scene);
+
+            // Close button
+            Button closeButton = new Button("Close");
+            closeButton.setOnAction(event -> codeStage.close());
+
+            VBox bottomContainer = new VBox(closeButton);
+            bottomContainer.setAlignment(Pos.CENTER);
+            bottomContainer.setSpacing(10);
+            content.getChildren().add(bottomContainer);
+            codeStage.show();
+
+            // Stop animation
+            codeStage.setOnCloseRequest(event -> timer.stop());
+        });
+
+        Label s4 = new Label("");
 
         // Run/stop, Reset, Clear
         HBox mini = new HBox();
@@ -95,7 +178,7 @@ public class SidePanel extends VBox {
         mini.setPadding(new Insets(10, 10, 10 ,0));
 
         // SETTINGS
-        this.getChildren().addAll(circuitName, exportButton, s, viewChoose, comboBox, s1, colorChoose, picker, s2, checkbox, s3, status, mini);
+        this.getChildren().addAll(circuitName, exportButton, s, viewChoose, comboBox, s1, colorChoose, picker, s2, checkbox, s3, popup, s4, status, mini);
 
         this.setAlignment(Pos.BASELINE_LEFT);
         this.setSpacing(0);
