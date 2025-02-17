@@ -13,6 +13,7 @@ public abstract class Component extends ImageView {
      * this will always be the right node.*/
     protected Node end;
     protected Image DIAGRAM_DISPLAY, IMAGE_DISPLAY;
+    public Image display;
 
     public Component(Node begin, Node end) {
         this.begin = begin;

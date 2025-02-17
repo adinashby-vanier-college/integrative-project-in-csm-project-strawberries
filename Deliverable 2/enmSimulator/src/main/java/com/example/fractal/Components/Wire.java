@@ -14,19 +14,21 @@ public class Wire extends Component {
         DIAGRAM_DISPLAY = new Image(Objects.requireNonNull(getClass().getResource("/com/example/fractal/images/line.png")).toExternalForm());
         setFitWidth(0);
 //        IMAGE_DISPLAY = new Image(Objects.requireNonNull(getClass().getResource("/com/example/fractal/images/imagename.png")).toExternalForm());
-        this.setImage(DIAGRAM_DISPLAY); //TODO update to take realistic images into account too
+        display = DIAGRAM_DISPLAY; //TODO update to take realistic images into account too
+        this.setImage(display);
     }
 
     // DOES NOT WORK
     @Override
     public void draw() {
-        System.out.println("Wire from " + begin + " to " + end);
-        //TODO maybe turn into a calculation using a Vector Class?
         // calculate angle of rotation
         double x = end.getX()- begin.getX();
         double y = end.getY() - begin.getY();
-        double angle = Math.toDegrees(Math.atan(y/x));
-        System.out.println(angle);
+        double angle = Math.toDegrees(Math.atan(y/x)); // Only works for Q1 and Q4
+        if(begin.getX()>end.getX()) {
+            if(begin.getY()<end.getY()) angle = 180+angle; // Q3
+            else angle = -180+angle; // Q2
+        }
         // calculate width
         double width =  Math.sqrt(x*x + y*y);
         // set x and y coords + width and height accordingly
