@@ -6,6 +6,7 @@ public class Resistor extends Component {
     private double resistance;
     public Resistor(Node begin, Node end) {
         super(begin, end);
+        this.resistance = resistance;
     }
 
     public double getResistance() {
