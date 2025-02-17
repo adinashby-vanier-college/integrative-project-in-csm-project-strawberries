@@ -32,7 +32,7 @@ public class SidePanel extends VBox {
 
         // Export Button
         Button exportButton = new Button("Export");
-        exportButton.setOnAction(_-> {
+        exportButton.setOnAction(_ -> {
             System.out.println(circuitName.getText());
         });
         Label s = new Label("");

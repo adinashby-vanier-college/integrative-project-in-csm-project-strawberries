@@ -43,7 +43,8 @@ public class DrawingArea extends Pane {
     private void mousePressed(MouseEvent event) {
         if(!pencilDown) {
             pencilDown = true;
-            selection = new Wire(new Node(event.getX(), event.getY()),new Node(event.getX(), event.getY()));
+            // added the null for color but to be fixed when changing wire color
+            selection = new Wire(new Node(event.getX(), event.getY()),new Node(event.getX(), event.getY()),null,0,0);
             selection.setX(selection.begin.getX());
             selection.setY(selection.begin.getY());
             getChildren().add(selection);

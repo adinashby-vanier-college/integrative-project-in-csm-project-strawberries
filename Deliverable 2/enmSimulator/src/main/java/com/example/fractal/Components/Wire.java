@@ -4,12 +4,17 @@ import com.example.fractal.Node;
 import javafx.geometry.Point3D;
 import javafx.scene.image.Image;
 import javafx.scene.transform.Rotate;
+import javafx.scene.paint.Color;
 
 import java.util.Objects;
 
 public class Wire extends Component {
 
-    public Wire(Node begin, Node end) {
+    private Color color;
+    private double current;
+    private double voltage;
+
+    public Wire(Node begin, Node end, Color color, double current, double voltage) {
         super(begin, end);
         DIAGRAM_DISPLAY = new Image(Objects.requireNonNull(getClass().getResource("/com/example/fractal/images/line.png")).toExternalForm());
         setFitWidth(0);
