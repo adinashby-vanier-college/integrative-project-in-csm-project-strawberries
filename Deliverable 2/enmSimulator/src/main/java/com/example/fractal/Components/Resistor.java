@@ -10,7 +10,7 @@ public class Resistor extends Component {
     }
 
     public double getResistance() {
-        this.resistance = resistance;
+        return resistance;
     }
     public void setResistance(double resistance) {
         this.resistance = resistance;
