@@ -3,8 +3,16 @@ import com.example.fractal.Component;
 import com.example.fractal.Node;
 
 public class Resistor extends Component {
+    private double resistance;
     public Resistor(Node begin, Node end) {
         super(begin, end);
+    }
+
+    public double getResistance() {
+        this.resistance = resistance;
+    }
+    public void setResistance(double resistance) {
+        this.resistance = resistance;
     }
 
     @Override
