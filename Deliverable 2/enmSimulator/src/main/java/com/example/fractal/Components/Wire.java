@@ -14,6 +14,9 @@ public class Wire extends Component {
 
     public Wire(Node begin, Node end, Color color, double current, double voltage) {
         super(begin, end);
+        this.color = color;
+        this.current = current;
+        this.voltage = voltage;
         DIAGRAM_DISPLAY = new Image(Objects.requireNonNull(getClass().getResource("/com/example/fractal/images/line.png")).toExternalForm());
         setFitWidth(0);
 //        IMAGE_DISPLAY = new Image(Objects.requireNonNull(getClass().getResource("/com/example/fractal/images/imagename.png")).toExternalForm());

@@ -21,7 +21,7 @@ public class Battery extends Component {
     public boolean getPolarity() {
         return start;
     }
-    public void gsetPolarity(boolean polarity){
+    public void setPolarity(boolean polarity){
         this.start = polarity;
     }
     @Override
