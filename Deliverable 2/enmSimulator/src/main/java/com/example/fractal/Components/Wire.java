@@ -12,6 +12,7 @@ public class Wire extends Component {
     public Wire(Node begin, Node end) {
         super(begin, end);
         DIAGRAM_DISPLAY = new Image(Objects.requireNonNull(getClass().getResource("/com/example/fractal/images/line.png")).toExternalForm());
+        setFitWidth(0);
 //        IMAGE_DISPLAY = new Image(Objects.requireNonNull(getClass().getResource("/com/example/fractal/images/imagename.png")).toExternalForm());
         this.setImage(DIAGRAM_DISPLAY); //TODO update to take realistic images into account too
     }
@@ -19,7 +20,6 @@ public class Wire extends Component {
     // DOES NOT WORK
     @Override
     public void draw() {
-        setStyle("--fx-border-style: 3px white");
         System.out.println("Wire from " + begin + " to " + end);
         //TODO maybe turn into a calculation using a Vector Class?
         // calculate angle of rotation
@@ -31,8 +31,8 @@ public class Wire extends Component {
         double width =  Math.sqrt(x*x + y*y);
         // set x and y coords + width and height accordingly
         setFitWidth(width);
-        setX(begin.getX());
-        setY(begin.getY());
-        setRotate(angle);
+        Rotate rotate = new Rotate(angle,begin.getX(), begin.getY());
+        getTransforms().clear();
+        getTransforms().add(rotate);
     }
 }

@@ -48,6 +48,8 @@ public class Main extends Application {
         primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("strawberryy.jpg"))));
         primaryStage.setScene(scene);
         primaryStage.setTitle("Circuit Generator");
+        primaryStage.setAlwaysOnTop(true);
         primaryStage.show();
+        primaryStage.setAlwaysOnTop(false);
     }
 }

@@ -44,6 +44,8 @@ public class DrawingArea extends Pane {
         if(!pencilDown) {
             pencilDown = true;
             selection = new Wire(new Node(event.getX(), event.getY()),new Node(event.getX(), event.getY()));
+            selection.setX(selection.begin.getX());
+            selection.setY(selection.begin.getY());
             getChildren().add(selection);
             selection.draw();
         }

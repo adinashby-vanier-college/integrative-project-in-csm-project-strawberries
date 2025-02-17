@@ -48,6 +48,10 @@ public abstract class Component extends ImageView {
         return DIAGRAM_DISPLAY;
     };
 
+    public void setBegin(double x, double y) {
+        
+    }
+
     // ABSTRACT methods for each component type
 
     /**Show/Update the image of the component*/

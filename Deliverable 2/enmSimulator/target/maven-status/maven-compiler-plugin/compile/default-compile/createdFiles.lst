@@ -1,0 +1,7 @@
+com\example\fractal\Components\Resistor.class
+com\example\fractal\Components\Switch.class
+com\example\fractal\Node.class
+module-info.class
+com\example\fractal\Components\Battery.class
+com\example\fractal\Components\Capacitor.class
+com\example\fractal\Component.class
