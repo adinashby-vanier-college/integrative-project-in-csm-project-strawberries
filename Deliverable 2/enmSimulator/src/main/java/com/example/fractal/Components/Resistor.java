@@ -4,7 +4,7 @@ import com.example.fractal.Node;
 
 public class Resistor extends Component {
     private double resistance;
-    public Resistor(Node begin, Node end) {
+    public Resistor(Node begin, Node end, double resistance) {
         super(begin, end);
         this.resistance = resistance;
     }
