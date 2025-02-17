@@ -5,6 +5,7 @@ com\example\fractal\Main.class
 com\example\fractal\Components\Switch.class
 com\example\fractal\SidePanel.class
 com\example\fractal\Node.class
+com\example\fractal\Components\Lightbulb.class
 com\example\fractal\DrawingArea.class
 com\example\fractal\Components\Wire.class
 com\example\fractal\Components\Fuse.class
