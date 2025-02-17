@@ -5,7 +5,6 @@ import javafx.geometry.Point3D;
 import javafx.scene.image.Image;
 import javafx.scene.transform.Rotate;
 import javafx.scene.paint.Color;
-
 import java.util.Objects;
 
 public class Wire extends Component {
