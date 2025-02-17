@@ -41,4 +41,24 @@ public class Wire extends Component {
         getTransforms().clear();
         getTransforms().add(rotate);
     }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void hasCurrent() {
+ //       return current; to determine
+    }
+
+    public double getCurrent() {
+        return current;
+    }
+
+    public double getVoltage() {
+        return voltage;
+    }
+
+    public void setVoltage(double current) {
+        this.voltage = voltage;
+    }
 }
