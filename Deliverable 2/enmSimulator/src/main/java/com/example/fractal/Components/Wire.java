@@ -60,7 +60,7 @@ public class Wire extends Component {
         return voltage;
     }
 
-    public void setVoltage(double current) {
+    public void setVoltage(int voltage) {
         this.voltage = voltage;
     }
 }
