@@ -4,10 +4,26 @@ import com.example.fractal.Node;
 import javafx.scene.image.Image;
 
 public class Battery extends Component {
-    public Battery(Node begin, Node end) {
+    private double potential;
+    private boolean start;
+    private boolean End; // got to change the name bc we already have a end node
+
+    public Battery(Node begin, Node end, double potential) {
         super(begin, end);
+        this.potential = potential;
+        this.start = start;
+        this.End = End;
     }
 
+    public double getPotential() {
+        return potential;
+    }
+    public boolean getPolarity() {
+        return start;
+    }
+    public void gsetPolarity(boolean polarity){
+        this.start = polarity;
+    }
     @Override
     public Image getSymbol() {
         return DIAGRAM_DISPLAY;
