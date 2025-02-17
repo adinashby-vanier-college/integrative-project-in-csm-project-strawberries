@@ -9,7 +9,6 @@ import javafx.scene.paint.Color;
 import java.util.Objects;
 
 public class Wire extends Component {
-
     private Color color;
     private double current;
     private double voltage;
