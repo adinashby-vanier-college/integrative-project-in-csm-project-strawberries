@@ -1,24 +1,46 @@
 package com.example.fractal.Components;
+
 import com.example.fractal.Component;
 import com.example.fractal.Node;
 
 public class Resistor extends Component {
-    private double resistance;
+    private double resistance; // The resistance value 
+    private double current;    // The current flowing through the resistor
+
+    // Constructor with resistance value
     public Resistor(Node begin, Node end, double resistance) {
         super(begin, end);
         this.resistance = resistance;
+        this.current = 0; // Initial current is 0
     }
 
+    // Getter for resistance
     public double getResistance() {
         return resistance;
     }
+
+    // Setter for resistance
     public void setResistance(double resistance) {
         this.resistance = resistance;
     }
 
+    // Getter for current
+    public double getCurrent() {
+        return current;
+    }
+
+    // Calculate the current based on Ohm's Law: I = V / R
+    public void calculateCurrent(double voltage) {
+        if (resistance != 0) {
+            this.current = voltage / resistance; // I = V / R
+        } else {
+            this.current = 0; // Avoid division by zero
+        }
+    }
+
     @Override
     public void draw() {
-        System.out.println("Resistor from " + begin + " to " + end);
+        System.out.println("Resistor from " + begin + " to " + end + " with resistance: " + resistance + "Ω");
+        
     }
 }
-

@@ -11,6 +11,7 @@ public class Wire extends Component {
     private Color color;
     private double current;
     private double voltage;
+    private double resistance; 
 
     public Wire(Node begin, Node end, Color color, double current, double voltage) {
         super(begin, end);
@@ -48,8 +49,8 @@ public class Wire extends Component {
         return color;
     }
 
-    public void hasCurrent() {
- //       return current; to determine
+    public boolean hasCurrent() {
+        return current > 0;  // Simple check: if current is greater than 0, it has current :)
     }
 
     public double getCurrent() {
@@ -60,7 +61,21 @@ public class Wire extends Component {
         return voltage;
     }
 
-    public void setVoltage(int voltage) {
+    public void setVoltage(double voltage) {
         this.voltage = voltage;
+    }
+    
+    // Setter for the resistance of the wire
+    public void setResistance(double resistance) {
+        this.resistance = resistance;
+    }
+
+    // Calculate current based on Ohm's Law
+    public void calculateCurrent() {
+        if (resistance != 0) {
+            this.current = voltage / resistance; 
+        } else {
+            this.current = 0; 
+        }
     }
 }
