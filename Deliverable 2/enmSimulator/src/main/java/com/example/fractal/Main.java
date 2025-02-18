@@ -29,7 +29,7 @@ public class Main extends Application {
         SidePanel sidePanel = new SidePanel();
 
         // Menu bar init
-        javafx.scene.control.MenuBar menuBar = new MenuBar(scene).make();
+        javafx.scene.control.MenuBar menuBar = new MenuBar(scene,area).make();
         scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("light-mode.css")).toExternalForm());
 
         //Vbox2: ToolBar & Drawing Area

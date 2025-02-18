@@ -12,15 +12,17 @@ public class MenuBar {
     private String currentTheme;
     private Scene scene;
     private String currentFont;
+    private DrawingArea area;; 
 
-    public MenuBar(Scene scene) {
+    public MenuBar(Scene scene, DrawingArea area) {
         this.scene = scene;
+        this.area = area;
         this.currentTheme = "light"; // Default theme
         this.currentFont = "Monospace";
     }
 
     public javafx.scene.control.MenuBar make() {
-        javafx.scene.control.MenuBar menuBar = new javafx.scene.control.MenuBar();
+    	 javafx.scene.control.MenuBar menuBar = new javafx.scene.control.MenuBar();
 
         // File Menu
         Menu file = new Menu("File");
@@ -81,6 +83,10 @@ public class MenuBar {
         MenuItem resistor = new MenuItem("Resistor");
         MenuItem switchItem = new MenuItem("Switch");
         MenuItem battery = new MenuItem("Battery");
+       
+        battery.setOnAction(e -> {
+            area.startPlacingBattery(); 
+        });
         MenuItem voltmeter = new MenuItem("Voltmeter");
         MenuItem ampmeter = new MenuItem("Ammeter");
         Menu lightbulb = new Menu("Lightbulb");
@@ -90,6 +96,10 @@ public class MenuBar {
         MenuItem lightbulbBlue = new MenuItem("Blue");
         MenuItem lightbulbCustom = new MenuItem("Custom");
         lightbulb.getItems().addAll(lightbulbYellow, lightbulbRed, lightbulbGreen, lightbulbBlue, lightbulbCustom);
+        battery.setOnAction(e -> {
+            area.startPlacingBattery();  
+        });
+
 
         // Edit Menu
         Menu edit = new Menu("Edit");
@@ -164,7 +174,6 @@ public class MenuBar {
         edit.getItems().addAll(copy, paste, duplicate, undo, redo);
         help.getItems().addAll(howToUse, faq);
 
-        menuBar.getMenus().addAll(file, settings, insert, edit, help);
         return menuBar;
     }
 }

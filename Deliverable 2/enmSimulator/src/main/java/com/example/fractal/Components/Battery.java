@@ -70,19 +70,19 @@ public class Battery extends Component {
     public void draw() {
         System.out.println("Battery from " + begin + " to " + end);
         
-        // Calculate the angle between the begin and end nodes
+        
         double deltaX = end.getX() - begin.getX();
         double deltaY = end.getY() - begin.getY();
         double angle = Math.toDegrees(Math.atan2(deltaY, deltaX));
 
         // Set the rotation of the battery image based on the angle
         batteryImageView.setRotate(angle);
-        // Update the position of the battery based on the start node
+     
         batteryImageView.setX(begin.getX());
         batteryImageView.setY(begin.getY());
     }
 
-    // Get the ImageView for the battery so that it can be added to the DrawingArea
+
     public ImageView getImageView() {
         return batteryImageView;
     }

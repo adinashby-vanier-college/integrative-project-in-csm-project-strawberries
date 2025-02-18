@@ -29,12 +29,12 @@ public class Resistor extends Component {
         return current;
     }
 
-    // Calculate the current based on Ohm's Law: I = V / R
+
     public void calculateCurrent(double voltage) {
         if (resistance != 0) {
-            this.current = voltage / resistance; // I = V / R
+            this.current = voltage / resistance; 
         } else {
-            this.current = 0; // Avoid division by zero
+            this.current = 0; 
         }
     }
 
