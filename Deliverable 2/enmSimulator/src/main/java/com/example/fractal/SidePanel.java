@@ -49,7 +49,6 @@ public class SidePanel extends VBox {
         picker.setValue(Color.BLACK);
         picker.setOnAction(_ -> {
             pickedColor = picker.getValue();
-            System.out.println(pickedColor.getHue()+"   "+ pickedColor.getSaturation() +"    "+ pickedColor.getBrightness());
             if(pickedColor==null) pickedColor = Color.BLACK;
             app.updateDefaultColor();
         });
