@@ -1,0 +1,16 @@
+com\example\fractal\Components\Resistor.class
+com\example\fractal\MenuBar.class
+com\example\fractal\SidePanel$1.class
+com\example\fractal\Main.class
+com\example\fractal\Components\Switch.class
+com\example\fractal\SidePanel.class
+com\example\fractal\Node.class
+com\example\fractal\Components\Lightbulb.class
+com\example\fractal\DrawingArea.class
+com\example\fractal\Components\Wire.class
+com\example\fractal\Components\Fuse.class
+module-info.class
+com\example\fractal\Components\Battery.class
+com\example\fractal\ToolBar.class
+com\example\fractal\Components\Capacitor.class
+com\example\fractal\Component.class
