@@ -6,11 +6,13 @@ import javafx.scene.layout.HBox;
 
 public class ToolBar extends ScrollPane {
 
-    public ToolBar() {
+    DrawingTool tool;
+
+    public ToolBar(DrawingTool tool) {
         // initialization and settings
         HBox toolBar = new HBox();
         this.setContent(toolBar);
-
+        this.tool = tool;
         this.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         this.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
@@ -29,14 +31,19 @@ public class ToolBar extends ScrollPane {
 
         // add components buttons
         Button addWire = new Button("Add Wire");
+        addWire.setOnAction(_->tool.setCurrentAction("place-wire"));
 
         Button addResistor = new Button("Add Resistor");
+        addResistor.setOnAction(_->tool.setCurrentAction("place-resistor"));
 
         Button addBattery = new Button("Add Battery");
+        addBattery.setOnAction(_->tool.setCurrentAction("place-battery"));
 
         Button addCapacitor = new Button("Add Capacitor");
+        addCapacitor.setOnAction(_->tool.setCurrentAction("place-capacitor"));
 
         Button addSwitch = new Button("Add Switch");
+        addSwitch.setOnAction(_->tool.setCurrentAction("place-switch"));
 
         //ADD ALL BUTTONS
         toolBar.getChildren().addAll(zoomIn, zoomOut, undo, redo, copy, paste, addWire, addResistor, addCapacitor, addBattery, addSwitch);

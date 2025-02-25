@@ -18,13 +18,10 @@ public class Battery extends Component {
         this.startPolarity = true;  // Default polarity for the start
         this.endPolarity = false;   // Default polarity for the end
 
-        
-        Image batteryImage = new Image(getClass().getResource("/com/example/fractal/images/Batterysymbol.png").toExternalForm());
-        this.batteryImageView = new ImageView(batteryImage);
+        this.setImage(new Image(getClass().getResource("/com/example/fractal/images/Batterysymbol.png").toExternalForm()));
 
-      
-        this.batteryImageView.setX(begin.getX());
-        this.batteryImageView.setY(begin.getY());
+        this.setX(begin.getX());
+        this.setY(begin.getY());
     }
 
     // Getter for potential (voltage)
@@ -68,18 +65,16 @@ public class Battery extends Component {
    
     @Override
     public void draw() {
-        System.out.println("Battery from " + begin + " to " + end);
-        
-        
         double deltaX = end.getX() - begin.getX();
         double deltaY = end.getY() - begin.getY();
         double angle = Math.toDegrees(Math.atan2(deltaY, deltaX));
 
         // Set the rotation of the battery image based on the angle
-        batteryImageView.setRotate(angle);
+
+        this.setRotate(angle);
      
-        batteryImageView.setX(begin.getX());
-        batteryImageView.setY(begin.getY());
+        this.setX(begin.getX());
+        this.setY(begin.getY());
     }
 
 

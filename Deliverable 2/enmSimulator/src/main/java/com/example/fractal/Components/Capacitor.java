@@ -3,10 +3,11 @@ import com.example.fractal.Component;
 import com.example.fractal.Node;
 
 public class Capacitor extends Component {
-    private double storedEnergy;
+    private double storedEnergy,capacity;
     private boolean start;
     private boolean End; // gotta change the name here bc its too similar
 
+    // ADD capacity (the most energy that can be stored; the MAX before it stops charging)
     public Capacitor(Node begin, Node end, double storedEnergy, boolean start, boolean End) {
         super(begin, end);
         this.storedEnergy = storedEnergy;
@@ -22,6 +23,9 @@ public class Capacitor extends Component {
     }
     public boolean setPolarity() {
         return true;
+    }
+    public boolean isFullyCharged() {
+        return storedEnergy==capacity;
     }
 
     @Override

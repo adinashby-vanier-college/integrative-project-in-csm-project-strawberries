@@ -1,7 +1,0 @@
-package com.example.fractal;
-
-public static class Formulas {
-
-}
-
-// you gotta rewrite the file as being Formulas.java & make sure you include the right pakcages and class and the draw method from Component class LOL

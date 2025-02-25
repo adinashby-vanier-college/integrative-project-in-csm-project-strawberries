@@ -2,18 +2,21 @@ package com.example.fractal.Components;
 import com.example.fractal.Component;
 import com.example.fractal.Node;
 import javafx.geometry.Point3D;
+import javafx.scene.effect.ColorAdjust;
+import javafx.scene.effect.Effect;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 import javafx.scene.transform.Rotate;
 import javafx.scene.paint.Color;
 import java.util.Objects;
 
 public class Wire extends Component {
-    private Color color;
+    private ColorAdjust color;
     private double current;
     private double voltage;
     private double resistance; 
 
-    public Wire(Node begin, Node end, Color color, double current, double voltage) {
+    public Wire(Node begin, Node end, ColorAdjust color, double current, double voltage) {
         super(begin, end);
         this.color = color;
         this.current = current;
@@ -22,10 +25,11 @@ public class Wire extends Component {
         setFitWidth(0);
 //        IMAGE_DISPLAY = new Image(Objects.requireNonNull(getClass().getResource("/com/example/fractal/images/imagename.png")).toExternalForm());
         display = DIAGRAM_DISPLAY; //TODO update to take realistic images into account too
+        // Playing around with changing wire color!!
+        this.setEffect(color);
         this.setImage(display);
     }
 
-    // DOES NOT WORK
     @Override
     public void draw() {
         // calculate angle of rotation
@@ -45,7 +49,7 @@ public class Wire extends Component {
         getTransforms().add(rotate);
     }
 
-    public Color getColor() {
+    public ColorAdjust getColor() {
         return color;
     }
 

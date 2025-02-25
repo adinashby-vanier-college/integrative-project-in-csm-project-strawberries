@@ -13,20 +13,17 @@ import java.util.Objects;
 public class Main extends Application {
 
 //    public static DrawingArea area = new DrawingArea(); // Static so it can be accessed everywhere
+    // Button pane init
+    SidePanel sidePanel = new SidePanel(this);
+    // Circuit pane init
+    DrawingArea area = new DrawingArea(this);
 
     public void start(Stage primaryStage) {
-        VBox outerOuterbox = new VBox(); // Outer Vbox
-        Scene scene = new Scene(outerOuterbox);
-
-        // Circuit pane init
-        DrawingArea area = new DrawingArea();
-//        area.getChildren().add(new Circle(200,200,1)); // Reference point
+        VBox outerOuterBox = new VBox(); // Outer Vbox
+        Scene scene = new Scene(outerOuterBox);
 
         // Toolbar init
-        ToolBar toolbar = new ToolBar();
-
-        // Button pane init
-        SidePanel sidePanel = new SidePanel();
+        ToolBar toolbar = new ToolBar(area.drawingTool);
 
         // Menu bar init
         javafx.scene.control.MenuBar menuBar = new MenuBar(scene,area).make();
@@ -41,7 +38,7 @@ public class Main extends Application {
         outerbox.getChildren().addAll(circuitPane, sidePanel);
 
         //Vbox1: Menu bar & Hbox1
-        outerOuterbox.getChildren().addAll(menuBar, outerbox);
+        outerOuterBox.getChildren().addAll(menuBar, outerbox);
 
         // Vbox settings 
 
@@ -51,5 +48,13 @@ public class Main extends Application {
         primaryStage.setAlwaysOnTop(true);
         primaryStage.show();
         primaryStage.setAlwaysOnTop(false);
+    }
+
+    public SidePanel getSidePanel() {
+        return sidePanel;
+    }
+
+    public void updateDefaultColor() {
+        area.drawingTool.setColor(sidePanel.pickedColor);
     }
 }

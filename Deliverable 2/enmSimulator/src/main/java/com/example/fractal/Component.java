@@ -27,10 +27,7 @@ public abstract class Component extends ImageView {
      * @param newY the new Y position of the node
      */
     public void moveNode(Node movingNode, double newX, double newY) {
-        if (movingNode == begin) {
-            begin.setPosition(newX, newY);
-        } else if (movingNode == end) {
-            end.setPosition(newX, newY);}
+        movingNode.setPosition(newX,newY);
     }
 
     /**

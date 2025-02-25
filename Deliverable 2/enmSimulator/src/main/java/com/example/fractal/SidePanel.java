@@ -9,9 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -19,22 +17,17 @@ import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 
-import javax.swing.text.Element;
-import javax.swing.text.html.ImageView;
-import java.util.Objects;
-
 public class SidePanel extends VBox {
+    Color pickedColor = Color.BLACK;
 
-    public SidePanel() {
+    public SidePanel(Main app) {
 
         // Name of circuit
         TextField circuitName = new TextField("Circuit #1");
 
         // Export Button
         Button exportButton = new Button("Export");
-        exportButton.setOnAction(_ -> {
-            System.out.println(circuitName.getText());
-        });
+        exportButton.setOnAction(_ -> System.out.println(circuitName.getText()));
         Label s = new Label("");
 
         // Title
@@ -46,9 +39,7 @@ public class SidePanel extends VBox {
                         "Simple"
                 );
         ComboBox comboBox = new ComboBox(options);
-        comboBox.setOnAction(e -> {
-            System.out.println(comboBox.getValue());
-        });
+        comboBox.setOnAction(_->System.out.println(comboBox.getValue()));
         Label s1 = new Label("");
 
         // Title
@@ -56,8 +47,11 @@ public class SidePanel extends VBox {
         // Colour chooser
         ColorPicker picker = new ColorPicker();
         picker.setValue(Color.BLACK);
-        picker.setOnAction(e -> {
-            System.out.println(picker.getValue());
+        picker.setOnAction(_ -> {
+            pickedColor = picker.getValue();
+            System.out.println(pickedColor.getHue()+"   "+ pickedColor.getSaturation() +"    "+ pickedColor.getBrightness());
+            if(pickedColor==null) pickedColor = Color.BLACK;
+            app.updateDefaultColor();
         });
         picker.setMinHeight(30);
         Label s2 = new Label("");
@@ -65,7 +59,7 @@ public class SidePanel extends VBox {
 
         // Toggle Switch
         CheckBox checkbox = new CheckBox("Show Component Polarity");
-        checkbox.setOnAction(e -> {
+        checkbox.setOnAction(_-> {
             if (checkbox.isSelected()) {
                 System.out.println("Clicked");
             } else {

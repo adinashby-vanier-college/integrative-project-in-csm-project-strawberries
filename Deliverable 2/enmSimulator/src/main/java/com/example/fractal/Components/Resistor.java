@@ -31,16 +31,12 @@ public class Resistor extends Component {
 
 
     public void calculateCurrent(double voltage) {
-        if (resistance != 0) {
-            this.current = voltage / resistance; 
-        } else {
-            this.current = 0; 
-        }
+        if (resistance != 0) this.current = voltage / resistance;
+        else this.current = 0;
     }
 
     @Override
     public void draw() {
         System.out.println("Resistor from " + begin + " to " + end + " with resistance: " + resistance + "Ω");
-        
     }
 }

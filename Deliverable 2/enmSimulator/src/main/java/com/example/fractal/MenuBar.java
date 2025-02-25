@@ -84,9 +84,8 @@ public class MenuBar {
         MenuItem switchItem = new MenuItem("Switch");
         MenuItem battery = new MenuItem("Battery");
        
-        battery.setOnAction(e -> {
-            area.startPlacingBattery(); 
-        });
+        battery.setOnAction(_-> area.drawingTool.setCurrentAction("place-battery"));
+
         MenuItem voltmeter = new MenuItem("Voltmeter");
         MenuItem ampmeter = new MenuItem("Ammeter");
         Menu lightbulb = new Menu("Lightbulb");
