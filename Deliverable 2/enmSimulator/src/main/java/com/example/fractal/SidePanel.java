@@ -1,14 +1,20 @@
 package com.example.fractal;
 
-import javafx.animation.AnimationTimer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.*;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ColorPicker;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -67,74 +73,71 @@ public class SidePanel extends VBox {
         });
         Label s3 = new Label("");
 
-        // Formulas
+        // TODO: Formula info
 
         // More information button pop up
         Button popup = new Button("More information");
-        popup.setOnAction(e -> {
+        popup.setOnAction(_ -> {
             Stage codeStage = new Stage();
             codeStage.setTitle("More information");
-            codeStage.setHeight(400);
-            codeStage.setWidth(500);
+            codeStage.setHeight(500);
+            codeStage.setWidth(600);
 
-            // Create text display, add dynamic variables
+            // Create text display
             TextFlow infoText = new TextFlow(
                     new Text("Total Resistance:\nBranch Voltage:\nBranch Current:\n")
             );
             infoText.setTextAlignment(TextAlignment.LEFT);
 
             // Graph title
-            Label graphTitle = new Label("Sine Wave Graph");
+            Label graphTitle = new Label("Kirchhoff's Loop Rule Graph");
             graphTitle.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
 
-            // Placeholder graph: sine wave animation
-            Canvas canvas = new Canvas(400, 200);
-            GraphicsContext gc = canvas.getGraphicsContext2D();
+            // Axies
+            final NumberAxis xAxis = new NumberAxis();
+            final NumberAxis yAxis = new NumberAxis();
+            xAxis.setLabel("Loop Position");
+            yAxis.setLabel("Potential Difference (V)");
+            xAxis.setTickLabelsVisible(false);
+            xAxis.setTickMarkVisible(false);
+            xAxis.setMinorTickVisible(false);
 
-            // Animation
-            AnimationTimer timer = new AnimationTimer() {
-                private double phase = 0;
+            // Creating the chart
+            final LineChart<Number, Number> lineChart = new LineChart<>(xAxis, yAxis);
+            lineChart.setTitle("Potential Difference in Kirchhoff's Loop");
+            lineChart.setLegendVisible(false);
 
-                @Override
-                public void handle(long now) {
-                    gc.clearRect(0, 0, 400, 200);
-                    gc.setStroke(Color.BLUE);
-                    gc.setLineWidth(2);
-                    double centerY = 100; // Half of canvas height
+            XYChart.Series<Number, Number> series = new XYChart.Series<>();
 
-                    gc.beginPath();
-                    gc.moveTo(0, centerY);
+            series.getData().add(new XYChart.Data<>(0, 0));   // Start at 0V
+            series.getData().add(new XYChart.Data<>(1, 10));  // Increase
+            series.getData().add(new XYChart.Data<>(2, 10));  // Stay constant
+            series.getData().add(new XYChart.Data<>(3, 5));   // Decrease
+            series.getData().add(new XYChart.Data<>(4, 5));   // Stay constant
+            series.getData().add(new XYChart.Data<>(5, 0));   // Return to 0V
 
-                    for (int x = 0; x < 400; x++) {
-                        double y = centerY + 50 * Math.sin(0.05 * x + phase);
-                        gc.lineTo(x, y);
-                    }
-
-                    gc.stroke();
-                    phase += 0.1;
-                }
-            };
-            timer.start();
-
-            // Elements
-            VBox content = new VBox(10, infoText, graphTitle, canvas);
-            content.setPadding(new Insets(10, 10, 10, 10));
-            content.setAlignment(Pos.CENTER_LEFT);
-            Scene scene = new Scene(content);
-            codeStage.setScene(scene);
+            lineChart.getData().add(series);
 
             // Close button
             Button closeButton = new Button("Close");
-            closeButton.setOnAction(event -> codeStage.close());
+            closeButton.setOnAction(_ -> codeStage.close());
+
+            // VBox layout
+            VBox content = new VBox(10, infoText, graphTitle, lineChart, closeButton);
+            content.setPadding(new Insets(10));
+            content.setAlignment(Pos.CENTER);
+
+            Scene scene = new Scene(content, 600, 500);
+            codeStage.setScene(scene);
+            codeStage.show();
+
+            // Animation: the real thing coming soon
 
             VBox bottomContainer = new VBox(closeButton);
             bottomContainer.setAlignment(Pos.CENTER);
             bottomContainer.setSpacing(10);
             content.getChildren().add(bottomContainer);
             codeStage.show();
-
-            // Stop animation
-            codeStage.setOnCloseRequest(event -> timer.stop());
         });
 
         Label s4 = new Label("");
@@ -144,19 +147,19 @@ public class SidePanel extends VBox {
         Button runStop = new Button("Run/Stop");
 
         Button reset = new Button("Reset");
-        reset.setOnAction(e -> {
+        reset.setOnAction(_ -> {
             System.out.println("Resetted");
         });
 
         Button clear = new Button("Clear");
-        clear.setOnAction(e -> {
+        clear.setOnAction(_ -> {
             System.out.println("Cleared");
         });
 
         // Running Status
         Label status = new Label("Click below to run!");
         final boolean[] running = {false};
-        runStop.setOnAction(e -> {
+        runStop.setOnAction(_ -> {
             running[0] = !running[0];
             if (running[0]) {
                 status.setText("Running");
