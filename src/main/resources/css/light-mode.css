@@ -1,0 +1,25 @@
+.root {
+    -fx-base: #f0f4f8; /* Soft light background */
+    -fx-accent: #a8c4e6; /* Soft blue accent */
+    -fx-default-button: #d0d7de; /* Muted light gray for buttons */
+    -fx-focus-color: #b0b8c1; /* Soft gray-blue for focus */
+    /*-fx-faint-focus-color: #dce4ec; /* Very faint focus color */
+    -fx-focused-text-base-color: ladder(
+            -fx-selection-bar,
+            -fx-dark-text-color 45%,  /* Muted contrast between text and background */
+            -fx-light-text-color 46%,
+            -fx-light-text-color 59%,
+            -fx-mid-text-color 60%
+    );
+    -fx-focused-mark-color: -fx-focused-text-base-color;
+}
+
+.text-input:focused {
+    -fx-highlight-text-fill: ladder(
+            -fx-highlight-fill,
+            -fx-dark-text-color 45%,  /* Keeping the text soft but still visible */
+            -fx-light-text-color 46%,
+            -fx-light-text-color 59%,
+            -fx-mid-text-color 60%
+    );
+}
