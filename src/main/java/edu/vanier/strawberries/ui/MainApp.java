@@ -51,6 +51,8 @@ public class MainApp extends Application {
             // Add the primary scene to the scene-switching controller.
             sceneController = new SceneController(scene);
             sceneController.addScene(START_SCENE, root);
+            primaryStage.setMinWidth(650);
+            primaryStage.setMinHeight(500);
             primaryStage.setScene(scene);
             primaryStage.sizeToScene();
             primaryStage.setTitle("Circuit Builder!");

@@ -21,7 +21,7 @@ public class Wire extends Component {
         this.color = color;
         this.current = current;
         this.voltage = voltage;
-        DIAGRAM_DISPLAY = new Image(Objects.requireNonNull(getClass().getResource("/com/example/fractal/images/line.png")).toExternalForm());
+        DIAGRAM_DISPLAY = new Image(Objects.requireNonNull(getClass().getResource("/images/line.png")).toExternalForm());
         setFitWidth(0);
 //        IMAGE_DISPLAY = new Image(Objects.requireNonNull(getClass().getResource("/com/example/fractal/images/imagename.png")).toExternalForm());
         display = DIAGRAM_DISPLAY; //TODO update to take realistic images into account too

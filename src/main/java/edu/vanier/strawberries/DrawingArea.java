@@ -15,15 +15,15 @@ public class DrawingArea extends Pane {
     public DrawingTool drawingTool = new DrawingTool();
     private Component selection;
     private Battery currentBattery;    // To store the current battery being placed
+    Pane pane;
 
-    public DrawingArea(MainApp app) {
-        setBackground(Background.fill(Color.ANTIQUEWHITE));
+    public DrawingArea(Pane pane) {
         setPadding(new Insets(10, 10, 10, 10));
-
         // SET UP EVENT LISTENERS
-        addEventHandler(MouseEvent.MOUSE_PRESSED, this::mousePressed);
-        addEventHandler(MouseEvent.MOUSE_DRAGGED, this::mouseDragged);
-        addEventHandler(MouseEvent.MOUSE_RELEASED, this::mouseReleased);
+        pane.addEventHandler(MouseEvent.MOUSE_PRESSED, this::mousePressed);
+        pane.addEventHandler(MouseEvent.MOUSE_DRAGGED, this::mouseDragged);
+        pane.addEventHandler(MouseEvent.MOUSE_RELEASED, this::mouseReleased);
+        this.pane = pane;
 
         setPrefHeight(400); // temporary
         drawingTool.setCurrentAction("");
@@ -51,26 +51,9 @@ public class DrawingArea extends Pane {
             }
             selection.setX(selection.begin.getX());
             selection.setY(selection.begin.getY());
-            getChildren().add(selection);
+            pane.getChildren().add(selection);
             selection.draw();
         }
-
-//        if (Objects.equals(drawingTool.getCurrentAction(), "place-battery")) {
-//            // Place the battery on mouse press
-//            if (currentBattery == null) {
-//                // First click - set the start node
-//                Node startNode = new Node(event.getX(), event.getY());
-//                currentBattery = new Battery(startNode, startNode, 9.0);  // Add battery with 9V (you can change this value)
-//                getChildren().add(currentBattery);
-//                currentBattery.draw();
-//            } else {
-//                // Second click - set the end node (you can decide the end node behavior based on your requirements)
-//                currentBattery.end = new Node(event.getX(), event.getY());  // Update the battery's end node (you can change this logic)
-//                currentBattery.draw();
-//                drawingTool.setPencilDown(false);  // Finish placing the battery
-//                currentBattery = null;  // Reset the battery placement state
-//            }
-//        }
     }
 
     private void mouseDragged(MouseEvent event) {
