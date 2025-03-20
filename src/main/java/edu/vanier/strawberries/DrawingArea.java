@@ -27,6 +27,7 @@ public class DrawingArea extends Pane {
 
         setPrefHeight(400); // temporary
         drawingTool.setCurrentAction("");
+
 //        drawingTool.setColor(app.getSidePanel().pickedColor); //TODO fix this
     }
 

@@ -2,18 +2,29 @@ package edu.vanier.strawberries.controllers;
 
 import edu.vanier.strawberries.DrawingArea;
 import edu.vanier.strawberries.DrawingTool;
-import edu.vanier.strawberries.MenuBar;
 import edu.vanier.strawberries.ui.MainApp;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+import javafx.scene.text.TextFlow;
+import javafx.stage.Stage;
 import javafx.stage.Window;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeRegular;
 import org.kordamp.ikonli.javafx.FontIcon;
@@ -50,36 +61,27 @@ public class MainAppFXMLController {
     @FXML
     TextField circuitNameField;
     @FXML
-    Button exportBtn,morInformationBtn,runStopBtn,resetBtn,clearBtn;
+    Button exportBtn,moreInformationBtn,runStopBtn,resetBtn,clearBtn;
     @FXML
     MenuButton viewMenuBtn;
     @FXML
     ColorPicker defaultWireColorPicker;
     @FXML
     CheckBox polarityCheckBox;
+    @FXML
+    MenuBar menuBar;
 
     @FXML
     public void initialize() {
         logger.info("Initializing MainAppController...");
 
         drawingAreaPane.setStyle("-fx-background-color: #fff");
-        bind();
-
-        // Linking to existing classes
-        DrawingArea drawingArea = new DrawingArea(drawingAreaPane);
-        DrawingTool drawingTool = drawingArea.drawingTool;
-
-        // Set button actions
-        addWireBtn.setOnAction(_-> {drawingTool.setCurrentAction("place-wire");});
-        addResistorBtn.setOnAction(_->drawingTool.setCurrentAction("place-resistor"));
-        addBatteryBtn.setOnAction(_->drawingTool.setCurrentAction("place-battery"));
-        addCapacitorBtn.setOnAction(_->drawingTool.setCurrentAction("place-capacitor"));
-        addSwitchBtn.setOnAction(_->drawingTool.setCurrentAction("place-switch"));
-
+        initUI();
     }
 
-    private void bind() {
-        //Heights
+    private void initUI() {
+// 1. BIND DIMENSIONS:
+    // Heights
         window.prefHeightProperty().bind(MainApp.stage.heightProperty());
         splitPane.prefHeightProperty().bind(window.heightProperty());
         leftPanel.prefHeightProperty().bind(splitPane.heightProperty());
@@ -91,12 +93,12 @@ public class MainAppFXMLController {
         rightPanel.prefHeightProperty().bind(splitPane.heightProperty());
         toolbarHBox.setPrefHeight(toolbarHBox.getChildren().getFirst().getLayoutBounds().getHeight());
         toolbarScrollPane.prefViewportHeightProperty().bind(toolbarHBox.heightProperty());
-        //Widths
+    //Widths
         leftPanelVBox.prefWidthProperty().bind(leftPanel.prefWidthProperty());
         toolbarScrollPane.prefWidthProperty().bind(leftPanelVBox.prefWidthProperty());
         toolbarHBox.prefWidthProperty().bind(toolbarScrollPane.prefWidthProperty());
 
-        //Other Formatting
+// 2. OTHER FORMATTING
         toolbarScrollPane.widthProperty().addListener(_-> {
             //TODO make that little space under the buttons disappear when there is no scrollbar...
             //TODO make buttons stretch if they have extra space to do so.
@@ -105,6 +107,109 @@ public class MainAppFXMLController {
         leftPanel.widthProperty().addListener(_-> {
             leftPanel.setPrefWidth(leftPanel.getWidth());
         });
+// 3. INITIALIZE CLASSES
+        // Linking to existing classes
+        DrawingArea drawingArea = new DrawingArea(drawingAreaPane);
+        DrawingTool drawingTool = drawingArea.drawingTool;
+        drawingTool.setColor(defaultWireColorPicker.getValue());
+        edu.vanier.strawberries.MenuBar myMenu = new edu.vanier.strawberries.MenuBar(menuBar); //TODO fix this... feels like there should be an easier way
+
+
+// 4. SET UP UI ELEMENTS
+        // Set button actions
+        addWireBtn.setOnAction(_-> {drawingTool.setCurrentAction("place-wire");});
+        addResistorBtn.setOnAction(_->drawingTool.setCurrentAction("place-resistor"));
+        addBatteryBtn.setOnAction(_->drawingTool.setCurrentAction("place-battery"));
+        addCapacitorBtn.setOnAction(_->drawingTool.setCurrentAction("place-capacitor"));
+        addSwitchBtn.setOnAction(_->drawingTool.setCurrentAction("place-switch"));
+
+        defaultWireColorPicker.setValue(Color.BLACK);
+        defaultWireColorPicker.setOnAction(_ -> {
+            Color pickedColor = defaultWireColorPicker.getValue();
+            if(pickedColor==null) pickedColor = Color.BLACK;
+//            app.updateDefaultColor(); //TODO fix this
+        });
+        polarityCheckBox.setOnAction(_-> {
+            if (polarityCheckBox.isSelected()) {
+                System.out.println("Clicked");
+            } else {
+                System.out.println("Un-clicked");
+            }
+        });
+
+        moreInformationBtn.setOnAction(_ -> {
+            Stage codeStage = new Stage();
+            codeStage.setTitle("More information");
+            codeStage.setHeight(500);
+            codeStage.setWidth(600);
+
+            // Create text display
+            TextFlow infoText = new TextFlow(
+                    new Text("Total Resistance:\nBranch Voltage:\nBranch Current:\n")
+            );
+            infoText.setTextAlignment(TextAlignment.LEFT);
+
+            // Graph title
+            Label graphTitle = new Label("Kirchhoff's Loop Rule Graph");
+            graphTitle.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
+
+            // Axies
+            final NumberAxis xAxis = new NumberAxis();
+            final NumberAxis yAxis = new NumberAxis();
+            xAxis.setLabel("Loop Position");
+            yAxis.setLabel("Potential Difference (V)");
+            xAxis.setTickLabelsVisible(false);
+            xAxis.setTickMarkVisible(false);
+            xAxis.setMinorTickVisible(false);
+
+            // Creating the chart
+            final LineChart<Number, Number> lineChart = new LineChart<>(xAxis, yAxis);
+            lineChart.setTitle("Potential Difference in Kirchhoff's Loop");
+            lineChart.setLegendVisible(false);
+
+            XYChart.Series<Number, Number> series = new XYChart.Series<>();
+
+            series.getData().add(new XYChart.Data<>(0, 0));   // Start at 0V
+            series.getData().add(new XYChart.Data<>(1, 10));  // Increase
+            series.getData().add(new XYChart.Data<>(2, 10));  // Stay constant
+            series.getData().add(new XYChart.Data<>(3, 5));   // Decrease
+            series.getData().add(new XYChart.Data<>(4, 5));   // Stay constant
+            series.getData().add(new XYChart.Data<>(5, 0));   // Return to 0V
+
+            lineChart.getData().add(series);
+
+            // Close button
+            Button closeButton = new Button("Close");
+            closeButton.setOnAction(_ -> codeStage.close());
+
+            // VBox layout
+            VBox content = new VBox(10, infoText, graphTitle, lineChart, closeButton);
+            content.setPadding(new Insets(10));
+            content.setAlignment(Pos.CENTER);
+
+            Scene scene = new Scene(content, 600, 500);
+            codeStage.setScene(scene);
+            codeStage.show();
+
+            // Animation: the real thing coming soon
+
+            VBox bottomContainer = new VBox(closeButton);
+            bottomContainer.setAlignment(Pos.CENTER);
+            bottomContainer.setSpacing(10);
+            content.getChildren().add(bottomContainer);
+            codeStage.show();
+        });
+
+        runStopBtn.setOnAction(_ -> {
+            //TODO implement
+//            running[0] = !running[0];
+//            if (running[0]) {
+//                status.setText("Running");
+//            } else {
+//                status.setText("Stopped");
+//            }
+        });
+
     }
 
 }
