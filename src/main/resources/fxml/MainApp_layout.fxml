@@ -168,13 +168,22 @@
                     <VBox.margin>
                         <Insets />
                     </VBox.margin>
-                    <Button fx:id="runStopBtn" mnemonicParsing="false" text="Run/Stop" />
-                    <Button fx:id="resetBtn" mnemonicParsing="false" text="Reset" />
-                    <Button fx:id="clearBtn" mnemonicParsing="false" style="-fx-background-color: ff645c;" text="Clear">
-                        <font>
-                            <Font name="System Bold" size="12.0" />
-                        </font>
-                    </Button>
+                    <VBox>
+                        <Label fx:id="runStopLabel" layoutX="15.0" layoutY="147.0" text="Click here" />
+                        <Button fx:id="runStopBtn" mnemonicParsing="false" text="Run/Stop" />
+                    </VBox>
+                    <VBox>
+                        <Label layoutX="15.0" layoutY="147.0" text=" "> </Label>
+                        <Button fx:id="resetBtn" mnemonicParsing="false" text="Reset" />
+                    </VBox>
+                    <VBox>
+                        <Label layoutX="15.0" layoutY="147.0" text=" "> </Label>
+                        <Button fx:id="clearBtn" mnemonicParsing="false" style="-fx-background-color: ff645c;" text="Clear">
+                            <font>
+                                <Font name="System Bold" size="12.0" />
+                            </font>
+                        </Button>
+                    </VBox>
                 </FlowPane>
             </VBox>
         </AnchorPane>

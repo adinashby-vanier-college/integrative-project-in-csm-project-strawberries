@@ -3,6 +3,7 @@ package edu.vanier.strawberries.controllers;
 import edu.vanier.strawberries.DrawingArea;
 import edu.vanier.strawberries.DrawingTool;
 import edu.vanier.strawberries.ui.MainApp;
+import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -17,6 +18,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
@@ -63,6 +65,8 @@ public class MainAppFXMLController {
     @FXML
     Button exportBtn,moreInformationBtn,runStopBtn,resetBtn,clearBtn;
     @FXML
+    Label runStopLabel;
+    @FXML
     MenuButton viewMenuBtn;
     @FXML
     ColorPicker defaultWireColorPicker;
@@ -70,6 +74,10 @@ public class MainAppFXMLController {
     CheckBox polarityCheckBox;
     @FXML
     MenuBar menuBar;
+    @FXML
+    MenuItem menuNew, menuOpen, menuSave, menuSaveAs, menuQuit, menuPreferences, menuShowToolbar, menuHideToolbar, menuThemes, menuFitToScreen, menuZoomIn, menuZoomOut, menuToggleGrid;
+    private boolean isRunning = false;
+    private double zoomScale = 1.0;
 
     @FXML
     public void initialize() {
@@ -201,13 +209,12 @@ public class MainAppFXMLController {
         });
 
         runStopBtn.setOnAction(_ -> {
-            //TODO implement
-//            running[0] = !running[0];
-//            if (running[0]) {
-//                status.setText("Running");
-//            } else {
-//                status.setText("Stopped");
-//            }
+            isRunning = !isRunning; // Toggle the state
+            runStopLabel.setText(isRunning ? "Running..." : "Stopped.");
+        });
+
+        menuQuit.setOnAction(_ -> {
+            Platform.exit();
         });
 
     }
