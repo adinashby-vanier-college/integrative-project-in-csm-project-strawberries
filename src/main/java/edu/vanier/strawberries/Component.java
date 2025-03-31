@@ -3,8 +3,9 @@ package edu.vanier.strawberries;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+import java.util.ArrayList;
+
 public abstract class Component extends ImageView {
-    // begin ->  o-----^v^v^v-----o  <- end
 
     /**The first created Node of the element. If the element was generated using a button,
      * this will always be the left node.*/
@@ -14,6 +15,7 @@ public abstract class Component extends ImageView {
     protected Node end;
     protected Image DIAGRAM_DISPLAY, IMAGE_DISPLAY;
     public Image display;
+    private ArrayList<Component> children;
 
     public Component(Node begin, Node end) {
         this.begin = begin;
@@ -52,7 +54,13 @@ public abstract class Component extends ImageView {
 
     // ABSTRACT methods for each component type
 
-    /**Show/Update the image of the component*/
+    /**
+     * Show/Update the image of the component
+     * */
     public abstract void draw();
+
+    public ArrayList<Component> getChildren() {
+        return children;
+    }
 }
 

@@ -138,7 +138,7 @@
                         </HBox>
                     </AnchorPane>
                 </ScrollPane>
-                <Pane fx:id="drawingAreaPane" prefHeight="428.0" prefWidth="624.0" />
+                <Pane fx:id="drawingAreaPane" prefHeight="428.0" prefWidth="624.0" style="-fx-background-color: #5555;" />
             </VBox>
         </AnchorPane>
         <AnchorPane fx:id="rightPanel" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">

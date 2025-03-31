@@ -2,19 +2,19 @@ package edu.vanier.strawberries;
 
 
 import edu.vanier.strawberries.Components.*;
-import edu.vanier.strawberries.ui.MainApp;
 import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Objects;
 
 public class DrawingArea extends Pane {
     public DrawingTool drawingTool = new DrawingTool();
     private Component selection;
-    private Battery currentBattery;    // To store the current battery being placed
+    public Circuit circuit;
     Pane pane;
 
     public DrawingArea(Pane pane) {
@@ -25,15 +25,8 @@ public class DrawingArea extends Pane {
         pane.addEventHandler(MouseEvent.MOUSE_RELEASED, this::mouseReleased);
         this.pane = pane;
 
-        setPrefHeight(400); // temporary
+        circuit = new Circuit();
         drawingTool.setCurrentAction("");
-
-//        drawingTool.setColor(app.getSidePanel().pickedColor); //TODO fix this
-    }
-
-    // Toggle placing battery or wire
-    public void startPlacingBattery() {
-        drawingTool.setCurrentAction("place-battery");
     }
 
     private void mousePressed(MouseEvent event) {
@@ -53,7 +46,10 @@ public class DrawingArea extends Pane {
             selection.setX(selection.begin.getX());
             selection.setY(selection.begin.getY());
             pane.getChildren().add(selection);
+            circuit.addComponent(selection);
+            attemptConnection(selection, selection.begin);
             selection.draw();
+            circuit.print();
         }
     }
 
@@ -67,7 +63,38 @@ public class DrawingArea extends Pane {
     private void mouseReleased(MouseEvent event) {
         if (drawingTool.isPencilDown()) {
             drawingTool.setPencilDown(false);
+            attemptConnection(selection, selection.end);
             selection = null;
         }
+    }
+
+    private void attemptConnection(Component toCheck, Node node) {
+        int srcIndex = circuit.getIndex(toCheck);
+        Point2D checkPoint = new Point2D(node.getX(),node.getY());
+        ArrayList<Node> connectedNodes = new ArrayList<>();
+        connectedNodes.add(node);
+
+        for(LinkedList<Component> currentList:circuit.arrayList) {
+            for(Component connectedComponent:currentList) {
+                int dstIndex = circuit.getIndex(connectedComponent);
+                if (!circuit.checkEdge(srcIndex, dstIndex)) circuit.addEdge(srcIndex, dstIndex);
+
+                //Update drawings
+                Point2D componentBegin = new Point2D(connectedComponent.begin.getX(), connectedComponent.begin.getY());
+                Point2D componentEnd = new Point2D(connectedComponent.end.getX(), connectedComponent.end.getY());
+                if(componentBegin.distance(checkPoint)<=50) {
+                    connectedNodes.add(connectedComponent.begin);
+                }
+                if(componentEnd.distance(checkPoint)<=50) {
+                    connectedNodes.add(connectedComponent.end);
+                }
+
+                for(int i=1;i<connectedNodes.size();i++) {
+                    connectedNodes.get(i).setPosition(node.getX(), node.getY());
+                }
+                connectedComponent.draw();
+            }
+        }
+        toCheck.draw();
     }
 }

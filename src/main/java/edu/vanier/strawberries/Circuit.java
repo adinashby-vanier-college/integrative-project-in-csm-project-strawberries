@@ -1,0 +1,60 @@
+package edu.vanier.strawberries;
+
+import javafx.geometry.Point2D;
+import java.util.ArrayList;
+import java.util.LinkedList;
+
+/**
+ * The Circuit is based on a Graph data structure
+ */
+public class Circuit {
+    boolean closed;
+    ArrayList<LinkedList<Component>> arrayList;
+
+    public Circuit() {
+        closed = false;
+        arrayList = new ArrayList<>();
+    }
+
+    public void addComponent(Component component) {
+        LinkedList<Component> currentList = new LinkedList<>();
+        currentList.add(component);
+        arrayList.add(currentList);
+    }
+
+    public void addEdge(int src, int dst) {
+        LinkedList<Component> currentList = arrayList.get(src);
+        Component dest = arrayList.get(dst).getFirst();
+        currentList.add(dest);
+    }
+
+    public boolean checkEdge(int src, int dst) {
+        LinkedList<Component> currentList = arrayList.get(src);
+        Component dest = arrayList.get(dst).getFirst();
+
+        for(Component component:currentList) {
+            if(component==dest) return true;
+        }
+        return false;
+    }
+
+    public void print() {
+        for(LinkedList<Component> currentList:arrayList) {
+            for(Component component:currentList) {
+                System.out.print(component+"("+getIndex(component)+")"+" -> ");
+            }
+            System.out.println();
+        }
+        System.out.println("-------------------------------------------");
+    }
+
+    public int getIndex(Component component) {
+        for(int i=0;i<arrayList.size();i++) {
+            if(arrayList.get(i).getFirst()==component) {
+                return i;
+            }
+        }
+        return -1; // Not found
+    }
+
+}

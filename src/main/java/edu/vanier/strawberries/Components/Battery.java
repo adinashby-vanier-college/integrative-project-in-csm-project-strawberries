@@ -12,7 +12,7 @@ public class Battery extends Component {
     private double potential;  
     private boolean startPolarity; 
     private boolean endPolarity;  
-    private ImageView batteryImageView;  
+    private ImageView batteryImageView;
 
     // Constructor with a potential value and polarity settings for start and end
     public Battery(Node begin, Node end, double potential) {
@@ -21,7 +21,7 @@ public class Battery extends Component {
         this.startPolarity = true;  // Default polarity for the start
         this.endPolarity = false;   // Default polarity for the end
 
-        this.setImage(new Image(Objects.requireNonNull(getClass().getResource("/com/example/fractal/images/Batterysymbol.png")).toExternalForm()));
+        this.setImage(new Image(Objects.requireNonNull(getClass().getResource("/images/battery_diagram.png")).toExternalForm()));
 
         this.setX(begin.getX());
         this.setY(begin.getY());

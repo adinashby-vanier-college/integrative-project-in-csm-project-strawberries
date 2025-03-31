@@ -3,7 +3,6 @@ package edu.vanier.strawberries.controllers;
 import edu.vanier.strawberries.DrawingArea;
 import edu.vanier.strawberries.DrawingTool;
 import edu.vanier.strawberries.ui.MainApp;
-import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -18,7 +17,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
@@ -44,6 +42,8 @@ import java.awt.*;
 public class MainAppFXMLController {
 
     private final static Logger logger = LoggerFactory.getLogger(MainAppFXMLController.class);
+
+    public boolean animationRunning;
 
     //Import FXML variables
     @FXML
@@ -84,6 +84,7 @@ public class MainAppFXMLController {
         logger.info("Initializing MainAppController...");
 
         drawingAreaPane.setStyle("-fx-background-color: #fff");
+        animationRunning = false;
         initUI();
     }
 
@@ -119,7 +120,6 @@ public class MainAppFXMLController {
         // Linking to existing classes
         DrawingArea drawingArea = new DrawingArea(drawingAreaPane);
         DrawingTool drawingTool = drawingArea.drawingTool;
-        drawingTool.setColor(defaultWireColorPicker.getValue());
         edu.vanier.strawberries.MenuBar myMenu = new edu.vanier.strawberries.MenuBar(menuBar); //TODO fix this... feels like there should be an easier way
 
 
@@ -135,7 +135,7 @@ public class MainAppFXMLController {
         defaultWireColorPicker.setOnAction(_ -> {
             Color pickedColor = defaultWireColorPicker.getValue();
             if(pickedColor==null) pickedColor = Color.BLACK;
-//            app.updateDefaultColor(); //TODO fix this
+            drawingTool.setColor(pickedColor);
         });
         polarityCheckBox.setOnAction(_-> {
             if (polarityCheckBox.isSelected()) {
@@ -161,30 +161,8 @@ public class MainAppFXMLController {
             Label graphTitle = new Label("Kirchhoff's Loop Rule Graph");
             graphTitle.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
 
-            // Axies
-            final NumberAxis xAxis = new NumberAxis();
-            final NumberAxis yAxis = new NumberAxis();
-            xAxis.setLabel("Loop Position");
-            yAxis.setLabel("Potential Difference (V)");
-            xAxis.setTickLabelsVisible(false);
-            xAxis.setTickMarkVisible(false);
-            xAxis.setMinorTickVisible(false);
-
-            // Creating the chart
-            final LineChart<Number, Number> lineChart = new LineChart<>(xAxis, yAxis);
-            lineChart.setTitle("Potential Difference in Kirchhoff's Loop");
-            lineChart.setLegendVisible(false);
-
-            XYChart.Series<Number, Number> series = new XYChart.Series<>();
-
-            series.getData().add(new XYChart.Data<>(0, 0));   // Start at 0V
-            series.getData().add(new XYChart.Data<>(1, 10));  // Increase
-            series.getData().add(new XYChart.Data<>(2, 10));  // Stay constant
-            series.getData().add(new XYChart.Data<>(3, 5));   // Decrease
-            series.getData().add(new XYChart.Data<>(4, 5));   // Stay constant
-            series.getData().add(new XYChart.Data<>(5, 0));   // Return to 0V
-
-            lineChart.getData().add(series);
+            // Graph
+            final LineChart<Number, Number> lineChart = getChart();
 
             // Close button
             Button closeButton = new Button("Close");
@@ -208,15 +186,40 @@ public class MainAppFXMLController {
             codeStage.show();
         });
 
+        runStopBtn.setText("Run");
         runStopBtn.setOnAction(_ -> {
-            isRunning = !isRunning; // Toggle the state
-            runStopLabel.setText(isRunning ? "Running..." : "Stopped.");
+            animationRunning = !animationRunning;
+            if(animationRunning) runStopBtn.setText("Stop");
+            else runStopBtn.setText("Run");
         });
 
-        menuQuit.setOnAction(_ -> {
-            Platform.exit();
-        });
+    }
 
+    private static LineChart<Number, Number> getChart() {
+        final NumberAxis xAxis = new NumberAxis();
+        final NumberAxis yAxis = new NumberAxis();
+        xAxis.setLabel("Loop Position");
+        yAxis.setLabel("Potential Difference (V)");
+        xAxis.setTickLabelsVisible(false);
+        xAxis.setTickMarkVisible(false);
+        xAxis.setMinorTickVisible(false);
+
+        // Creating the chart
+        final LineChart<Number, Number> lineChart = new LineChart<>(xAxis, yAxis);
+        lineChart.setTitle("Potential Difference in Kirchhoff's Loop");
+        lineChart.setLegendVisible(false);
+
+        XYChart.Series<Number, Number> series = new XYChart.Series<>();
+
+        series.getData().add(new XYChart.Data<>(0, 0));   // Start at 0V
+        series.getData().add(new XYChart.Data<>(1, 10));  // Increase
+        series.getData().add(new XYChart.Data<>(2, 10));  // Stay constant
+        series.getData().add(new XYChart.Data<>(3, 5));   // Decrease
+        series.getData().add(new XYChart.Data<>(4, 5));   // Stay constant
+        series.getData().add(new XYChart.Data<>(5, 0));   // Return to 0V
+
+        lineChart.getData().add(series);
+        return lineChart;
     }
 
 }
