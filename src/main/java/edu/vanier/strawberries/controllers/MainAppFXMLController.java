@@ -3,12 +3,9 @@ package edu.vanier.strawberries.controllers;
 import edu.vanier.strawberries.DrawingArea;
 import edu.vanier.strawberries.DrawingTool;
 import edu.vanier.strawberries.ui.MainApp;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
@@ -20,22 +17,14 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
-import javafx.stage.Window;
-import org.kordamp.ikonli.fontawesome5.FontAwesomeRegular;
-import org.kordamp.ikonli.javafx.FontIcon;
-import org.kordamp.ikonli.materialdesign2.MaterialDesignA;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.awt.*;
 
 /**
  * FXML controller class for the primary stage scene.
@@ -102,9 +91,7 @@ public class MainAppFXMLController {
         leftPanel.prefHeightProperty().bind(splitPane.heightProperty());
         drawingAreaPane.prefHeightProperty().bind(leftPanel.prefHeightProperty());
         //TODO figure out why it doesn't work without this...
-        drawingAreaPane.prefHeightProperty().addListener(_-> {
-            drawingAreaPane.setMinHeight(drawingAreaPane.getPrefHeight());
-        });
+        drawingAreaPane.prefHeightProperty().addListener(_-> drawingAreaPane.setMinHeight(drawingAreaPane.getPrefHeight()));
         rightPanel.prefHeightProperty().bind(splitPane.heightProperty());
         toolbarHBox.setPrefHeight(toolbarHBox.getChildren().getFirst().getLayoutBounds().getHeight());
         toolbarScrollPane.prefViewportHeightProperty().bind(toolbarHBox.heightProperty());
@@ -119,9 +106,7 @@ public class MainAppFXMLController {
             //TODO make buttons stretch if they have extra space to do so.
         });
 
-        leftPanel.widthProperty().addListener(_-> {
-            leftPanel.setPrefWidth(leftPanel.getWidth());
-        });
+        leftPanel.widthProperty().addListener(_-> leftPanel.setPrefWidth(leftPanel.getWidth()));
 // 3. INITIALIZE CLASSES
         // Linking to existing classes
         DrawingArea drawingArea = new DrawingArea(drawingAreaPane);
@@ -131,12 +116,10 @@ public class MainAppFXMLController {
 
 // 4. SET UP UI ELEMENTS
         //TEMPORARY
-        drawingAreaPane.setOnMouseMoved(event -> {
-            mouseText.setText("("+String.valueOf(event.getX()).substring(0,3)+","+String.valueOf(event.getY()).substring(0,3)+")");
-        });
+        drawingAreaPane.setOnMouseMoved(event -> mouseText.setText("("+String.valueOf(event.getX()).substring(0,3)+","+String.valueOf(event.getY()).substring(0,3)+")"));
 
         // Set button actions
-        addWireBtn.setOnAction(_-> {drawingTool.setCurrentAction("place-wire");});
+        addWireBtn.setOnAction(_-> drawingTool.setCurrentAction("place-wire"));
         addResistorBtn.setOnAction(_->drawingTool.setCurrentAction("place-resistor"));
         addBatteryBtn.setOnAction(_->drawingTool.setCurrentAction("place-battery"));
         addCapacitorBtn.setOnAction(_->drawingTool.setCurrentAction("place-capacitor"));
