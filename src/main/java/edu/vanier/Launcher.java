@@ -26,6 +26,7 @@ public class Launcher {
         //NOTE: Comment out the following line if you would like to execute 
         //      another class' main method.  
         MainApp.main(args);
+       
         //--
         // Uncomment the following line to run the Driver's main method.
         //Driver.main(args);        
