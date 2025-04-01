@@ -9,7 +9,7 @@ import java.util.LinkedList;
  */
 public class Circuit {
     boolean closed;
-    ArrayList<LinkedList<Component>> arrayList;
+    public ArrayList<LinkedList<Component>> arrayList;
 
     public Circuit() {
         closed = false;
