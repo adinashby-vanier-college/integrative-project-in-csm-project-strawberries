@@ -5,7 +5,10 @@ import edu.vanier.strawberries.Components.*;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -15,10 +18,12 @@ public class DrawingArea extends Pane {
     public DrawingTool drawingTool = new DrawingTool();
     private Component selection;
     public Circuit circuit;
-    Pane pane;
+    public Pane pane;
 
     public DrawingArea(Pane pane) {
         setPadding(new Insets(10, 10, 10, 10));
+//        setBackground(Background.fill(Color.RED));
+
         // SET UP EVENT LISTENERS
         pane.addEventHandler(MouseEvent.MOUSE_PRESSED, this::mousePressed);
         pane.addEventHandler(MouseEvent.MOUSE_DRAGGED, this::mouseDragged);
@@ -49,7 +54,6 @@ public class DrawingArea extends Pane {
             circuit.addComponent(selection);
             attemptConnection(selection, selection.begin);
             selection.draw();
-            circuit.print();
         }
     }
 
@@ -77,19 +81,19 @@ public class DrawingArea extends Pane {
         for(LinkedList<Component> currentList:circuit.arrayList) {
             for(Component connectedComponent:currentList) {
                 int dstIndex = circuit.getIndex(connectedComponent);
-                if (!circuit.checkEdge(srcIndex, dstIndex)) circuit.addEdge(srcIndex, dstIndex);
 
-                //Update drawings
+                //Check edge and update drawings
                 Point2D componentBegin = new Point2D(connectedComponent.begin.getX(), connectedComponent.begin.getY());
                 Point2D componentEnd = new Point2D(connectedComponent.end.getX(), connectedComponent.end.getY());
-                if(componentBegin.distance(checkPoint)<=50) {
+                if(componentBegin.distance(checkPoint)<=20) {
                     connectedNodes.add(connectedComponent.begin);
                 }
-                if(componentEnd.distance(checkPoint)<=50) {
+                if(componentEnd.distance(checkPoint)<=20) {
                     connectedNodes.add(connectedComponent.end);
                 }
 
                 for(int i=1;i<connectedNodes.size();i++) {
+                    if (!circuit.checkEdge(srcIndex, dstIndex)) circuit.addEdge(srcIndex, dstIndex);
                     connectedNodes.get(i).setPosition(node.getX(), node.getY());
                 }
                 connectedComponent.draw();

@@ -49,8 +49,10 @@ public abstract class Component extends ImageView {
     };
 
     public void setBegin(double x, double y) {
-        
+        this.begin.setPosition(x,y);
     }
+
+    public void erase() {display=null;}
 
     // ABSTRACT methods for each component type
 

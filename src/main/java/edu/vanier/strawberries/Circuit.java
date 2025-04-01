@@ -1,6 +1,5 @@
 package edu.vanier.strawberries;
 
-import javafx.geometry.Point2D;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -38,14 +37,19 @@ public class Circuit {
         return false;
     }
 
+    public void clear() {
+        arrayList.clear();
+    }
+
     public void print() {
+        System.out.println("--------------------- Start of Graph ---------------------");
         for(LinkedList<Component> currentList:arrayList) {
             for(Component component:currentList) {
                 System.out.print(component+"("+getIndex(component)+")"+" -> ");
             }
             System.out.println();
         }
-        System.out.println("-------------------------------------------");
+        System.out.println("---------------------- End of Graph ----------------------");
     }
 
     public int getIndex(Component component) {

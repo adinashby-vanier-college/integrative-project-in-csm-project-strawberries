@@ -17,6 +17,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
@@ -83,7 +84,6 @@ public class MainAppFXMLController {
     public void initialize() {
         logger.info("Initializing MainAppController...");
 
-        drawingAreaPane.setStyle("-fx-background-color: #fff");
         animationRunning = false;
         initUI();
     }
@@ -120,7 +120,7 @@ public class MainAppFXMLController {
         // Linking to existing classes
         DrawingArea drawingArea = new DrawingArea(drawingAreaPane);
         DrawingTool drawingTool = drawingArea.drawingTool;
-        edu.vanier.strawberries.MenuBar myMenu = new edu.vanier.strawberries.MenuBar(menuBar); //TODO fix this... feels like there should be an easier way
+        edu.vanier.strawberries.MenuBar myMenu = new edu.vanier.strawberries.MenuBar(menuBar);
 
 
 // 4. SET UP UI ELEMENTS
@@ -130,6 +130,13 @@ public class MainAppFXMLController {
         addBatteryBtn.setOnAction(_->drawingTool.setCurrentAction("place-battery"));
         addCapacitorBtn.setOnAction(_->drawingTool.setCurrentAction("place-capacitor"));
         addSwitchBtn.setOnAction(_->drawingTool.setCurrentAction("place-switch"));
+
+        clearBtn.setOnAction(_-> {
+            drawingArea.circuit.print();
+            drawingArea.circuit.clear();
+            drawingArea.pane.getChildren().clear();
+            System.out.println("Cleared!");
+        });
 
         defaultWireColorPicker.setValue(Color.BLACK);
         defaultWireColorPicker.setOnAction(_ -> {
