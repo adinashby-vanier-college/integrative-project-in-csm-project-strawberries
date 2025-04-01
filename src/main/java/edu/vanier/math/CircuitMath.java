@@ -53,7 +53,7 @@ public class CircuitMath {
         double voltage = 0.0;
         for (Component c : path) {
             if (c instanceof Battery b) {
-                voltage += b.getPotential();
+                    voltage += b.getPotential();
             }
         }
         return voltage;
