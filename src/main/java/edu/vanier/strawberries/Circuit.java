@@ -42,6 +42,7 @@ public class Circuit {
     }
 
     public void print() {
+        //TODO : Verify connections!!!!! ** Not printing correctly :(
         System.out.println("--------------------- Start of Graph ---------------------");
         for(LinkedList<Component> currentList:arrayList) {
             for(Component component:currentList) {

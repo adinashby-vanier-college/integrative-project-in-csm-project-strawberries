@@ -1,7 +1,9 @@
 package edu.vanier.strawberries;
 
+import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 
 import java.util.ArrayList;
 
@@ -20,6 +22,7 @@ public abstract class Component extends ImageView {
     public Component(Node begin, Node end) {
         this.begin = begin;
         this.end = end;
+        this.setOnMouseClicked(this::handleEdit);
     }
 
     /**
@@ -53,6 +56,8 @@ public abstract class Component extends ImageView {
     }
 
     public void erase() {display=null;}
+
+    public void handleEdit(MouseEvent event) {}
 
     // ABSTRACT methods for each component type
 

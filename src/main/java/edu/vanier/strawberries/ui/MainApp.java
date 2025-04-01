@@ -35,9 +35,7 @@ public class MainApp extends Application {
 
     @Override
     public void stop() {
-        // TODO: 
-        // Here, we need to perform teardown operations such as stopping running 
-        // animation, etc.
+        //TODO: Here, we need to perform teardown operations such as stopping running animation, etc.
     }
 
     @Override
@@ -93,8 +91,7 @@ public class MainApp extends Application {
                 stage.setHeight(550);
                 stage.setWidth(860);
             }
-            //TODO: You can register or activate additional scenes here, 
-            //      based on the logic used to add the secondary scene (as shown above).            
+            //You can register or activate additional scenes here, based on the logic used to add the secondary scene (as shown above).
         } catch (IOException ex) {
             logger.error(ex.getMessage(), ex);
         }

@@ -47,13 +47,16 @@ public class DrawingArea extends Pane {
                 case "place-lightbulb" -> selection = new Lightbulb(eventLocation,tempEnd);
                 case "place-resistor" -> selection = new Resistor(eventLocation,tempEnd,100);
                 case "place-switch" -> selection = new Switch(eventLocation,tempEnd,false);
+                case "edit" -> editHandler(event);
             }
-            selection.setX(selection.begin.getX());
-            selection.setY(selection.begin.getY());
-            pane.getChildren().add(selection);
-            circuit.addComponent(selection);
-            attemptConnection(selection, selection.begin);
-            selection.draw();
+            if(!Objects.equals(drawingTool.getCurrentAction(), "edit")) {
+                selection.setX(selection.begin.getX());
+                selection.setY(selection.begin.getY());
+                pane.getChildren().add(selection);
+                circuit.addComponent(selection);
+                attemptConnection(selection, selection.begin);
+                selection.draw();
+            }
         }
     }
 
@@ -65,10 +68,13 @@ public class DrawingArea extends Pane {
     }
 
     private void mouseReleased(MouseEvent event) {
-        if (drawingTool.isPencilDown()) {
-            drawingTool.setPencilDown(false);
-            attemptConnection(selection, selection.end);
-            selection = null;
+        if(selection!=null) {
+            if (drawingTool.isPencilDown()) {
+                drawingTool.setPencilDown(false);
+                attemptConnection(selection, selection.end);
+                System.out.println("End node: ("+ selection.end.getX()+","+selection.end.getY()+")");
+                selection = null;
+            }
         }
     }
 
@@ -100,5 +106,9 @@ public class DrawingArea extends Pane {
             }
         }
         toCheck.draw();
+    }
+
+    private void editHandler(MouseEvent event) {
+
     }
 }

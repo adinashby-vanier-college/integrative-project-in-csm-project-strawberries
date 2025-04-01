@@ -20,6 +20,8 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -76,9 +78,13 @@ public class MainAppFXMLController {
     @FXML
     MenuBar menuBar;
     @FXML
-    MenuItem menuNew, menuOpen, menuSave, menuSaveAs, menuQuit, menuPreferences, menuShowToolbar, menuHideToolbar, menuThemes, menuFitToScreen, menuZoomIn, menuZoomOut, menuToggleGrid;
+    Text mouseText;
+    @FXML
+    MenuItem menuNew, menuOpen, menuSave, menuSaveAs, menuQuit, menuPreferences, menuShowToolbar, menuHideToolbar, menuThemes, menuFitToScreen, menuZoomIn, menuZoomOut, menuToggleGrid,
+    menuSelect;
     private boolean isRunning = false;
     private double zoomScale = 1.0;
+    private DrawingTool drawingTool;
 
     @FXML
     public void initialize() {
@@ -119,18 +125,22 @@ public class MainAppFXMLController {
 // 3. INITIALIZE CLASSES
         // Linking to existing classes
         DrawingArea drawingArea = new DrawingArea(drawingAreaPane);
-        DrawingTool drawingTool = drawingArea.drawingTool;
+        drawingTool = drawingArea.drawingTool;
         edu.vanier.strawberries.MenuBar myMenu = new edu.vanier.strawberries.MenuBar(menuBar);
 
 
 // 4. SET UP UI ELEMENTS
+        //TEMPORARY
+        drawingAreaPane.setOnMouseMoved(event -> {
+            mouseText.setText("("+String.valueOf(event.getX()).substring(0,3)+","+String.valueOf(event.getY()).substring(0,3)+")");
+        });
+
         // Set button actions
         addWireBtn.setOnAction(_-> {drawingTool.setCurrentAction("place-wire");});
         addResistorBtn.setOnAction(_->drawingTool.setCurrentAction("place-resistor"));
         addBatteryBtn.setOnAction(_->drawingTool.setCurrentAction("place-battery"));
         addCapacitorBtn.setOnAction(_->drawingTool.setCurrentAction("place-capacitor"));
         addSwitchBtn.setOnAction(_->drawingTool.setCurrentAction("place-switch"));
-
         clearBtn.setOnAction(_-> {
             drawingArea.circuit.print();
             drawingArea.circuit.clear();
@@ -227,6 +237,12 @@ public class MainAppFXMLController {
 
         lineChart.getData().add(series);
         return lineChart;
+    }
+
+    @FXML
+    private void menuSelectBtnPressed() {
+        System.out.println("select pressed");
+        drawingTool.setCurrentAction("edit");
     }
 
 }

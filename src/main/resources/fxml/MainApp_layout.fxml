@@ -51,6 +51,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
 <VBox fx:id="window" alignment="TOP_CENTER" nodeOrientation="LEFT_TO_RIGHT" prefHeight="400.0" prefWidth="725.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
     <MenuBar fx:id="menuBar" prefHeight="25.0" prefWidth="705.0" VBox.vgrow="NEVER">
@@ -110,6 +111,7 @@
             <MenuItem fx:id="menuPaste" mnemonicParsing="false" text="Paste" />
             <MenuItem fx:id="menuDelete" mnemonicParsing="false" text="Delete" />
             <SeparatorMenuItem mnemonicParsing="false" />
+         <MenuItem fx:id="menuSelect" mnemonicParsing="false" onAction="#menuSelectBtnPressed" text="Select" />
             <MenuItem fx:id="menuSelectAll" mnemonicParsing="false" text="Select All" />
             <MenuItem fx:id="menuUnselectAll" mnemonicParsing="false" text="Unselect All" />
         </Menu>
@@ -138,7 +140,10 @@
                         </HBox>
                     </AnchorPane>
                 </ScrollPane>
-                <Pane fx:id="drawingAreaPane" prefHeight="428.0" prefWidth="624.0" style="-fx-background-color: #5555;" />
+                <Pane fx:id="drawingAreaPane" prefHeight="428.0" prefWidth="624.0" style="-fx-background-color: #5555;">
+               <children>
+                  <Text fx:id="mouseText" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="(000,000)" wrappingWidth="87.65625" />
+               </children></Pane>
             </VBox>
         </AnchorPane>
         <AnchorPane fx:id="rightPanel" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
