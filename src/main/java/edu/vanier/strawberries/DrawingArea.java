@@ -5,10 +5,12 @@ import edu.vanier.strawberries.Components.*;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.animation.PathTransition;
+import javafx.scene.shape.Line;
+import javafx.util.Duration;
+import javafx.scene.shape.Circle;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -35,21 +37,21 @@ public class DrawingArea extends Pane {
     }
 
     private void mousePressed(MouseEvent event) {
-        if(!Objects.equals(drawingTool.getCurrentAction(),"")) {
+        if (!Objects.equals(drawingTool.getCurrentAction(), "")) {
             drawingTool.setPencilDown(true);
             Node eventLocation = new Node(event.getX(), event.getY());
             Node tempEnd = new Node(event.getX(), event.getY());
             switch (drawingTool.getCurrentAction()) {
                 case "place-wire" -> selection = new Wire(eventLocation, tempEnd, drawingTool.defaultColor, 0, 0);
-                case "place-battery" -> selection = new Battery(eventLocation,tempEnd, 12);
-                case "place-capacitor" -> selection = new Capacitor(eventLocation,tempEnd,0,true,false);
-                case "place-fuse" -> selection = new Fuse(eventLocation,tempEnd);
-                case "place-lightbulb" -> selection = new Lightbulb(eventLocation,tempEnd);
-                case "place-resistor" -> selection = new Resistor(eventLocation,tempEnd,100);
-                case "place-switch" -> selection = new Switch(eventLocation,tempEnd,false);
+                case "place-battery" -> selection = new Battery(eventLocation, tempEnd, 12);
+                case "place-capacitor" -> selection = new Capacitor(eventLocation, tempEnd, 0, true, false);
+                case "place-fuse" -> selection = new Fuse(eventLocation, tempEnd);
+                case "place-lightbulb" -> selection = new Lightbulb(eventLocation, tempEnd);
+                case "place-resistor" -> selection = new Resistor(eventLocation, tempEnd, 100);
+                case "place-switch" -> selection = new Switch(eventLocation, tempEnd, false);
                 case "edit" -> editHandler(event);
             }
-            if(!Objects.equals(drawingTool.getCurrentAction(), "edit")) {
+            if (!Objects.equals(drawingTool.getCurrentAction(), "edit")) {
                 selection.setX(selection.begin.getX());
                 selection.setY(selection.begin.getY());
                 pane.getChildren().add(selection);
@@ -68,11 +70,11 @@ public class DrawingArea extends Pane {
     }
 
     private void mouseReleased(MouseEvent event) {
-        if(selection!=null) {
+        if (selection != null) {
             if (drawingTool.isPencilDown()) {
                 drawingTool.setPencilDown(false);
                 attemptConnection(selection, selection.end);
-                System.out.println("End node: ("+ selection.end.getX()+","+selection.end.getY()+")");
+                System.out.println("End node: (" + selection.end.getX() + "," + selection.end.getY() + ")");
                 selection = null;
             }
         }
@@ -80,25 +82,25 @@ public class DrawingArea extends Pane {
 
     private void attemptConnection(Component toCheck, Node node) {
         int srcIndex = circuit.getIndex(toCheck);
-        Point2D checkPoint = new Point2D(node.getX(),node.getY());
+        Point2D checkPoint = new Point2D(node.getX(), node.getY());
         ArrayList<Node> connectedNodes = new ArrayList<>();
         connectedNodes.add(node);
 
-        for(LinkedList<Component> currentList:circuit.arrayList) {
-            for(Component connectedComponent:currentList) {
+        for (LinkedList<Component> currentList : circuit.arrayList) {
+            for (Component connectedComponent : currentList) {
                 int dstIndex = circuit.getIndex(connectedComponent);
 
                 //Check edge and update drawings
                 Point2D componentBegin = new Point2D(connectedComponent.begin.getX(), connectedComponent.begin.getY());
                 Point2D componentEnd = new Point2D(connectedComponent.end.getX(), connectedComponent.end.getY());
-                if(componentBegin.distance(checkPoint)<=20) {
+                if (componentBegin.distance(checkPoint) <= 20) {
                     connectedNodes.add(connectedComponent.begin);
                 }
-                if(componentEnd.distance(checkPoint)<=20) {
+                if (componentEnd.distance(checkPoint) <= 20) {
                     connectedNodes.add(connectedComponent.end);
                 }
 
-                for(int i=1;i<connectedNodes.size();i++) {
+                for (int i = 1; i < connectedNodes.size(); i++) {
                     if (!circuit.checkEdge(srcIndex, dstIndex)) circuit.addEdge(srcIndex, dstIndex);
                     connectedNodes.get(i).setPosition(node.getX(), node.getY());
                 }
@@ -111,4 +113,40 @@ public class DrawingArea extends Pane {
     private void editHandler(MouseEvent event) {
 
     }
-}
+
+    public void animateCurrentFlow(boolean b) {
+        for (LinkedList<Component> list : circuit.arrayList) {
+            for (Component c : list) {
+                if (c instanceof Wire wire) {
+                    // TODO: Only animate wires where wire.hasCurrent() returns true
+                    // if (!wire.hasCurrent()) continue;
+
+                    Circle currentDot = new Circle(5, Color.RED);
+                    pane.getChildren().add(currentDot);
+
+                    Line path = new Line(
+                            wire.begin.getX(), wire.begin.getY(),
+                            wire.end.getX(), wire.end.getY()
+                    );
+
+                    PathTransition transition = new PathTransition();
+                    transition.setNode(currentDot);
+                    transition.setPath(path);
+                    transition.setDuration(Duration.seconds(1));
+                    transition.setCycleCount(PathTransition.INDEFINITE);
+                    transition.setAutoReverse(false);
+                    transition.play();
+
+                } else {
+
+                            // TODO: Stop the transition and remove the animated dot
+
+
+                            }
+                        }
+                    }
+
+                }
+            }
+
+

@@ -1,6 +1,7 @@
 package edu.vanier.strawberries.Components;
 import edu.vanier.strawberries.Component;
 import edu.vanier.strawberries.Node;
+import javafx.animation.PathTransition;
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.effect.ColorAdjust;
@@ -8,6 +9,7 @@ import javafx.scene.effect.Effect;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.transform.Rotate;
 import javafx.scene.paint.Color;
 import java.util.Objects;
@@ -16,7 +18,10 @@ public class Wire extends Component {
     private ColorAdjust color;
     private double current;
     private double voltage;
-    private double resistance; 
+    private double resistance;
+
+    private PathTransition transition; // To store the transition for animation
+    private Circle animatedDot; // To store the animated dot representing current
 
     public Wire(Node begin, Node end, ColorAdjust color, double current, double voltage) {
         super(begin, end);
@@ -81,12 +86,29 @@ public class Wire extends Component {
         });
     }
 
+    public PathTransition getTransition() {
+        return transition;
+    }
+
+    public void setTransition(PathTransition transition) {
+        this.transition = transition;
+    }
+
+    public Circle getAnimatedDot() {
+        return animatedDot;
+    }
+
+    public void setAnimatedDot(Circle animatedDot) {
+        this.animatedDot = animatedDot;
+    }
+
+    // Getter and Setter for the current properties
     public ColorAdjust getColor() {
         return color;
     }
 
     public boolean hasCurrent() {
-        return current > 0;  // Simple check: if current is greater than 0, it has current :)
+        return current > 0;  // If current is greater than 0, it has current
     }
 
     public double getCurrent() {
@@ -100,18 +122,16 @@ public class Wire extends Component {
     public void setVoltage(double voltage) {
         this.voltage = voltage;
     }
-    
-    // Setter for the resistance of the wire
+
     public void setResistance(double resistance) {
         this.resistance = resistance;
     }
 
-    // Calculate current based on Ohm's Law
     public void calculateCurrent() {
         if (resistance != 0) {
-            this.current = voltage / resistance; 
+            this.current = voltage / resistance;
         } else {
-            this.current = 0; 
+            this.current = 0;
         }
     }
 }

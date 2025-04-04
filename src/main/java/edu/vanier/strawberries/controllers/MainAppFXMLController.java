@@ -189,9 +189,15 @@ public class MainAppFXMLController {
         runStopBtn.setText("Run");
         runStopBtn.setOnAction(_ -> {
             animationRunning = !animationRunning;
-            if(animationRunning) runStopBtn.setText("Stop");
-            else runStopBtn.setText("Run");
+            if (animationRunning) {
+                runStopBtn.setText("Stop");
+                drawingArea.animateCurrentFlow(true); // Start animation
+            } else {
+                runStopBtn.setText("Run");
+                drawingArea.animateCurrentFlow(false);
+            }
         });
+
 
     }
 
