@@ -17,6 +17,9 @@ public class Battery extends Component {
     private boolean startPolarity;
     private boolean endPolarity;
     private ImageView batteryImageView;
+    private double mouseOffsetX;
+    private double mouseOffsetY;
+
 
     public Battery(Node begin, Node end, double potential) {
         super(begin, end);
@@ -36,6 +39,28 @@ public class Battery extends Component {
 
         this.setX(begin.getX());
         this.setY(begin.getY());
+
+       enableDragAndRotate(); // create a method for the drag and rotate
+    }
+    public void enableDragAndRotate() {
+        this.setOnMousePressed(e -> { // stores information as to where the mouse is from the image's corner
+            mouseOffsetX = e.getSceneX() - this.getLayoutX();
+            mouseOffsetY = e.getSceneY() - this.getLayoutY();
+            e.consume();
+        });
+
+        this.setOnMouseDragged(e -> { // calculates angle between components center and the mouse location
+            if (e.isSecondaryButtonDown()) { // the right mouse button
+                double centerX = this.getLayoutX() + this.getBoundsInParent().getWidth() / 2;
+                double centerY = this.getLayoutY() + this.getBoundsInParent().getHeight() / 2;
+                double angle = Math.toDegrees(Math.atan2(e.getSceneY() - centerY, e.getSceneX() - centerX));
+                this.setRotate(angle); // rotates using trig
+            } else { // based on where the mouse moved
+                this.setLayoutX(e.getSceneX() - mouseOffsetX);
+                this.setLayoutY(e.getSceneY() - mouseOffsetY);
+            }
+            e.consume(); // basically makes it so that only the battery moves
+        });
     }
 
     public double getPotential() {

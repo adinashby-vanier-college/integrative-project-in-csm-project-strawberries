@@ -69,5 +69,8 @@ public abstract class Component extends ImageView {
     public ArrayList<Component> getChildren() {
         return children;
     }
+
+    public void enableDragAndRotate() {
+    }
 }
 

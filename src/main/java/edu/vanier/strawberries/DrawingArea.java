@@ -11,7 +11,7 @@ import javafx.animation.PathTransition;
 import javafx.scene.shape.Line;
 import javafx.util.Duration;
 import javafx.scene.shape.Circle;
-
+import java.util.Stack;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Objects;
@@ -90,13 +90,20 @@ public class DrawingArea extends Pane {
             if (drawingTool.isPencilDown()) {
                 drawingTool.setPencilDown(false);
                 attemptConnection(selection, selection.end);
-                System.out.println("End node: (" + selection.end.getX() + "," + selection.end.getY() + ")");
+
+                // Enable dragging and rotating if it's draggable
+                if (selection instanceof Battery battery) {
+                    battery.enableDragAndRotate();
+                } else if (selection instanceof Switch sw) {
+                    sw.enableDragAndRotate(); // Do the same for others
+                }
+
                 selection = null;
             }
         }
     }
 
-   private void attemptConnection(Component toCheck, Node node) {
+    private void attemptConnection(Component toCheck, Node node) {
     int srcIndex = circuit.getIndex(toCheck);
     Point2D checkPoint = new Point2D(node.getX(), node.getY());
     ArrayList<Node> connectedNodes = new ArrayList<>();
