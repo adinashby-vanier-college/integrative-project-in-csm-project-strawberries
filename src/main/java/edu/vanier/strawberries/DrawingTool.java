@@ -5,13 +5,13 @@ import javafx.scene.paint.Color;
 
 public class DrawingTool {
 
-    protected ColorAdjust defaultColor = new ColorAdjust();
+    public Color defaultColor;
     private String currentAction;
     private boolean pencilDown;
 
     public DrawingTool() {
         currentAction = "";
-        setColor(Color.BLACK);
+        defaultColor = Color.BLACK;
     }
 
     public void setCurrentAction(String currentAction) {
@@ -22,14 +22,12 @@ public class DrawingTool {
         return currentAction;
     }
 
-    public void setColor(Color target) {
+    public ColorAdjust generateColorAdjust(Color target) {
         double hue = -1+((target.getHue()+ (target.getHue()>180 ? -180 : 180))*2)/360;
         double brightness = target.getBrightness()-1;
         double saturation = target.getSaturation();
 
-        defaultColor.setHue(hue);
-        defaultColor.setBrightness(brightness);
-        defaultColor.setSaturation(saturation);
+        return new ColorAdjust(hue,saturation,brightness,1);
     }
 
     public void setPencilDown(boolean down) {

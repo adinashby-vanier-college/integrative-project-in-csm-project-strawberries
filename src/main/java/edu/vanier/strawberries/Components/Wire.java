@@ -1,69 +1,94 @@
 package edu.vanier.strawberries.Components;
-
 import edu.vanier.strawberries.Component;
 import edu.vanier.strawberries.Node;
 import javafx.animation.PathTransition;
-import javafx.geometry.Point2D;
 import javafx.scene.control.Label;
-import javafx.scene.effect.ColorAdjust;
-import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.transform.Rotate;
+import javafx.scene.shape.Line;
 
-import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class Wire extends Component {
-    private ColorAdjust color;
+    private Color color;
     private double current;
     private double voltage;
     private double resistance;
-
+    private Line line;
+    private Circle markerBegin, markerEnd;
+    private final AtomicReference<String> toMove;
     private PathTransition transition;
     private Circle animatedDot;
 
     // Used to track the info label
     private Label infoLabel;
 
-    public Wire(Node begin, Node end, ColorAdjust color, double current, double voltage) {
+    public Wire(Node begin, Node end, Color color, double current, double voltage) {
         super(begin, end);
         this.color = color;
         this.current = current;
         this.voltage = voltage;
-        DIAGRAM_DISPLAY = new Image(Objects.requireNonNull(getClass().getResource("/images/line.png")).toExternalForm());
-        setFitWidth(0);
-        display = DIAGRAM_DISPLAY;
-        this.setEffect(color);
-        this.setImage(display);
+        toMove = new AtomicReference<>(null);
     }
 
     @Override
     public void draw() {
-        setX(begin.getX());
-        setY(begin.getY());
+        getChildren().clear();
 
-        double x = end.getX() - begin.getX();
-        double y = end.getY() - begin.getY();
+        line = new Line(begin.getX(), begin.getY(), end.getX(), end.getY());
+        line.setFill(color);
+        line.setStrokeWidth(4);
+        getChildren().add(line);
 
-        double angle = Math.toDegrees(Math.atan(y / x));
-        if (begin.getX() > end.getX()) {
-            if (begin.getY() < end.getY()) angle = 180 + angle;
-            else angle = -180 + angle;
+        double minX = Math.min(begin.getX(), end.getX());
+        double maxX = Math.max(begin.getX(), end.getX());
+        double minY = Math.min(begin.getY(), end.getY());
+        double maxY = Math.max(begin.getY(), end.getY());
+
+        if (selected) {
+            markerBegin = new Circle(3, Color.WHITE);
+            markerEnd = new Circle(3, Color.WHITE);
+
+            if (toMove.get() == null) toMove.set("full");
+            markerBegin.addEventHandler(MouseEvent.MOUSE_PRESSED, _ -> toMove.set("begin"));
+            markerEnd.addEventHandler(MouseEvent.MOUSE_PRESSED, _ -> toMove.set("end"));
+            line.addEventHandler(MouseEvent.MOUSE_PRESSED, _ -> toMove.set("full"));
+
+            getChildren().addAll(markerBegin, markerEnd);
+
+            markerBegin.setTranslateX(((minX == begin.getX()) ? -Math.abs(maxX - minX) / 2 : Math.abs(maxX - minX) / 2));
+            markerBegin.setTranslateY(((minY == begin.getY()) ? -Math.abs(maxY - minY) / 2 : Math.abs(maxY - minY) / 2));
+            markerEnd.setTranslateX(((minX == end.getX()) ? -Math.abs(maxX - minX) / 2 : Math.abs(maxX - minX) / 2));
+            markerEnd.setTranslateY(((minY == end.getY()) ? -Math.abs(maxY - minY) / 2 : Math.abs(maxY - minY) / 2));
         }
 
-        double width = Math.sqrt(x * x + y * y);
-        setFitWidth(width);
+        //set layout x and y
+        setLayoutX(minX);
+        setLayoutY(minY);
 
-        Rotate rotate = new Rotate(angle, begin.getX(), begin.getY());
-        getTransforms().clear();
-        getTransforms().add(rotate);
+//        // calculate angle of rotation
+//        double x = end.getX() - begin.getX();
+//        double y = end.getY() - begin.getY();
+//
+//        double angle = Math.toDegrees(Math.atan(y / x));
+//        if (begin.getX() > end.getX()) {
+//            if (begin.getY() < end.getY()) angle = 180 + angle;
+//            else angle = -180 + angle;
+//        }
+//
+//        double width = Math.sqrt(x * x + y * y);
+//        setFitWidth(width);
+//        Rotate rotate = new Rotate(angle,begin.getX(), begin.getY());
+//        getTransforms().clear();
+//        getTransforms().add(rotate);
     }
 
     @Override
     public void handleEdit(MouseEvent event) {
-        System.out.println(this + " has been clicked");
+        selected = true;
+        draw();
 
         Pane parentPane = (Pane) this.getParent();
         if (parentPane == null) return;
@@ -78,7 +103,6 @@ public class Wire extends Component {
         // Create and style the label
         infoLabel = new Label("V: " + getVoltage() + " V\nI: " + getCurrent() + " A");
         infoLabel.setStyle("-fx-background-color: white; -fx-border-color: black; -fx-padding: 4px; -fx-font-size: 10px;");
-
         // Position it near the wire's midpoint
         double midX = (begin.getX() + end.getX()) / 2;
         double midY = (begin.getY() + end.getY()) / 2;
@@ -87,32 +111,47 @@ public class Wire extends Component {
 
         parentPane.getChildren().add(infoLabel);
 
-        // Allow dragging/modifying the wire
-        this.setOnMouseDragged(e -> {
-            Point2D origin = new Point2D(e.getX(), e.getY());
-            boolean editBegin = (origin.distance(new Point2D(begin.getX(), begin.getY())) <= 20);
-            boolean editEnd = (origin.distance(new Point2D(end.getX(), end.getY())) <= 20);
-
-            if (editBegin) begin.setPosition(e.getX(), e.getY());
-            else if (editEnd) end.setPosition(e.getX(), e.getY());
-            else {
-                this.setLayoutX(e.getX());
-                this.setLayoutY(e.getY());
+        switch (toMove.get()) {
+            case "begin" -> {
+                markerBegin.setLayoutX(event.getX() - line.getLayoutBounds().getWidth() / 2);
+                markerBegin.setLayoutY(event.getY() - line.getLayoutBounds().getHeight() / 2);
             }
-
-            this.draw();
-
-            // Move the label with the wire if it's showing
-            if (infoLabel != null) {
-                double newMidX = (begin.getX() + end.getX()) / 2;
-                double newMidY = (begin.getY() + end.getY()) / 2;
-                infoLabel.setLayoutX(newMidX + 10);
-                infoLabel.setLayoutY(newMidY - 10);
+            case "end" -> {
+                markerEnd.setLayoutX(event.getX() - line.getLayoutBounds().getWidth() / 2);
+                markerEnd.setLayoutY(event.getY() - line.getLayoutBounds().getHeight() / 2);
             }
-        });
+            case "full" -> {
+                setLayoutX(Math.min(begin.getX(), end.getX()));
+                setLayoutY(Math.min(begin.getY(), end.getY()));
+            }
+            default -> selected = false;
+        }
+
+//        // Allow dragging/modifying the wire
+//        this.setOnMouseDragged(e -> {
+//            Point2D origin = new Point2D(e.getX(), e.getY());
+//            boolean editBegin = (origin.distance(new Point2D(begin.getX(), begin.getY())) <= 20);
+//            boolean editEnd = (origin.distance(new Point2D(end.getX(), end.getY())) <= 20);
+//
+//            if (editBegin) begin.setPosition(e.getX(), e.getY());
+//            else if (editEnd) end.setPosition(e.getX(), e.getY());
+//            else {
+//                this.setLayoutX(e.getX());
+//                this.setLayoutY(e.getY());
+//            }
+//            this.draw();
+
+        // Move the label with the wire if it's showing
+        if (infoLabel != null) {
+            double newMidX = (begin.getX() + end.getX()) / 2;
+            double newMidY = (begin.getY() + end.getY()) / 2;
+            infoLabel.setLayoutX(newMidX + 10);
+            infoLabel.setLayoutY(newMidY - 10);
+        }
+//        });
+        this.draw();
     }
 
-  
     public PathTransition getTransition() {
         return transition;
     }
@@ -129,9 +168,13 @@ public class Wire extends Component {
         this.animatedDot = animatedDot;
     }
 
-  
-    public ColorAdjust getColor() {
+
+    public Color getColor() {
         return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 
     public boolean hasCurrent() {
@@ -153,6 +196,7 @@ public class Wire extends Component {
     public void setResistance(double resistance) {
         this.resistance = resistance;
     }
+
     public void setCurrent(double current) {
     this.current = current;
 }

@@ -135,7 +135,7 @@ public class MainAppFXMLController {
         defaultWireColorPicker.setOnAction(_ -> {
             Color pickedColor = defaultWireColorPicker.getValue();
             if(pickedColor==null) pickedColor = Color.BLACK;
-            drawingTool.setColor(pickedColor);
+            drawingTool.defaultColor = pickedColor;
         });
         polarityCheckBox.setOnAction(_-> {
             if (polarityCheckBox.isSelected()) {

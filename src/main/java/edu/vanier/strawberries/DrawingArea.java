@@ -12,6 +12,7 @@ import javafx.scene.shape.Line;
 import javafx.util.Duration;
 import javafx.scene.shape.Circle;
 import java.util.Stack;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Objects;
@@ -36,47 +37,42 @@ public class DrawingArea extends Pane {
         drawingTool.setCurrentAction("");
     }
 
-  private void mousePressed(MouseEvent event) {
-    if (!Objects.equals(drawingTool.getCurrentAction(), "")) {
-        drawingTool.setPencilDown(true);
-        Node eventLocation = new Node(event.getX(), event.getY());
-        Node tempEnd = new Node(event.getX(), event.getY());
-        switch (drawingTool.getCurrentAction()) {
-            case "place-wire" -> selection = new Wire(eventLocation, tempEnd, drawingTool.defaultColor, 0, 0);
-            case "place-battery" -> selection = new Battery(eventLocation, tempEnd, 12);
-            case "place-capacitor" -> selection = new Capacitor(eventLocation, tempEnd, 0, true, false);
-            case "place-fuse" -> selection = new Fuse(eventLocation, tempEnd);
-            case "place-lightbulb" -> selection = new Lightbulb(eventLocation, tempEnd);
-            case "place-resistor" -> selection = new Resistor(eventLocation, tempEnd, 100);
-            case "place-switch" -> selection = new Switch(eventLocation, tempEnd, false);
-        }
-
-        selection.setX(selection.begin.getX());
-        selection.setY(selection.begin.getY());
-        pane.getChildren().add(selection);
-        circuit.addComponent(selection);
-        attemptConnection(selection, selection.begin);
-        selection.draw();
-        circuit.print();
-    } else {
-        
-        for (LinkedList<Component> list : circuit.arrayList) {
-            Component comp = list.getFirst();
-
-            if (comp.getBoundsInParent().contains(event.getX(), event.getY())) {
-                if (comp instanceof Wire wire) {
-                    wire.handleEdit(event);
-                } else if (comp instanceof Battery battery) {
-                    battery.handleEdit(event); 
-                } else if (comp instanceof Resistor resistor) {
-                 
-                    System.out.println("Resistor clicked: V = " + resistor.getVoltage() + ", I = " + resistor.getCurrent());
+    private void mousePressed(MouseEvent event) {
+        if(!Objects.equals(drawingTool.getCurrentAction(),"")) {
+            drawingTool.setPencilDown(true);
+            Node eventLocation = new Node(event.getX(), event.getY());
+            Node tempEnd = new Node(event.getX(), event.getY());
+            switch (drawingTool.getCurrentAction()) {
+                case "place-wire" -> selection = new Wire(eventLocation, tempEnd, drawingTool.defaultColor, 0, 0);
+                case "place-battery" -> selection = new Battery(eventLocation,tempEnd, 12);
+                case "place-capacitor" -> selection = new Capacitor(eventLocation,tempEnd,0,true,false);
+                case "place-fuse" -> selection = new Fuse(eventLocation,tempEnd);
+                case "place-lightbulb" -> selection = new Lightbulb(eventLocation,tempEnd);
+                case "place-resistor" -> selection = new Resistor(eventLocation,tempEnd,100);
+                case "place-switch" -> selection = new Switch(eventLocation,tempEnd,false);
+                case "edit" -> {
+                    Point2D clickedAt = new Point2D(event.getX(),event.getY());
+                    for(LinkedList<Component> list : circuit.arrayList) {
+                        for(Component current : list) {
+                            if (current.intersects(event.getX(),event.getY(),100,100)) {
+                                selection = current;
+                            }
+                        }
+                    }
+                    System.out.println("SELECTION: "+selection);
                 }
-                break;
+                default -> {}
+            }
+            if(!Objects.equals(drawingTool.getCurrentAction(), "edit")) {
+                selection.setLayoutX(selection.begin.getX());
+                selection.setLayoutY(selection.begin.getY());
+                pane.getChildren().add(selection);
+                circuit.addComponent(selection);
+                attemptConnection(selection, selection.begin);
+                selection.draw();
             }
         }
     }
-}
 
     private void mouseDragged(MouseEvent event) {
         if (drawingTool.isPencilDown() && selection != null) {
@@ -113,9 +109,9 @@ public class DrawingArea extends Pane {
         for (Component connectedComponent : currentList) {
             int dstIndex = circuit.getIndex(connectedComponent);
 
-            
+
             if (connectedComponent instanceof Battery battery) {
-                battery.snapNearbyNode(node); 
+                battery.snapNearbyNode(node);
             }
             Point2D componentBegin = new Point2D(connectedComponent.begin.getX(), connectedComponent.begin.getY());
             Point2D componentEnd = new Point2D(connectedComponent.end.getX(), connectedComponent.end.getY());

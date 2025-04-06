@@ -6,7 +6,6 @@ import javafx.geometry.Point2D;
 import javafx.scene.layout.Pane;
 import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
-
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 
@@ -16,7 +15,7 @@ public class Battery extends Component {
     private double potential;
     private boolean startPolarity;
     private boolean endPolarity;
-    private ImageView batteryImageView;
+    private final ImageView batteryImageView;
     private double mouseOffsetX;
     private double mouseOffsetY;
 
@@ -28,17 +27,13 @@ public class Battery extends Component {
         this.endPolarity = false;
 
         Image batteryImage = new Image(Objects.requireNonNull(getClass().getResource("/images/battery_diagram.png")).toExternalForm());
-        this.setImage(batteryImage);
-        this.display = batteryImage;
-        this.DIAGRAM_DISPLAY = batteryImage;
-        this.batteryImageView = new ImageView(batteryImage);
+        DIAGRAM_DISPLAY = batteryImage;
+        display.setImage(batteryImage);
+        batteryImageView = new ImageView(batteryImage);
 
-       
-        this.setFitWidth(100);
-        this.setPreserveRatio(true);
 
-        this.setX(begin.getX());
-        this.setY(begin.getY());
+        display.setFitWidth(100);
+        display.setPreserveRatio(true);
 
        enableDragAndRotate(); // create a method for the drag and rotate
     }
@@ -63,32 +58,39 @@ public class Battery extends Component {
         });
     }
 
+    // Getter for potential (voltage)
     public double getPotential() {
         return potential;
     }
 
+    // Getter for polarity of the start (positive side)
     public boolean getStartPolarity() {
         return startPolarity;
     }
 
+    // Getter for polarity of the end (negative side)
     public boolean getEndPolarity() {
         return endPolarity;
     }
 
+    // Set the polarity of the start (positive side)
     public void setStartPolarity(boolean polarity) {
         this.startPolarity = polarity;
     }
 
+    // Set the polarity of the end (negative side)
     public void setEndPolarity(boolean polarity) {
         this.endPolarity = polarity;
     }
 
+    // Swap the start and end polarities
     public void swapPolarity() {
         boolean temp = startPolarity;
         startPolarity = endPolarity;
         endPolarity = temp;
     }
 
+    
     @Override
     public Image getSymbol() {
         return batteryImageView.getImage();
@@ -100,9 +102,10 @@ public class Battery extends Component {
         double deltaY = end.getY() - begin.getY();
         double angle = Math.toDegrees(Math.atan2(deltaY, deltaX));
 
-        this.setRotate(angle);
-        this.setX(begin.getX());
-        this.setY(begin.getY());
+        // Set the rotation of the battery image based on the angle
+        display.setRotate(angle);
+        setLayoutX(begin.getX());
+        setLayoutY(begin.getY());
     }
 
     public ImageView getImageView() {
@@ -123,7 +126,7 @@ public class Battery extends Component {
         }
     }
 
- 
+
    @Override
 public void handleEdit(MouseEvent event) {
     javafx.scene.control.TextField inputField = new javafx.scene.control.TextField(String.valueOf(potential));
@@ -143,7 +146,7 @@ public void handleEdit(MouseEvent event) {
     inputField.requestFocus();
 
     // When user presses Enter or loses focus
-    inputField.setOnAction(e -> {
+    inputField.setOnAction(_ -> {
         updateVoltageFromField(inputField, parentPane);
     });
     inputField.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {

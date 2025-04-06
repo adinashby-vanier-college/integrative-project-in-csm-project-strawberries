@@ -4,10 +4,9 @@ import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
 
-import java.util.ArrayList;
-
-public abstract class Component extends ImageView {
+public abstract class Component extends StackPane {
 
     /**The first created Node of the element. If the element was generated using a button,
      * this will always be the left node.*/
@@ -16,13 +15,14 @@ public abstract class Component extends ImageView {
      * this will always be the right node.*/
     protected Node end;
     protected Image DIAGRAM_DISPLAY, IMAGE_DISPLAY;
-    public Image display;
-    private ArrayList<Component> children;
+    public ImageView display;
+    public boolean selected;
 
     public Component(Node begin, Node end) {
         this.begin = begin;
         this.end = end;
-        this.setOnMouseClicked(this::handleEdit);
+        addEventHandler(MouseEvent.MOUSE_PRESSED, this::handleEdit);
+        addEventHandler(MouseEvent.MOUSE_DRAGGED, this::handleDrag);
     }
 
     /**
@@ -49,7 +49,7 @@ public abstract class Component extends ImageView {
     /** @return the symbol/image of the component */
     public Image getSymbol() {
         return DIAGRAM_DISPLAY;
-    };
+    }
 
     public void setBegin(double x, double y) {
         this.begin.setPosition(x,y);
@@ -59,16 +59,14 @@ public abstract class Component extends ImageView {
 
     public void handleEdit(MouseEvent event) {}
 
+    public void handleDrag(MouseEvent event) {}
+
     // ABSTRACT methods for each component type
 
     /**
      * Show/Update the image of the component
      * */
     public abstract void draw();
-
-    public ArrayList<Component> getChildren() {
-        return children;
-    }
 
     public void enableDragAndRotate() {
     }
