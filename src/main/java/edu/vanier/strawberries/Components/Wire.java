@@ -1,17 +1,18 @@
 package edu.vanier.strawberries.Components;
+
 import edu.vanier.strawberries.Component;
 import edu.vanier.strawberries.Node;
 import javafx.animation.PathTransition;
 import javafx.geometry.Point2D;
-import javafx.geometry.Point3D;
+import javafx.scene.control.Label;
 import javafx.scene.effect.ColorAdjust;
-import javafx.scene.effect.Effect;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.transform.Rotate;
-import javafx.scene.paint.Color;
+
 import java.util.Objects;
 
 public class Wire extends Component {
@@ -20,8 +21,11 @@ public class Wire extends Component {
     private double voltage;
     private double resistance;
 
-    private PathTransition transition; // To store the transition for animation
-    private Circle animatedDot; // To store the animated dot representing current
+    private PathTransition transition;
+    private Circle animatedDot;
+
+    // Used to track the info label
+    private Label infoLabel;
 
     public Wire(Node begin, Node end, ColorAdjust color, double current, double voltage) {
         super(begin, end);
@@ -30,62 +34,85 @@ public class Wire extends Component {
         this.voltage = voltage;
         DIAGRAM_DISPLAY = new Image(Objects.requireNonNull(getClass().getResource("/images/line.png")).toExternalForm());
         setFitWidth(0);
-//        IMAGE_DISPLAY = new Image(Objects.requireNonNull(getClass().getResource("/com/example/fractal/images/imagename.png")).toExternalForm());
-        display = DIAGRAM_DISPLAY; //TODO update to take realistic images into account too
-        // Playing around with changing wire color!!
+        display = DIAGRAM_DISPLAY;
         this.setEffect(color);
         this.setImage(display);
     }
 
     @Override
     public void draw() {
-        //set layout x and y
         setX(begin.getX());
         setY(begin.getY());
 
-        // calculate angle of rotation
-        double x = end.getX()- begin.getX();
+        double x = end.getX() - begin.getX();
         double y = end.getY() - begin.getY();
-        double angle = Math.toDegrees(Math.atan(y/x)); // Only works for Q1 and Q4
-        if(begin.getX()>end.getX()) {
-            if(begin.getY()<end.getY()) angle = 180+angle; // Q3
-            else angle = -180+angle; // Q2
-        }
-        // calculate width
-        double width =  Math.sqrt(x*x + y*y);
 
-        // set x and y coords + width and height accordingly
+        double angle = Math.toDegrees(Math.atan(y / x));
+        if (begin.getX() > end.getX()) {
+            if (begin.getY() < end.getY()) angle = 180 + angle;
+            else angle = -180 + angle;
+        }
+
+        double width = Math.sqrt(x * x + y * y);
         setFitWidth(width);
-        Rotate rotate = new Rotate(angle,begin.getX(), begin.getY());
+
+        Rotate rotate = new Rotate(angle, begin.getX(), begin.getY());
         getTransforms().clear();
         getTransforms().add(rotate);
     }
 
     @Override
     public void handleEdit(MouseEvent event) {
-        System.out.println(this+" has been clicked");
-        System.out.println("Clicked: ("+event.getX()+","+event.getY()+")");
+        System.out.println(this + " has been clicked");
 
-        setOnMouseDragged(e -> {
-            System.out.println("Dragged: ("+e.getX()+","+e.getY()+")");
-            System.out.println("End: ("+end.getX()+","+end.getY()+")");
+        Pane parentPane = (Pane) this.getParent();
+        if (parentPane == null) return;
 
-            //Check if the mouse is on a Node
-            Point2D origin = new Point2D(e.getX(),e.getY());
-            boolean editBegin = (origin.distance(new Point2D(begin.getX(), begin.getY()))<=20);
-            boolean editEnd = (origin.distance(new Point2D(end.getX(), end.getY()))<=20);
-            System.out.println("editBegin = "+editBegin+"\teditEnd = "+editEnd);
-            if(editBegin) begin.setPosition(e.getX(),e.getY());
-            else if(editEnd) end.setPosition(e.getX(),e.getY());
+        // Remove label if it already exists (toggle)
+        if (infoLabel != null && parentPane.getChildren().contains(infoLabel)) {
+            parentPane.getChildren().remove(infoLabel);
+            infoLabel = null;
+            return;
+        }
+
+        // Create and style the label
+        infoLabel = new Label("V: " + getVoltage() + " V\nI: " + getCurrent() + " A");
+        infoLabel.setStyle("-fx-background-color: white; -fx-border-color: black; -fx-padding: 4px; -fx-font-size: 10px;");
+
+        // Position it near the wire's midpoint
+        double midX = (begin.getX() + end.getX()) / 2;
+        double midY = (begin.getY() + end.getY()) / 2;
+        infoLabel.setLayoutX(midX + 10);
+        infoLabel.setLayoutY(midY - 10);
+
+        parentPane.getChildren().add(infoLabel);
+
+        // Allow dragging/modifying the wire
+        this.setOnMouseDragged(e -> {
+            Point2D origin = new Point2D(e.getX(), e.getY());
+            boolean editBegin = (origin.distance(new Point2D(begin.getX(), begin.getY())) <= 20);
+            boolean editEnd = (origin.distance(new Point2D(end.getX(), end.getY())) <= 20);
+
+            if (editBegin) begin.setPosition(e.getX(), e.getY());
+            else if (editEnd) end.setPosition(e.getX(), e.getY());
             else {
-                //Find displacement vector
                 this.setLayoutX(e.getX());
                 this.setLayoutY(e.getY());
             }
+
             this.draw();
+
+            // Move the label with the wire if it's showing
+            if (infoLabel != null) {
+                double newMidX = (begin.getX() + end.getX()) / 2;
+                double newMidY = (begin.getY() + end.getY()) / 2;
+                infoLabel.setLayoutX(newMidX + 10);
+                infoLabel.setLayoutY(newMidY - 10);
+            }
         });
     }
 
+    // Animation support
     public PathTransition getTransition() {
         return transition;
     }
@@ -102,13 +129,13 @@ public class Wire extends Component {
         this.animatedDot = animatedDot;
     }
 
-    // Getter and Setter for the current properties
+    // Voltage/Current methods
     public ColorAdjust getColor() {
         return color;
     }
 
     public boolean hasCurrent() {
-        return current > 0;  // If current is greater than 0, it has current
+        return current > 0;
     }
 
     public double getCurrent() {
