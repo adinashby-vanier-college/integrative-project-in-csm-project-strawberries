@@ -8,6 +8,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.transform.Rotate;
 
 import java.util.Objects;
 
@@ -98,12 +99,16 @@ public class Battery extends Component {
 
     @Override
     public void draw() {
-        double deltaX = end.getX() - begin.getX();
-        double deltaY = end.getY() - begin.getY();
-        double angle = Math.toDegrees(Math.atan2(deltaY, deltaX));
+//        double deltaX = end.getX() - begin.getX();
+//        double deltaY = end.getY() - begin.getY();
+//        double angle = Math.toDegrees(Math.atan2(deltaY, deltaX));
+
+        Rotate rotation = getAngleRotate();
 
         // Set the rotation of the battery image based on the angle
-        display.setRotate(angle);
+
+        display.getTransforms().clear();
+        display.getTransforms().add(rotation);
         setLayoutX(begin.getX());
         setLayoutY(begin.getY());
     }

@@ -5,6 +5,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
+import javafx.scene.transform.Rotate;
 
 public abstract class Component extends StackPane {
 
@@ -21,6 +22,7 @@ public abstract class Component extends StackPane {
     public Component(Node begin, Node end) {
         this.begin = begin;
         this.end = end;
+        display = new ImageView();
         addEventHandler(MouseEvent.MOUSE_PRESSED, this::handleEdit);
         addEventHandler(MouseEvent.MOUSE_DRAGGED, this::handleDrag);
     }
@@ -57,9 +59,36 @@ public abstract class Component extends StackPane {
 
     public void erase() {display=null;}
 
+    public void markAsSelected(boolean isSelected) {
+        selected = isSelected;
+        begin.setMarkerVisible(isSelected);
+        end.setMarkerVisible(isSelected);
+
+        if(isSelected) {
+            if(!getChildren().contains(begin.getMarker())) getChildren().add(begin.getMarker());
+            if(!getChildren().contains(end.getMarker())) getChildren().add(end.getMarker());
+        } else {
+            getChildren().removeAll(begin.getMarker(), end.getMarker());
+        }
+    }
+
     public void handleEdit(MouseEvent event) {}
 
     public void handleDrag(MouseEvent event) {}
+
+    public Rotate getAngleRotate() {
+        // calculate angle of rotation
+        double x = end.getX() - begin.getX();
+        double y = end.getY() - begin.getY();
+
+        double angle = Math.toDegrees(Math.atan(y / x));
+        if (begin.getX() > end.getX()) {
+            if (begin.getY() < end.getY()) angle = 180 + angle;
+            else angle = -180 + angle;
+        }
+
+        return new Rotate(angle,begin.getX(), begin.getY());
+    }
 
     // ABSTRACT methods for each component type
 

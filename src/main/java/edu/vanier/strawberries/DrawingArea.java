@@ -59,7 +59,10 @@ public class DrawingArea extends Pane {
                             }
                         }
                     }
-                    System.out.println("SELECTION: "+selection);
+                    if(selection==null) {
+                        //function that marks all Component instances as not selected
+                        unselectAll();
+                    }
                 }
                 default -> {}
             }
@@ -70,6 +73,15 @@ public class DrawingArea extends Pane {
                 circuit.addComponent(selection);
                 attemptConnection(selection, selection.begin);
                 selection.draw();
+            }
+        }
+    }
+
+    private void unselectAll() {
+        for(LinkedList<Component> ll : circuit.arrayList) {
+            for(Component current : ll) {
+                current.markAsSelected(false);
+                current.draw();
             }
         }
     }

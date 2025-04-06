@@ -17,7 +17,6 @@ public class Wire extends Component {
     private double voltage;
     private double resistance;
     private Line line;
-    private Circle markerBegin, markerEnd;
     private final AtomicReference<String> toMove;
     private PathTransition transition;
     private Circle animatedDot;
@@ -48,46 +47,28 @@ public class Wire extends Component {
         double maxY = Math.max(begin.getY(), end.getY());
 
         if (selected) {
-            markerBegin = new Circle(3, Color.WHITE);
-            markerEnd = new Circle(3, Color.WHITE);
 
             if (toMove.get() == null) toMove.set("full");
-            markerBegin.addEventHandler(MouseEvent.MOUSE_PRESSED, _ -> toMove.set("begin"));
-            markerEnd.addEventHandler(MouseEvent.MOUSE_PRESSED, _ -> toMove.set("end"));
+            begin.getMarker().addEventHandler(MouseEvent.MOUSE_PRESSED, _ -> toMove.set("begin"));
+            end.getMarker().addEventHandler(MouseEvent.MOUSE_PRESSED, _ -> toMove.set("end"));
             line.addEventHandler(MouseEvent.MOUSE_PRESSED, _ -> toMove.set("full"));
 
-            getChildren().addAll(markerBegin, markerEnd);
+            getChildren().addAll(begin.getMarker(), end.getMarker());
 
-            markerBegin.setTranslateX(((minX == begin.getX()) ? -Math.abs(maxX - minX) / 2 : Math.abs(maxX - minX) / 2));
-            markerBegin.setTranslateY(((minY == begin.getY()) ? -Math.abs(maxY - minY) / 2 : Math.abs(maxY - minY) / 2));
-            markerEnd.setTranslateX(((minX == end.getX()) ? -Math.abs(maxX - minX) / 2 : Math.abs(maxX - minX) / 2));
-            markerEnd.setTranslateY(((minY == end.getY()) ? -Math.abs(maxY - minY) / 2 : Math.abs(maxY - minY) / 2));
+            begin.getMarker().setTranslateX(((minX == begin.getX()) ? -Math.abs(maxX - minX) / 2 : Math.abs(maxX - minX) / 2));
+            begin.getMarker().setTranslateY(((minY == begin.getY()) ? -Math.abs(maxY - minY) / 2 : Math.abs(maxY - minY) / 2));
+            end.getMarker().setTranslateX(((minX == end.getX()) ? -Math.abs(maxX - minX) / 2 : Math.abs(maxX - minX) / 2));
+            end.getMarker().setTranslateY(((minY == end.getY()) ? -Math.abs(maxY - minY) / 2 : Math.abs(maxY - minY) / 2));
         }
 
         //set layout x and y
         setLayoutX(minX);
         setLayoutY(minY);
-
-//        // calculate angle of rotation
-//        double x = end.getX() - begin.getX();
-//        double y = end.getY() - begin.getY();
-//
-//        double angle = Math.toDegrees(Math.atan(y / x));
-//        if (begin.getX() > end.getX()) {
-//            if (begin.getY() < end.getY()) angle = 180 + angle;
-//            else angle = -180 + angle;
-//        }
-//
-//        double width = Math.sqrt(x * x + y * y);
-//        setFitWidth(width);
-//        Rotate rotate = new Rotate(angle,begin.getX(), begin.getY());
-//        getTransforms().clear();
-//        getTransforms().add(rotate);
     }
 
     @Override
     public void handleEdit(MouseEvent event) {
-        selected = true;
+        markAsSelected(true);
         draw();
 
         Pane parentPane = (Pane) this.getParent();
@@ -111,20 +92,22 @@ public class Wire extends Component {
 
         parentPane.getChildren().add(infoLabel);
 
+        System.out.println("TOMOVE: "+ toMove.get());
+
         switch (toMove.get()) {
             case "begin" -> {
-                markerBegin.setLayoutX(event.getX() - line.getLayoutBounds().getWidth() / 2);
-                markerBegin.setLayoutY(event.getY() - line.getLayoutBounds().getHeight() / 2);
+                begin.getMarker().setLayoutX(event.getX() - line.getLayoutBounds().getWidth() / 2);
+                begin.getMarker().setLayoutY(event.getY() - line.getLayoutBounds().getHeight() / 2);
             }
             case "end" -> {
-                markerEnd.setLayoutX(event.getX() - line.getLayoutBounds().getWidth() / 2);
-                markerEnd.setLayoutY(event.getY() - line.getLayoutBounds().getHeight() / 2);
+                end.getMarker().setLayoutX(event.getX() - line.getLayoutBounds().getWidth() / 2);
+                end.getMarker().setLayoutY(event.getY() - line.getLayoutBounds().getHeight() / 2);
             }
             case "full" -> {
                 setLayoutX(Math.min(begin.getX(), end.getX()));
                 setLayoutY(Math.min(begin.getY(), end.getY()));
             }
-            default -> selected = false;
+            default -> markAsSelected(false);
         }
 
 //        // Allow dragging/modifying the wire
