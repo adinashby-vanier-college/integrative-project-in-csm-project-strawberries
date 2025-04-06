@@ -4,16 +4,13 @@ import edu.vanier.strawberries.Component;
 import edu.vanier.strawberries.Node;
 import javafx.geometry.Point2D;
 import javafx.scene.layout.Pane;
-
 import javafx.scene.control.Alert;
-import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 
 import java.util.Objects;
-import java.util.Optional;
 
 public class Battery extends Component {
     private double potential;

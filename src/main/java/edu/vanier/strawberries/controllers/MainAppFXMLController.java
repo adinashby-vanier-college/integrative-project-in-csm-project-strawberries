@@ -187,16 +187,22 @@ public class MainAppFXMLController {
         });
 
         runStopBtn.setText("Run");
-        runStopBtn.setOnAction(_ -> {
-            animationRunning = !animationRunning;
-            if (animationRunning) {
-                runStopBtn.setText("Stop");
-                drawingArea.animateCurrentFlow(true); // Start animation
-            } else {
-                runStopBtn.setText("Run");
-                drawingArea.animateCurrentFlow(false);
-            }
-        });
+       runStopBtn.setOnAction(_ -> {
+    animationRunning = !animationRunning;
+    if (animationRunning) {
+        runStopBtn.setText("Stop");
+
+
+        edu.vanier.math.CircuitMath math = new edu.vanier.math.CircuitMath(drawingArea.circuit);
+        math.assignValuesToComponents();
+
+        drawingArea.animateCurrentFlow(true);
+    } else {
+        runStopBtn.setText("Run");
+        drawingArea.animateCurrentFlow(false);
+    }
+});
+
 
 
     }

@@ -34,11 +34,19 @@ public class CircuitMath {
     public List<Component> getTraversalPath() {
         Arrays.fill(visited, false);
         List<Component> path = new ArrayList<>();
-        dfs(0, path);
+
+        for (int i = 0; i < circuit.arrayList.size(); i++) {
+            Component c = circuit.arrayList.get(i).getFirst();
+            if (c instanceof Battery || circuit.arrayList.get(i).size() > 1) {
+                dfs(i, path);
+                break;
+            }
+        }
+
         return path;
     }
 
-    //  total resistance (series only for now)
+    // Total resistance (series only for now)
     public double getTotalResistance() {
         List<Component> path = getTraversalPath();
         double resistance = 0.0;
@@ -50,7 +58,7 @@ public class CircuitMath {
         return resistance;
     }
 
-    //  total voltage provided by all batteries
+    // Total voltage provided by all batteries
     public double getTotalVoltage() {
         List<Component> path = getTraversalPath();
         double voltage = 0.0;
@@ -71,24 +79,29 @@ public class CircuitMath {
 
     // Assigns voltage and current to each component
     public void assignValuesToComponents() {
-        double totalCurrent = getTotalCurrent(); 
+        double totalCurrent = getTotalCurrent();
+
+        System.out.println("⚡ Total voltage: " + getTotalVoltage() + " V");
+        System.out.println("⚡ Total current: " + totalCurrent + " A");
 
         for (LinkedList<Component> list : circuit.arrayList) {
             Component c = list.getFirst();
 
             if (c instanceof Wire wire) {
-                wire.setCurrent(totalCurrent);     
-                wire.setVoltage(0);                
+                wire.setCurrent(totalCurrent);
+                wire.setVoltage(0);
+                System.out.println(" Wire updated: I=" + wire.getCurrent());
             }
 
             if (c instanceof Resistor resistor) {
                 double R = resistor.getResistance();
                 resistor.setCurrent(totalCurrent);
-                resistor.setVoltage(totalCurrent * R); 
+                resistor.setVoltage(totalCurrent * R);
+                System.out.println(" Resistor updated: V=" + resistor.getVoltage() + ", I=" + resistor.getCurrent());
             }
 
             if (c instanceof Battery battery) {
-              
+                System.out.println(" Battery detected with potential: " + battery.getPotential() + " V");
             }
         }
     }
