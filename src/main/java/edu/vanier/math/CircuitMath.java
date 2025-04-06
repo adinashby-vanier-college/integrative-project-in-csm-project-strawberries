@@ -30,38 +30,66 @@ public class CircuitMath {
         }
     }
 
+    // Returns a list of components in order of connection
     public List<Component> getTraversalPath() {
         Arrays.fill(visited, false);
         List<Component> path = new ArrayList<>();
-        dfs(0, path); 
+        dfs(0, path);
         return path;
     }
 
+    //  total resistance (series only for now)
     public double getTotalResistance() {
         List<Component> path = getTraversalPath();
         double resistance = 0.0;
         for (Component c : path) {
             if (c instanceof Resistor r) {
-                resistance += r.getResistance(); 
+                resistance += r.getResistance();
             }
         }
         return resistance;
     }
 
+    //  total voltage provided by all batteries
     public double getTotalVoltage() {
         List<Component> path = getTraversalPath();
         double voltage = 0.0;
         for (Component c : path) {
             if (c instanceof Battery b) {
-                    voltage += b.getPotential();
+                voltage += b.getPotential();
             }
         }
         return voltage;
     }
 
+    // Computes total current using Ohm’s Law: I = V / R
     public double getTotalCurrent() {
         double R = getTotalResistance();
         double V = getTotalVoltage();
         return R == 0 ? 0 : V / R;
+    }
+
+    // Assigns voltage and current to each component
+    public void assignValuesToComponents() {
+        double totalCurrent = getTotalCurrent(); 
+
+        for (LinkedList<Component> list : circuit.arrayList) {
+            Component c = list.getFirst();
+
+            if (c instanceof Wire wire) {
+                wire.setCurrent(totalCurrent);     
+                wire.setVoltage(0);                
+            }
+
+            if (c instanceof Resistor resistor) {
+                double R = resistor.getResistance();
+                resistor.setCurrent(totalCurrent);
+                resistor.setVoltage(totalCurrent * R); 
+            }
+
+            if (c instanceof Battery battery) {
+              
+            }
+        }
     }
 }

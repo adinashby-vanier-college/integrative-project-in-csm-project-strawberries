@@ -112,7 +112,7 @@ public class Wire extends Component {
         });
     }
 
-    // Animation support
+  
     public PathTransition getTransition() {
         return transition;
     }
@@ -129,7 +129,7 @@ public class Wire extends Component {
         this.animatedDot = animatedDot;
     }
 
-    // Voltage/Current methods
+  
     public ColorAdjust getColor() {
         return color;
     }
@@ -153,6 +153,10 @@ public class Wire extends Component {
     public void setResistance(double resistance) {
         this.resistance = resistance;
     }
+    public void setCurrent(double current) {
+    this.current = current;
+}
+
 
     public void calculateCurrent() {
         if (resistance != 0) {

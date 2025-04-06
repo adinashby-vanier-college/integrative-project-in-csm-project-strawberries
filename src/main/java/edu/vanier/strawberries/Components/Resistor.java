@@ -6,7 +6,7 @@ import edu.vanier.strawberries.Node;
 public class Resistor extends Component {
     private double resistance; // The resistance value 
     private double current;    // The current flowing through the resistor
-
+    private double voltage;    // the voltage through the resistor
     // Constructor with resistance value
     public Resistor(Node begin, Node end, double resistance) {
         super(begin, end);
@@ -28,6 +28,21 @@ public class Resistor extends Component {
     public double getCurrent() {
         return current;
     }
+
+
+
+public void setCurrent(double current) {
+    this.current = current;
+}
+
+
+public void setVoltage(double voltage) {
+    this.voltage = voltage;
+}
+
+public double getVoltage() {
+    return voltage;
+}
 
 
     public void calculateCurrent(double voltage) {
