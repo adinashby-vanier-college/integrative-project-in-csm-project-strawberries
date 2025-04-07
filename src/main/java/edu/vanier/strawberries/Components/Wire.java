@@ -83,7 +83,8 @@ public class Wire extends Component {
 
         // Create and style the label
         infoLabel = new Label("V: " + getVoltage() + " V\nI: " + getCurrent() + " A");
-        infoLabel.setStyle("-fx-background-color: white; -fx-border-color: black; -fx-padding: 4px; -fx-font-size: 10px;");
+        infoLabel.setStyle("-fx-padding: 4px; -fx-font-size: 10px;");
+        infoLabel.getStyleClass().add("info-label");
         // Position it near the wire's midpoint
         double midX = (begin.getX() + end.getX()) / 2;
         double midY = (begin.getY() + end.getY()) / 2;

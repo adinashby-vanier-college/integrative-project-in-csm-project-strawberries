@@ -5,15 +5,24 @@
     -fx-focus-color: #ffe5ec;
     -fx-faint-focus-color: #ffe5ec44;
 
+    -fx-selection-bar: #d8f3dc;
+    -fx-selection-bar-non-focused: #c3e6cb;
+
     -fx-focused-text-base-color : ladder(
             -fx-selection-bar,
             #ffffff 45%,
-            #8b0000 46%,
+            #2e7d32 46%,
             #8b0000 59%,
-            #c94c66 60%
+            #4caf50 60%
     );
 
     -fx-focused-mark-color : -fx-focused-text-base-color;
+}
+
+.info-label {
+    -fx-background-color: white;
+    -fx-border-color: black;
+    -fx-text-fill: #333333;
 }
 
 .text-input:focused {

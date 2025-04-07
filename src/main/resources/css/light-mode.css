@@ -14,6 +14,12 @@
     -fx-focused-mark-color: -fx-focused-text-base-color;
 }
 
+.info-label {
+    -fx-background-color: white;
+    -fx-border-color: black;
+    -fx-text-fill: #333333;
+}
+
 .text-input:focused {
     -fx-highlight-text-fill: ladder(
             -fx-highlight-fill,
