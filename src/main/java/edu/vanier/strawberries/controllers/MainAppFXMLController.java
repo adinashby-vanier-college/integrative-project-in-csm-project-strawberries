@@ -26,6 +26,8 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Objects;
+
 /**
  * FXML controller class for the primary stage scene.
  *
@@ -71,6 +73,8 @@ public class MainAppFXMLController {
     @FXML
     MenuItem menuNew, menuOpen, menuSave, menuSaveAs, menuQuit, menuPreferences, menuShowToolbar, menuHideToolbar, menuThemes, menuFitToScreen, menuZoomIn, menuZoomOut, menuToggleGrid,
     menuSelect;
+    @FXML
+    MenuItem lightThemeItem, darkThemeItem, strawThemeItem;
     private boolean isRunning = false;
     private double zoomScale = 1.0;
     private DrawingTool drawingTool;
@@ -81,6 +85,10 @@ public class MainAppFXMLController {
 
         animationRunning = false;
         initUI();
+        applyTheme("light-mode.css");
+        lightThemeItem.setOnAction(e -> applyTheme("light-mode.css"));
+        darkThemeItem.setOnAction(e -> applyTheme("dark-mode.css"));
+        strawThemeItem.setOnAction(e -> applyTheme("strawberries-theme.css"));
     }
 
     private void initUI() {
@@ -238,6 +246,11 @@ public class MainAppFXMLController {
     private void menuSelectBtnPressed() {
         System.out.println("select pressed");
         drawingTool.setCurrentAction("edit");
+    }
+
+    private void applyTheme(String cssFile) {
+        window.getStylesheets().clear();
+        window.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/" + cssFile)).toExternalForm());
     }
 
 }

@@ -70,7 +70,11 @@
             <Menu mnemonicParsing="false" text="View">
                 <MenuItem fx:id="menuShowToolbar" mnemonicParsing="false" text="Show toolbar" />
                 <MenuItem fx:id="menuHideToolbar" mnemonicParsing="false" text="Hide toolbar" />
-                <MenuItem fx:id="menuThemes" mnemonicParsing="false" text="Themes" />
+                <Menu fx:id="menuThemes" text="Themes" mnemonicParsing="false">
+                    <MenuItem fx:id="lightThemeItem" text="Light Theme"/>
+                    <MenuItem fx:id="darkThemeItem" text="Dark Theme"/>
+                    <MenuItem fx:id="strawThemeItem" text="Strawberry Theme"/>
+                </Menu>
                 <MenuItem fx:id="menuFitToScreen" mnemonicParsing="false" text="Fit to screen" />
                 <MenuItem fx:id="menuZoomIn" mnemonicParsing="false" text="Zoom in" />
                 <MenuItem fx:id="menuZoomOut" mnemonicParsing="false" text="Zoom out" />
