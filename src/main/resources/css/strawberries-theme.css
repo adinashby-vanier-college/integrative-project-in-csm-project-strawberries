@@ -1,3 +1,4 @@
+/* ===== Root Styling ===== */
 .root {
     -fx-base: #ffccd5;
     -fx-accent: #ff4d6d;
@@ -8,7 +9,7 @@
     -fx-selection-bar: #d8f3dc;
     -fx-selection-bar-non-focused: #c3e6cb;
 
-    -fx-focused-text-base-color : ladder(
+    -fx-focused-text-base-color: ladder(
             -fx-selection-bar,
             #ffffff 45%,
             #2e7d32 46%,
@@ -16,15 +17,17 @@
             #4caf50 60%
     );
 
-    -fx-focused-mark-color : -fx-focused-text-base-color;
+    -fx-focused-mark-color: -fx-focused-text-base-color;
 }
 
+/* ===== Info Label ===== */
 .info-label {
     -fx-background-color: white;
     -fx-border-color: black;
     -fx-text-fill: #333333;
 }
 
+/* ===== Focused Text Input ===== */
 .text-input:focused {
     -fx-highlight-text-fill: ladder(
             -fx-highlight-fill,
@@ -33,4 +36,78 @@
             #8b0000 59%,
             #c94c66 60%
     );
+}
+
+/* ===== Buttons ===== */
+.button {
+    -fx-background-color: linear-gradient(to bottom, #ffdce2, #ffc2cd);
+    -fx-text-fill: #661a1a;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+    -fx-border-color: #ffb3c1;
+    -fx-border-width: 1;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: linear-gradient(to bottom, #ffc2cd, #ffafbd);
+}
+
+.button:pressed {
+    -fx-background-color: #ff8fa3;
+}
+
+.button:disabled {
+    -fx-opacity: 0.5;
+    -fx-cursor: default;
+}
+
+/* ===== ComboBox & ColorPicker ===== */
+.combo-box, .combo-box-base, .color-picker {
+    -fx-background-color: linear-gradient(to bottom, #fff0f3, #ffe5ec);
+    -fx-border-color: #ffb3c1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-text-fill: #661a1a;
+}
+
+.combo-box:hover, .color-picker:hover {
+    -fx-background-color: linear-gradient(to bottom, #ffe5ec, #ffd6de);
+}
+
+.combo-box .arrow-button {
+    -fx-background-color: transparent;
+}
+
+/* ===== MenuBar & MenuItem ===== */
+.menu-bar {
+    -fx-background-color: #ffe5ec;
+}
+
+.menu, .menu-item {
+    -fx-text-fill: #661a1a;
+}
+
+.menu-item:hover {
+    -fx-background-color: #ffd6de;
+}
+
+/* ===== CheckBox ===== */
+.check-box {
+    -fx-text-fill: #661a1a;
+}
+
+.check-box .box {
+    -fx-background-color: #fff0f3;
+    -fx-border-color: #ffb3c1;
+    -fx-border-radius: 4;
+}
+
+.check-box:selected .box {
+    -fx-background-color: #ff4d6d;
+    -fx-border-color: #ff4d6d;
+}
+
+.check-box:selected .mark {
+    -fx-background-color: white;
 }

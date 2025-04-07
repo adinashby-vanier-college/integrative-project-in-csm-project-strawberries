@@ -1,35 +1,112 @@
+/* ===== Root Styling ===== */
 .root {
     -fx-base: #3f474f;
     -fx-accent: #e7eff7;
-    -fx-default-button: #7f878f ;
+    -fx-default-button: #7f878f;
     -fx-focus-color: #efefef;
     -fx-faint-focus-color: #efefef22;
 
     -fx-light-text-color: #eaeaea;
 
-    -fx-focused-text-base-color : ladder(
+    -fx-focused-text-base-color: ladder(
             -fx-selection-bar,
             -fx-light-text-color 45%,
             -fx-dark-text-color 46%,
             -fx-dark-text-color 59%,
             -fx-mid-text-color 60%
     );
-    -fx-focused-mark-color : -fx-focused-text-base-color ;
 
+    -fx-focused-mark-color: -fx-focused-text-base-color;
 }
 
+/* ===== Info Label ===== */
 .info-label {
     -fx-background-color: black;
     -fx-border-color: white;
     -fx-text-fill: #eaeaea;
 }
 
+/* ===== Focused Text Input ===== */
 .text-input:focused {
     -fx-highlight-text-fill: ladder(
             -fx-highlight-fill,
             -fx-light-text-color 45%,
-            -fx-dark-text-color  46%,
-            -fx-dark-text-color  59%,
-            -fx-mid-text-color   60%
+            -fx-dark-text-color 46%,
+            -fx-dark-text-color 59%,
+            -fx-mid-text-color 60%
     );
+}
+
+/* ===== Buttons ===== */
+.button {
+    -fx-background-color: linear-gradient(to bottom, #525a60, #454c52);
+    -fx-text-fill: #eaeaea;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+    -fx-border-color: #5e6a73;
+    -fx-border-width: 1;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: linear-gradient(to bottom, #5c646a, #4f565c);
+}
+
+.button:pressed {
+    -fx-background-color: #3a4045;
+}
+
+.button:disabled {
+    -fx-opacity: 0.4;
+    -fx-cursor: default;
+}
+
+/* ===== ComboBox & ColorPicker ===== */
+.combo-box, .combo-box-base, .color-picker {
+    -fx-background-color: linear-gradient(to bottom, #4a5157, #3f474f);
+    -fx-border-color: #5e6a73;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-text-fill: #eaeaea;
+}
+
+.combo-box:hover, .color-picker:hover {
+    -fx-background-color: linear-gradient(to bottom, #5a6268, #4c545a);
+}
+
+.combo-box .arrow-button {
+    -fx-background-color: transparent;
+}
+
+/* ===== MenuBar & MenuItem ===== */
+.menu-bar {
+    -fx-background-color: #3f474f;
+}
+
+.menu, .menu-item {
+    -fx-text-fill: #eaeaea;
+}
+
+.menu-item:hover {
+    -fx-background-color: #525a60;
+}
+
+/* ===== CheckBox ===== */
+.check-box {
+    -fx-text-fill: #eaeaea;
+}
+
+.check-box .box {
+    -fx-background-color: #4a525a;
+    -fx-border-color: #7f878f;
+    -fx-border-radius: 4;
+}
+
+.check-box:selected .box {
+    -fx-background-color: #d33c66; /* strawberry red accent */
+    -fx-border-color: #d33c66;
+}
+
+.check-box:selected .mark {
+    -fx-background-color: white;
 }
