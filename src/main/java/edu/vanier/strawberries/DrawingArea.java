@@ -11,8 +11,6 @@ import javafx.animation.PathTransition;
 import javafx.scene.shape.Line;
 import javafx.util.Duration;
 import javafx.scene.shape.Circle;
-import java.util.Stack;
-
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Objects;
@@ -70,6 +68,7 @@ public class DrawingArea extends Pane {
                 selection.setLayoutX(selection.begin.getX());
                 selection.setLayoutY(selection.begin.getY());
                 pane.getChildren().add(selection);
+                System.out.println("Added " + selection.getClass().getSimpleName() + " to pane");
                 circuit.addComponent(selection);
                 attemptConnection(selection, selection.begin);
                 selection.draw();

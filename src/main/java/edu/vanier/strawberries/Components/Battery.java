@@ -10,6 +10,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.transform.Rotate;
 
+import java.net.URL;
 import java.util.Objects;
 
 public class Battery extends Component {
@@ -20,24 +21,23 @@ public class Battery extends Component {
     private double mouseOffsetX;
     private double mouseOffsetY;
 
-
     public Battery(Node begin, Node end, double potential) {
         super(begin, end);
         this.potential = potential;
-        this.startPolarity = true;
-        this.endPolarity = false;
 
-        Image batteryImage = new Image(Objects.requireNonNull(getClass().getResource("/images/battery_diagram.png")).toExternalForm());
+        URL imgUrl = getClass().getResource("/images/battery_diagram.png"); // debug for the image
+        if (imgUrl == null) {
+            System.out.println("Could not load battery image");
+        }
+        Image batteryImage = new Image(imgUrl.toExternalForm());
         DIAGRAM_DISPLAY = batteryImage;
-        display.setImage(batteryImage);
         batteryImageView = new ImageView(batteryImage);
-
-
-        display.setFitWidth(100);
-        display.setPreserveRatio(true);
-
-       enableDragAndRotate(); // create a method for the drag and rotate
+        batteryImageView.setFitWidth(100);
+        batteryImageView.setPreserveRatio(true);
+        getChildren().add(batteryImageView);
+        enableDragAndRotate();
     }
+
     public void enableDragAndRotate() {
         this.setOnMousePressed(e -> { // stores information as to where the mouse is from the image's corner
             mouseOffsetX = e.getSceneX() - this.getLayoutX();
@@ -51,9 +51,18 @@ public class Battery extends Component {
                 double centerY = this.getLayoutY() + this.getBoundsInParent().getHeight() / 2;
                 double angle = Math.toDegrees(Math.atan2(e.getSceneY() - centerY, e.getSceneX() - centerX));
                 this.setRotate(angle); // rotates using trig
-            } else { // based on where the mouse moved
-                this.setLayoutX(e.getSceneX() - mouseOffsetX);
-                this.setLayoutY(e.getSceneY() - mouseOffsetY);
+            } else {
+                double newX = e.getSceneX() - mouseOffsetX;
+                double newY = e.getSceneY() - mouseOffsetY;
+                this.setLayoutX(newX);
+                this.setLayoutY(newY);
+                //  update the logical node positions too
+                this.begin.setPosition(newX, newY);
+                // keep end node relative to the original angle/distance
+                double deltaX = end.getX() - begin.getX();
+                double deltaY = end.getY() - begin.getY();
+                this.end.setPosition(newX + deltaX, newY + deltaY);
+
             }
             e.consume(); // basically makes it so that only the battery moves
         });
@@ -99,9 +108,9 @@ public class Battery extends Component {
 
     @Override
     public void draw() {
-//        double deltaX = end.getX() - begin.getX();
-//        double deltaY = end.getY() - begin.getY();
-//        double angle = Math.toDegrees(Math.atan2(deltaY, deltaX));
+       double deltaX = end.getX() - begin.getX();
+       double deltaY = end.getY() - begin.getY();
+       double angle = Math.toDegrees(Math.atan2(deltaY, deltaX));
 
         Rotate rotation = getAngleRotate();
 
