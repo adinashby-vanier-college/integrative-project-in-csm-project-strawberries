@@ -77,6 +77,6 @@ public class LogInController {
 
     private void signIn(String username, String password) {
         // parse through json file
-        // 
+        //
     }
 }
