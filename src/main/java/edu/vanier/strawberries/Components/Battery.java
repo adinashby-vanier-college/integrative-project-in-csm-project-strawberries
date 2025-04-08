@@ -175,12 +175,12 @@ private void updateVoltageFromField(javafx.scene.control.TextField inputField, P
         double newPotential = Double.parseDouble(inputField.getText());
         if (newPotential >= 0 && newPotential <= 1000) {
             this.potential = newPotential;
-            System.out.println("Battery voltage updated to: " + potential + " V");
+            System.out.println("Voltage updated to: " + potential + " V");
         } else {
-            System.out.println("⚠ Voltage must be between 0–1000 V");
+            System.out.println(" Voltage must be between 0–1000 V");
         }
     } catch (NumberFormatException ex) {
-        System.out.println("⚠ Invalid voltage input.");
+        System.out.println(" Invalid voltage input.");
     }
 
     parentPane.getChildren().remove(inputField);
