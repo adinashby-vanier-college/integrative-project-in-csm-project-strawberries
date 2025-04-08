@@ -1,12 +1,14 @@
 package edu.vanier.strawberries.controllers;
 
-import edu.vanier.strawberries.DrawingArea;
-import edu.vanier.strawberries.DrawingTool;
+import edu.vanier.strawberries.Models.*;
+import edu.vanier.strawberries.Models.DrawingArea;
 import edu.vanier.strawberries.ui.MainApp;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
@@ -17,6 +19,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -26,6 +29,8 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Objects;
 
 /**
@@ -38,6 +43,8 @@ public class MainAppFXMLController {
     private final static Logger logger = LoggerFactory.getLogger(MainAppFXMLController.class);
 
     public boolean animationRunning;
+    public Component selection;
+    public Circuit circuit;
 
     //Import FXML variables
     @FXML
@@ -51,7 +58,7 @@ public class MainAppFXMLController {
     @FXML
     Button zoomInBtn,zoomOutBtn,undoBtn,redoBtn,copyBtn,pasteBtn,addWireBtn,addResistorBtn,addCapacitorBtn,addBatteryBtn,addSwitchBtn;
     @FXML
-    Pane drawingAreaPane;
+    Canvas canvas;
     @FXML
     AnchorPane leftPanel, rightPanel;
     @FXML
@@ -76,8 +83,8 @@ public class MainAppFXMLController {
     @FXML
     MenuItem lightThemeItem, darkThemeItem, strawThemeItem;
     private boolean isRunning = false;
-    private double zoomScale = 1.0;
     private DrawingTool drawingTool;
+    public DrawingArea drawingArea;
 
     @FXML
     public void initialize() {
@@ -89,6 +96,18 @@ public class MainAppFXMLController {
         lightThemeItem.setOnAction(e -> applyTheme("light-mode.css"));
         darkThemeItem.setOnAction(e -> applyTheme("dark-mode.css"));
         strawThemeItem.setOnAction(e -> applyTheme("strawberries-theme.css"));
+
+        circuit = new Circuit();
+
+        // SET UP EVENT LISTENERS
+        canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, this::mousePressed);
+        canvas.addEventHandler(MouseEvent.MOUSE_DRAGGED, this::mouseDragged);
+        canvas.addEventHandler(MouseEvent.MOUSE_RELEASED, this::mouseReleased);
+    }
+
+    public void update() {
+        if(drawingArea.circuit==null) drawingArea.setCircuit(circuit);
+        drawingArea.drawContent();
     }
 
     private void initUI() {
@@ -97,9 +116,9 @@ public class MainAppFXMLController {
         window.prefHeightProperty().bind(MainApp.stage.heightProperty());
         splitPane.prefHeightProperty().bind(window.heightProperty());
         leftPanel.prefHeightProperty().bind(splitPane.heightProperty());
-        drawingAreaPane.prefHeightProperty().bind(leftPanel.prefHeightProperty());
+        canvas.heightProperty().bind(leftPanel.prefHeightProperty());
         //TODO figure out why it doesn't work without this...
-        drawingAreaPane.prefHeightProperty().addListener(_-> drawingAreaPane.setMinHeight(drawingAreaPane.getPrefHeight()));
+//        canvas.prefHeightProperty().addListener(_-> canvas.setMinHeight(canvas.getPrefHeight()));
         rightPanel.prefHeightProperty().bind(splitPane.heightProperty());
         toolbarHBox.setPrefHeight(toolbarHBox.getChildren().getFirst().getLayoutBounds().getHeight());
         toolbarScrollPane.prefViewportHeightProperty().bind(toolbarHBox.heightProperty());
@@ -107,6 +126,7 @@ public class MainAppFXMLController {
         leftPanelVBox.prefWidthProperty().bind(leftPanel.prefWidthProperty());
         toolbarScrollPane.prefWidthProperty().bind(leftPanelVBox.prefWidthProperty());
         toolbarHBox.prefWidthProperty().bind(toolbarScrollPane.prefWidthProperty());
+        canvas.widthProperty().bind(leftPanel.prefWidthProperty());
 
 // 2. OTHER FORMATTING
         toolbarScrollPane.widthProperty().addListener(_-> {
@@ -117,16 +137,16 @@ public class MainAppFXMLController {
         leftPanel.widthProperty().addListener(_-> leftPanel.setPrefWidth(leftPanel.getWidth()));
 // 3. INITIALIZE CLASSES
         // Linking to existing classes
-        DrawingArea drawingArea = new DrawingArea(drawingAreaPane);
+        drawingArea = new DrawingArea(canvas);
+        drawingArea.setCircuit(circuit);
         drawingTool = drawingArea.drawingTool;
         edu.vanier.strawberries.MenuBar myMenu = new edu.vanier.strawberries.MenuBar(menuBar);
 
 
 // 4. SET UP UI ELEMENTS
-        //TEMPORARY
-        drawingAreaPane.setOnMouseMoved(event -> mouseText.setText("("+String.valueOf(event.getX()).substring(0,3)+","+String.valueOf(event.getY()).substring(0,3)+")"));
-
         // Set button actions
+        zoomInBtn.setOnAction(_-> {drawingArea.zoomIn();});
+        zoomOutBtn.setOnAction(_-> {drawingArea.zoomOut();});
         addWireBtn.setOnAction(_-> drawingTool.setCurrentAction("place-wire"));
         addResistorBtn.setOnAction(_->drawingTool.setCurrentAction("place-resistor"));
         addBatteryBtn.setOnAction(_->drawingTool.setCurrentAction("place-battery"));
@@ -135,7 +155,7 @@ public class MainAppFXMLController {
         clearBtn.setOnAction(_-> {
             drawingArea.circuit.print();
             drawingArea.circuit.clear();
-            drawingArea.pane.getChildren().clear();
+            drawingArea.canvas.getGraphicsContext2D().clearRect(0,0,canvas.getWidth(), canvas.getHeight());
             System.out.println("Cleared!");
         });
 
@@ -195,24 +215,123 @@ public class MainAppFXMLController {
         });
 
         runStopBtn.setText("Run");
-       runStopBtn.setOnAction(_ -> {
-    animationRunning = !animationRunning;
-    if (animationRunning) {
-        runStopBtn.setText("Stop");
+        runStopBtn.setOnAction(_ -> {
+            animationRunning = !animationRunning;
+            if (animationRunning) {
+                runStopBtn.setText("Stop");
 
 
-        edu.vanier.math.CircuitMath math = new edu.vanier.math.CircuitMath(drawingArea.circuit);
-        math.assignValuesToComponents();
+                edu.vanier.math.CircuitMath math = new edu.vanier.math.CircuitMath(drawingArea.circuit);
+                math.assignValuesToComponents();
 
-        drawingArea.animateCurrentFlow(true);
-    } else {
-        runStopBtn.setText("Run");
-        drawingArea.animateCurrentFlow(false);
+                drawingArea.animateCurrentFlow(true);
+            } else {
+                runStopBtn.setText("Run");
+                drawingArea.animateCurrentFlow(false);
+            }
+        });
     }
-});
+
+    private void mousePressed(MouseEvent e) {
+        if(!Objects.equals(drawingTool.getCurrentAction(),"")) {
+            drawingTool.setPencilDown(true);
+            Node eventLocation = new Node(drawingArea.snap(e.getX()), drawingArea.snap(e.getY()));
+            Node tempEnd = Node.copyOf(eventLocation);
+            switch (drawingTool.getCurrentAction()) {
+                case "place-wire" -> selection = new Wire(eventLocation, tempEnd, drawingTool.defaultColor, 0, 0);
+                case "place-battery" -> selection = new Battery(eventLocation, tempEnd, 12);
+                case "place-capacitor" -> selection = new Capacitor(eventLocation, tempEnd, 0, true, false);
+                case "place-fuse" -> selection = new Fuse(eventLocation, tempEnd);
+                case "place-lightbulb" -> selection = new Lightbulb(eventLocation, tempEnd);
+                case "place-resistor" -> selection = new Resistor(eventLocation, tempEnd, 100);
+                case "place-switch" -> selection = new Switch(eventLocation, tempEnd, false);
+                case "edit" -> {
+                    Point2D clickedAt = new Point2D(e.getX(), e.getY());
+                    for (LinkedList<Component> list : circuit.arrayList) {
+                        for (Component current : list) {
+                            if (current.intersects(e.getX(), e.getY(), 100, 100)) {
+                                selection = current;
+                            }
+                        }
+                    }
+                    if (selection == null) {
+                        //function that marks all Component instances as not selected
+                        circuit.unselectAll();
+                    }
+                }
+                default -> {}
+            }
+            if (!Objects.equals(drawingTool.getCurrentAction(), "edit")) {
+                circuit.addComponent(selection);
+//                if(selection instanceof Wire wire) {
+//                    drawingArea.gc.strokeLine(wire.begin.getX(),wire.begin.getY(),100,150);
+//                }
+            }
+        }
+    }
+
+    private void mouseDragged(MouseEvent e) {
+//        MainApp.timer.stop();
+        if (drawingTool.isPencilDown() && selection != null) {
+            double nearestX = drawingArea.snap(e.getX());
+            double nearestY = drawingArea.snap(e.getY());
+            selection.moveNode(selection.end, nearestX, nearestY);
+        }
+        //add modifying a node after it's been drawn
+    }
+
+    private void mouseReleased(MouseEvent e) {
+        if (selection != null) {
+            if (drawingTool.isPencilDown()) {
+                drawingTool.setPencilDown(false);
+                attemptConnection(selection, selection.end);
+
+                // Enable dragging and rotating if it's draggable
+                if (selection instanceof Battery battery) {
+                    battery.enableDragAndRotate();
+                } else if (selection instanceof Switch sw) {
+                    sw.enableDragAndRotate(); // Do the same for others
+                }
+
+                selection = null;
+            }
+        }
+    }
+
+    private void attemptConnection(Component toCheck, Node node) {
+        int srcIndex = circuit.getIndex(toCheck);
+        Point2D checkPoint = new Point2D(node.getX(), node.getY());
+        ArrayList<Node> connectedNodes = new ArrayList<>();
+        connectedNodes.add(node);
+
+        for (LinkedList<Component> currentList : circuit.arrayList) {
+            for (Component connectedComponent : currentList) {
+                int dstIndex = circuit.getIndex(connectedComponent);
 
 
+                if (connectedComponent instanceof Battery battery) {
+                    battery.snapNearbyNode(node);
+                }
+                Point2D componentBegin = new Point2D(connectedComponent.begin.getX(), connectedComponent.begin.getY());
+                Point2D componentEnd = new Point2D(connectedComponent.end.getX(), connectedComponent.end.getY());
 
+                if (componentBegin.distance(checkPoint) <= 20) {
+                    connectedNodes.add(connectedComponent.begin);
+                }
+                if (componentEnd.distance(checkPoint) <= 20) {
+                    connectedNodes.add(connectedComponent.end);
+                }
+
+                for (int i = 1; i < connectedNodes.size(); i++) {
+                    if (!circuit.checkEdge(srcIndex, dstIndex)) circuit.addEdge(srcIndex, dstIndex);
+                    connectedNodes.get(i).setPosition(node.getX(), node.getY());
+                }
+
+                connectedComponent.draw();
+            }
+        }
+
+        toCheck.draw();
     }
 
     private static LineChart<Number, Number> getChart() {

@@ -2,10 +2,14 @@ package edu.vanier.strawberries.ui;
 
 import edu.vanier.strawberries.controllers.MainAppFXMLController;
 import edu.vanier.strawberries.controllers.SceneController;
+import edu.vanier.strawberries.controllers.SnapToGridController;
 import edu.vanier.strawberries.controllers.StartScreenFXMLController;
 import edu.vanier.strawberries.helpers.FxUIHelper;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.logging.Level;
+
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -28,12 +32,15 @@ public class MainApp extends Application {
     public static final String MAINAPP_SCENE = "MainApp_layout";
     // The FXML file name of the secondary scene.
     public static final String START_SCENE = "StartScreen_layout";
-    // The FXML file name of the login scene.
-    public static final String LOGIN_SCENE = "LogIn_layout";
     private final static Logger logger = LoggerFactory.getLogger(MainApp.class);
     private static Scene scene;
     private static SceneController sceneController;
     public static Stage stage;
+    public static MainAppFXMLController mainAppFXMLController;
+    public static StartScreenFXMLController startScreenFXMLController;
+    public static SnapToGridController snapToGridController;
+    public static String currentController;
+    public static AnimationTimer timer;
 
     @Override
     public void stop() {
@@ -46,7 +53,8 @@ public class MainApp extends Application {
         try {
             logger.info("Bootstrapping the application...");
             // Load the scene of the primary stage.
-            Parent root = FxUIHelper.loadFXML(START_SCENE, new StartScreenFXMLController());
+            startScreenFXMLController = new StartScreenFXMLController();
+            Parent root = FxUIHelper.loadFXML(START_SCENE, startScreenFXMLController);
             scene = new Scene(root, 640, 480);
             // Add the primary scene to the scene-switching controller.
             sceneController = new SceneController(scene);
@@ -64,6 +72,15 @@ public class MainApp extends Application {
             logger.error(ex.getMessage(), ex);
             java.util.logging.Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
         }
+        timer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                if(Objects.equals(currentController, "mainController")){
+                        mainAppFXMLController.update();
+                }
+            }
+        };
+
     }
 
     /**
@@ -80,18 +97,21 @@ public class MainApp extends Application {
             if (fxmlFileName.equals(START_SCENE)) {
                 // No need to register the start scene as it was already done in the start method.
                 sceneController.activateScene(fxmlFileName);
+                currentController = "startController";
             } else if (fxmlFileName.equals(MAINAPP_SCENE)) {
                 if (!sceneController.sceneExists(fxmlFileName)) {
                     // Instantiate the corresponding FXML controller if the
                     // specified scene is being loaded for the first time.
-                    MainAppFXMLController controller = new MainAppFXMLController();
-                    Parent root = FxUIHelper.loadFXML(fxmlFileName, controller);
+                    mainAppFXMLController = new MainAppFXMLController();
+                    Parent root = FxUIHelper.loadFXML(fxmlFileName, mainAppFXMLController);
                     sceneController.addScene(MAINAPP_SCENE, root);
                 }
                 // The scene has been previously added, we activate it.
                 sceneController.activateScene(fxmlFileName);
+                currentController = "mainController";
                 stage.setHeight(550);
                 stage.setWidth(860);
+                timer.start();
             }
             //You can register or activate additional scenes here, based on the logic used to add the secondary scene (as shown above).
         } catch (IOException ex) {

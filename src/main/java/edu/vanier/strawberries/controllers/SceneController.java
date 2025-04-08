@@ -75,4 +75,5 @@ public class SceneController {
     public boolean sceneExists(String sceneName) {
         return scenesMap.containsKey(sceneName);
     }
+
 }

@@ -17,7 +17,7 @@ public class FxUIHelper {
      * FXML file itself, or the FXML file to be loaded doesn't require a
      * controller.
      *
-     * @param fxmFileName The the FXML file name to be loaded (without the .fxml
+     * @param fxmFileName The FXML file name to be loaded (without the .fxml
      * extension).
      * @return The Parent node corresponding to the loaded FXML file, which can
      * be used as the root of a scene.

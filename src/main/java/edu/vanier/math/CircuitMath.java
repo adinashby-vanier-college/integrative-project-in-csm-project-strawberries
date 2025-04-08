@@ -1,7 +1,6 @@
 package edu.vanier.math;
 
-import edu.vanier.strawberries.*;
-import edu.vanier.strawberries.Components.*;
+import edu.vanier.strawberries.Models.*;
 
 import java.util.*;
 

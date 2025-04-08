@@ -1,8 +1,10 @@
 package edu.vanier.strawberries.tests;
 
 import edu.vanier.math.CircuitMath;
-import edu.vanier.strawberries.*;
-import edu.vanier.strawberries.Components.*;
+import edu.vanier.strawberries.Models.Battery;
+import edu.vanier.strawberries.Models.Circuit;
+import edu.vanier.strawberries.Models.Node;
+import edu.vanier.strawberries.Models.Resistor;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
