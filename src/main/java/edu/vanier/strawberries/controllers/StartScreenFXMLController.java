@@ -1,6 +1,7 @@
 package edu.vanier.strawberries.controllers;
 
 import edu.vanier.strawberries.ui.MainApp;
+import edu.vanier.strawberries.controllers.LogInController;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
