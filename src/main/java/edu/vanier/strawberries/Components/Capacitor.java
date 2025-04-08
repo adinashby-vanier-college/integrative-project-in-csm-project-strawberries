@@ -69,6 +69,8 @@ public class Capacitor extends Component {
         });
     }
 
+    // TODO: Fix the method above to have a text field pop up to input the information for the component
+
     public Image getSymbol() {
         return capacitorImageView.getImage();
     }
