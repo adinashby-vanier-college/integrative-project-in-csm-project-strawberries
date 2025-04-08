@@ -31,12 +31,18 @@ public class StartScreenFXMLController {
         styleButton(savedCircuitsBtn);
         styleButton(logInBtn);
 
+        logInBtn.setOnAction(this::loadLogInScreen);
         newCircuitBtn.setOnAction(this::loadPrimaryScene);
     }
 
     private void loadPrimaryScene(Event e) {
         MainApp.switchScene(MainApp.MAINAPP_SCENE);
         logger.info("Loaded the main scene...");
+    }
+
+    private void loadLogInScreen(Event e) {
+        MainApp.switchScene(MainApp.LOGIN_SCENE);
+        logger.info("Loaded the log in scene...");
     }
 
     private void styleButton(Button btn) {

@@ -1,0 +1,19 @@
+{
+  "users": [{
+    "user": "strawberry",
+    "pass": "shortcake",
+    "recent": {
+      "graph": {
+        "components": []
+      }
+    }
+  },{
+    "user": "admin",
+    "pass": "admin123",
+    "recent": {
+      "graph": {
+        "components": []
+      }
+    }
+  }]
+}
