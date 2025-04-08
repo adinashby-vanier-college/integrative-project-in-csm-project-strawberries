@@ -4,6 +4,7 @@ import edu.vanier.strawberries.Node;
 import javafx.animation.PathTransition;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -30,13 +31,21 @@ public class Wire extends Component {
         this.current = current;
         this.voltage = voltage;
         toMove = new AtomicReference<>(null);
+        line = new Line();
+
+        begin.getMarker().addEventHandler(MouseEvent.MOUSE_PRESSED, _ -> toMove.set("begin"));
+        end.getMarker().addEventHandler(MouseEvent.MOUSE_PRESSED, _ -> toMove.set("end"));
+        line.addEventHandler(MouseEvent.MOUSE_PRESSED, _ -> toMove.set("full"));
     }
 
     @Override
     public void draw() {
         getChildren().clear();
 
-        line = new Line(begin.getX(), begin.getY(), end.getX(), end.getY());
+        line.setStartX(begin.getX());
+        line.setStartY(begin.getY());
+        line.setEndX(end.getX());
+        line.setEndY(end.getY());
         line.setFill(color);
         line.setStrokeWidth(4);
         getChildren().add(line);
@@ -47,13 +56,8 @@ public class Wire extends Component {
         double maxY = Math.max(begin.getY(), end.getY());
 
         if (selected) {
-
-            if (toMove.get() == null) toMove.set("full");
-            begin.getMarker().addEventHandler(MouseEvent.MOUSE_PRESSED, _ -> toMove.set("begin"));
-            end.getMarker().addEventHandler(MouseEvent.MOUSE_PRESSED, _ -> toMove.set("end"));
-            line.addEventHandler(MouseEvent.MOUSE_PRESSED, _ -> toMove.set("full"));
-
             getChildren().addAll(begin.getMarker(), end.getMarker());
+            if (toMove.get() == null) toMove.set("full");
 
             begin.getMarker().setTranslateX(((minX == begin.getX()) ? -Math.abs(maxX - minX) / 2 : Math.abs(maxX - minX) / 2));
             begin.getMarker().setTranslateY(((minY == begin.getY()) ? -Math.abs(maxY - minY) / 2 : Math.abs(maxY - minY) / 2));
@@ -93,38 +97,6 @@ public class Wire extends Component {
 
         parentPane.getChildren().add(infoLabel);
 
-        System.out.println("TOMOVE: "+ toMove.get());
-
-        switch (toMove.get()) {
-            case "begin" -> {
-                begin.getMarker().setLayoutX(event.getX() - line.getLayoutBounds().getWidth() / 2);
-                begin.getMarker().setLayoutY(event.getY() - line.getLayoutBounds().getHeight() / 2);
-            }
-            case "end" -> {
-                end.getMarker().setLayoutX(event.getX() - line.getLayoutBounds().getWidth() / 2);
-                end.getMarker().setLayoutY(event.getY() - line.getLayoutBounds().getHeight() / 2);
-            }
-            case "full" -> {
-                setLayoutX(Math.min(begin.getX(), end.getX()));
-                setLayoutY(Math.min(begin.getY(), end.getY()));
-            }
-            default -> markAsSelected(false);
-        }
-
-//        // Allow dragging/modifying the wire
-//        this.setOnMouseDragged(e -> {
-//            Point2D origin = new Point2D(e.getX(), e.getY());
-//            boolean editBegin = (origin.distance(new Point2D(begin.getX(), begin.getY())) <= 20);
-//            boolean editEnd = (origin.distance(new Point2D(end.getX(), end.getY())) <= 20);
-//
-//            if (editBegin) begin.setPosition(e.getX(), e.getY());
-//            else if (editEnd) end.setPosition(e.getX(), e.getY());
-//            else {
-//                this.setLayoutX(e.getX());
-//                this.setLayoutY(e.getY());
-//            }
-//            this.draw();
-
         // Move the label with the wire if it's showing
         if (infoLabel != null) {
             double newMidX = (begin.getX() + end.getX()) / 2;
@@ -132,9 +104,28 @@ public class Wire extends Component {
             infoLabel.setLayoutX(newMidX + 10);
             infoLabel.setLayoutY(newMidY - 10);
         }
-//        });
         this.draw();
     }
+
+    @Override
+    public void handleDrag(MouseEvent event) {
+        System.out.println(toMove.get()); // There is a problem with BEGIN
+        switch (toMove.get()) {
+            case "begin" -> {
+                begin.setPosition(event.getSceneX(), event.getSceneY());
+            }
+            case "end" -> {
+                end.setPosition(event.getSceneX(), event.getSceneY());
+            }
+            case "full" -> {
+                //get displacement
+                double deltaX = event.getX()-begin.getX();
+                double deltaY = event.getY()-begin.getY();
+                begin.setPosition(begin.getX()+deltaX, begin.getY()+deltaY);
+                end.setPosition(end.getX()+deltaX, end.getY()+deltaY);
+            }
+            default -> markAsSelected(false);
+        }    }
 
     public PathTransition getTransition() {
         return transition;
