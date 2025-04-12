@@ -21,6 +21,13 @@ public class Circuit {
         arrayList.add(currentList);
     }
 
+    public void deleteComponent(Component component) {
+        for(LinkedList<Component> list : arrayList) {
+            if(list.getFirst().equals(component)) arrayList.remove(list);
+            else for (Component comp : list) list.remove(comp);
+        }
+    }
+
     public void addEdge(int src, int dst) {
         LinkedList<Component> currentList = arrayList.get(src);
         Component dest = arrayList.get(dst).getFirst();

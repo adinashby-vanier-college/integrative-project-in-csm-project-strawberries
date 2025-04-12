@@ -14,7 +14,7 @@ public class Resistor extends Component {
     private double voltage;
     private double mouseOffsetX;
     private double mouseOffsetY;
-    private final ImageView resistorView;
+    private final Image resistorImage;
 
     public Resistor(Node begin, Node end, double resistance) {
         super(begin, end);
@@ -28,10 +28,7 @@ public class Resistor extends Component {
 
         Image resistorImage = new Image(imgUrl.toExternalForm());
         DIAGRAM_DISPLAY = resistorImage;
-        resistorView = new ImageView(resistorImage);
-        resistorView.setFitWidth(100);
-        resistorView.setPreserveRatio(true);
-        getChildren().add(resistorView);
+        this.resistorImage = resistorImage;
 
         enableDragAndRotate();
     }
@@ -87,12 +84,12 @@ public class Resistor extends Component {
 
     // TODO: Fix the method above to have a text field pop up to input the information for the component
 
-    public ImageView getImageView() {
-        return resistorView;
-    }
+//    public ImageView getImageView() {
+//        return resistorImage;
+//    }
 
     public Image getSymbol() {
-        return resistorView.getImage();
+        return resistorImage;
     }
 
     public double getResistance() {

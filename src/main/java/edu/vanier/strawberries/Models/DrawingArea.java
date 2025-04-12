@@ -3,6 +3,8 @@ package edu.vanier.strawberries.Models;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.animation.PathTransition;
 import javafx.scene.shape.Line;
@@ -10,6 +12,7 @@ import javafx.scene.transform.Transform;
 import javafx.util.Duration;
 import javafx.scene.shape.Circle;
 
+import javax.sound.midi.Transmitter;
 import java.util.LinkedList;
 
 public class DrawingArea {
@@ -25,16 +28,13 @@ public class DrawingArea {
         this.canvas = canvas;
         gc = canvas.getGraphicsContext2D();
         setZoom(1);
-
         drawingTool.setCurrentAction("");
     }
 
     public void drawContent() {
         gc.clearRect(0,0,canvas.getWidth(),canvas.getHeight());
 
-        gc.fillRect(0,0,squareSize,squareSize);
-
-        //Draw the grid ---- WORKS OK BUT VERY NON-OPTIMAL
+        //Draw the grid
         gc.setStroke(Color.LIGHTGREY);
         gc.setLineWidth(1);
         for(int i=0;i<canvas.getWidth();i+= (int) (squareSize*zoom)) {
@@ -44,29 +44,38 @@ public class DrawingArea {
         }
 
         //Draw the Components
+        //TODO add smth to show when a component is selected (borders or node markers)
         for(Component component : circuit.toArrayList()) {
-            if(component instanceof Wire) {
+            assert component != null;
+            if(component instanceof Wire wire) {
                 gc.setLineWidth(3);
-                gc.setStroke(((Wire) component).getColor());
+                gc.setStroke(wire.getColor());
                 gc.strokeLine(component.begin.getX(),component.begin.getY(),component.end.getX(),component.end.getY());
             }
             else {
-                if(component.display.getTransforms()!=null) {
-                    Transform transform = component.display.getTransforms().getLast();
-                    double minX = Math.min(component.begin.getX(),component.end.getX());
-                    double minY = Math.min(component.begin.getY(),component.end.getY());
-                    gc.setTransform(transform.getMxx(), transform.getMyx(), transform.getMxy(), transform.getMyy(), transform.getMxz(),transform.getMyz());
-                    gc.drawImage(component.display.getImage(),minX,minY);
-                }
+                //TODO add angles
+                Image img = component.DIAGRAM_DISPLAY;
+                gc.drawImage(img,component.begin.getX(),component.begin.getY()-(img.getHeight())/2,img.getWidth()*zoom,img.getHeight()*zoom);
+            }
+            if(component.selected) {
+                gc.setStroke(Color.PINK);
+                gc.setFill(Color.PINK);
+                gc.setLineWidth(2);
+                gc.rect(component.begin.getX(),component.begin.getY(),component.display.getFitWidth(),component.display.getFitHeight());
+                gc.rect(0,0,20,20);
             }
         }
     }
 
-    //TODO fix this function
     public double snap(double pos) {
         double remainder = pos%(squareSize);
-        if(remainder< (double) squareSize/2) return pos-remainder;
-        else return pos+remainder;
+
+        if(remainder == 0)
+            return pos;
+        else if(remainder <= (double) squareSize/2)
+            return pos - remainder;
+        else
+            return pos + (squareSize - remainder);
     }
 
     private void unselectAll() {

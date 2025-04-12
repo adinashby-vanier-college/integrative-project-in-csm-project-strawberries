@@ -1,6 +1,10 @@
 package edu.vanier.strawberries.Models;
 
+import edu.vanier.strawberries.ui.MainApp;
+import javafx.scene.Cursor;
+import javafx.scene.ImageCursor;
 import javafx.scene.effect.ColorAdjust;
+import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 public class DrawingTool {
@@ -16,6 +20,22 @@ public class DrawingTool {
 
     public void setCurrentAction(String currentAction) {
         this.currentAction = currentAction;
+
+        Cursor updatedCursor = Cursor.DEFAULT;
+        if(currentAction.contains("-")) {
+            String component_placed = currentAction.substring(currentAction.indexOf('-')+1);
+            switch (component_placed) {
+                case "wire" -> {
+                    Image pencil =  new Image(String.valueOf(getClass().getResource("/images/pencil.png")));
+                    updatedCursor = new ImageCursor(pencil);
+                }
+                case "battery","capacitor","fuse","lightbulb","open_switch","resistor" -> {
+                    Image img = new Image(String.valueOf(getClass().getResource("/images/"+component_placed+"_diagram.png")));
+                    updatedCursor = new ImageCursor(img, -img.getWidth(),img.getHeight()/2);
+                }
+            }
+        }
+        MainApp.mainAppFXMLController.setCursor(updatedCursor);
     }
 
     public String getCurrentAction() {

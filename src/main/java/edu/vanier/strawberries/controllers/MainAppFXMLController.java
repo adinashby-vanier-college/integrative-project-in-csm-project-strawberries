@@ -7,6 +7,8 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
+import javafx.scene.ImageCursor;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.chart.LineChart;
@@ -19,6 +21,9 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -92,6 +97,7 @@ public class MainAppFXMLController {
 
         animationRunning = false;
         initUI();
+        setUpKeyListeners();
         applyTheme("light-mode.css");
         lightThemeItem.setOnAction(e -> applyTheme("light-mode.css"));
         darkThemeItem.setOnAction(e -> applyTheme("dark-mode.css"));
@@ -245,39 +251,36 @@ public class MainAppFXMLController {
                 case "place-lightbulb" -> selection = new Lightbulb(eventLocation, tempEnd);
                 case "place-resistor" -> selection = new Resistor(eventLocation, tempEnd, 100);
                 case "place-switch" -> selection = new Switch(eventLocation, tempEnd, false);
-                case "edit" -> {
+                case "select" -> {
+                    circuit.unselectAll();
                     Point2D clickedAt = new Point2D(e.getX(), e.getY());
                     for (LinkedList<Component> list : circuit.arrayList) {
                         for (Component current : list) {
                             if (current.intersects(e.getX(), e.getY(), 100, 100)) {
                                 selection = current;
+                                current.markAsSelected(true);
                             }
                         }
-                    }
-                    if (selection == null) {
-                        //function that marks all Component instances as not selected
-                        circuit.unselectAll();
                     }
                 }
                 default -> {}
             }
-            if (!Objects.equals(drawingTool.getCurrentAction(), "edit")) {
+            if (!Objects.equals(drawingTool.getCurrentAction(), "select")) {
                 circuit.addComponent(selection);
-//                if(selection instanceof Wire wire) {
-//                    drawingArea.gc.strokeLine(wire.begin.getX(),wire.begin.getY(),100,150);
-//                }
             }
         }
     }
 
     private void mouseDragged(MouseEvent e) {
-//        MainApp.timer.stop();
         if (drawingTool.isPencilDown() && selection != null) {
             double nearestX = drawingArea.snap(e.getX());
             double nearestY = drawingArea.snap(e.getY());
             selection.moveNode(selection.end, nearestX, nearestY);
         }
-        //add modifying a node after it's been drawn
+        if(Objects.equals(drawingTool.getCurrentAction(), "select")) {
+            //TODO add modifying a node after it's been drawn
+
+        }
     }
 
     private void mouseReleased(MouseEvent e) {
@@ -292,7 +295,6 @@ public class MainAppFXMLController {
                 } else if (selection instanceof Switch sw) {
                     sw.enableDragAndRotate(); // Do the same for others
                 }
-
                 selection = null;
             }
         }
@@ -308,25 +310,19 @@ public class MainAppFXMLController {
             for (Component connectedComponent : currentList) {
                 int dstIndex = circuit.getIndex(connectedComponent);
 
-
-                if (connectedComponent instanceof Battery battery) {
-                    battery.snapNearbyNode(node);
-                }
                 Point2D componentBegin = new Point2D(connectedComponent.begin.getX(), connectedComponent.begin.getY());
                 Point2D componentEnd = new Point2D(connectedComponent.end.getX(), connectedComponent.end.getY());
 
-                if (componentBegin.distance(checkPoint) <= 20) {
+                if (componentBegin.distance(checkPoint) == 0) {
                     connectedNodes.add(connectedComponent.begin);
                 }
-                if (componentEnd.distance(checkPoint) <= 20) {
+                if (componentEnd.distance(checkPoint) == 0) {
                     connectedNodes.add(connectedComponent.end);
                 }
 
                 for (int i = 1; i < connectedNodes.size(); i++) {
                     if (!circuit.checkEdge(srcIndex, dstIndex)) circuit.addEdge(srcIndex, dstIndex);
-                    connectedNodes.get(i).setPosition(node.getX(), node.getY());
                 }
-
                 connectedComponent.draw();
             }
         }
@@ -364,7 +360,39 @@ public class MainAppFXMLController {
     @FXML
     private void menuSelectBtnPressed() {
         System.out.println("select pressed");
-        drawingTool.setCurrentAction("edit");
+        drawingTool.setCurrentAction("select");
+    }
+
+    private void setUpKeyListeners() {
+        window.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
+            switch(event.getCode()) {
+                case S,ESCAPE -> {
+                    drawingTool.setCurrentAction("select");
+                    window.setCursor(Cursor.OPEN_HAND);
+                }
+                case W -> {
+                    drawingTool.setCurrentAction("place-wire");
+                }
+                case DELETE,BACK_SPACE -> { //TODO deletion not working
+                    System.out.println("deleted");
+                    circuit.deleteComponent(selection);
+                    //delete selected element
+                }
+                case COMMA -> {
+                    System.out.println("ROTATING LEFT");
+                    //TODO rotate selected element 90 deg left
+                }
+                case PERIOD -> {
+                    System.out.println("ROTATING RIGHT");
+                    //TODO rotate selected element 90 deg right
+                }
+            }
+            System.out.println(event.getCode());
+        });
+    }
+
+    public void setCursor(Cursor cursor) {
+        window.setCursor(cursor);
     }
 
     private void applyTheme(String cssFile) {

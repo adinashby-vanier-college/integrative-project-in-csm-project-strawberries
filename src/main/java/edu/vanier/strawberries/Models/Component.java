@@ -17,6 +17,7 @@ public abstract class Component extends StackPane {
     protected Image DIAGRAM_DISPLAY, IMAGE_DISPLAY;
     public ImageView display;
     public boolean selected;
+    private double angle;
 
     public Component(Node begin, Node end) {
         this.begin = begin;
@@ -86,7 +87,12 @@ public abstract class Component extends StackPane {
             else angle = -180 + angle;
         }
 
+        this.angle = angle;
         return new Rotate(angle,begin.getX(), begin.getY());
+    }
+
+    public double getAngle() {
+        return angle;
     }
 
     // ABSTRACT methods for each component type
