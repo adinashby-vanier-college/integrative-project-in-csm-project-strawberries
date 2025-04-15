@@ -6,6 +6,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 
 import java.net.URL;
+import javafx.scene.input.MouseEvent;
 
 public class Battery extends Component {
     private double potential;
@@ -27,6 +28,8 @@ public class Battery extends Component {
             System.out.println("Could not load battery image");
             display = null;
         }
+        
+
     }
 
     public void enableDragAndRotate() {
@@ -105,35 +108,35 @@ public class Battery extends Component {
         }
     }
 
+public void handleEdit(Pane parentPane)
+ {
+    javafx.scene.control.TextField inputField = new javafx.scene.control.TextField(String.valueOf(potential));
+    inputField.setPrefWidth(60);
+    inputField.setStyle("-fx-font-size: 10px; -fx-background-color: white; -fx-border-color: black;");
+    if (parentPane == null) {
+        System.out.println(" No parent pane found for battery!");
+        return;
+    }
 
-//   @Override
-//public void handleEdit(MouseEvent event) {
-//    javafx.scene.control.TextField inputField = new javafx.scene.control.TextField(String.valueOf(potential));
-//    inputField.setPrefWidth(60);
-//    inputField.setStyle("-fx-font-size: 10px; -fx-background-color: white; -fx-border-color: black;");
-//
-//    // Position the input next to the battery
-//    double midX = (begin.getX() + end.getX()) / 2;
-//    double midY = (begin.getY() + end.getY()) / 2;
-//    inputField.setLayoutX(midX + 10);
-//    inputField.setLayoutY(midY - 10);
-//
-//    Pane parentPane = (Pane) this.getParent();
-//    if (parentPane == null) return;
-//
-//    parentPane.getChildren().add(inputField);
-//    inputField.requestFocus();
-//
-//    // When user presses Enter or loses focus
-//    inputField.setOnAction(_ -> {
-//        updateVoltageFromField(inputField, parentPane);
-//    });
-//    inputField.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
-//        if (!isNowFocused) {
-//            updateVoltageFromField(inputField, parentPane);
-//        }
-//    });
-//}
+    // Calculate midpoint based on begin and end nodes
+    double midX = (begin.getX() + end.getX()) / 2;
+    double midY = (begin.getY() + end.getY()) / 2;
+
+    // Add the input field at the center of the battery
+    inputField.setLayoutX(midX + 10);
+    inputField.setLayoutY(midY - 10);
+    parentPane.getChildren().add(inputField);
+    inputField.requestFocus();
+
+    inputField.setOnAction(_ -> updateVoltageFromField(inputField, parentPane));
+    inputField.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+        if (!isNowFocused) {
+            updateVoltageFromField(inputField, parentPane);
+        }
+    });
+}
+
+
 
 private void updateVoltageFromField(javafx.scene.control.TextField inputField, Pane parentPane) {
     try {
@@ -142,10 +145,10 @@ private void updateVoltageFromField(javafx.scene.control.TextField inputField, P
             this.potential = newPotential;
             System.out.println("Voltage updated to: " + potential + " V");
         } else {
-            System.out.println(" Voltage must be between 0–1000 V");
+            System.out.println("Voltage must be between 0–1000 V");
         }
     } catch (NumberFormatException ex) {
-        System.out.println(" Invalid voltage input.");
+        System.out.println("Invalid voltage input.");
     }
 
     parentPane.getChildren().remove(inputField);
