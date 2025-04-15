@@ -1,5 +1,6 @@
 package edu.vanier.strawberries.Models;
 
+import edu.vanier.strawberries.controllers.MainAppFXMLController;
 import edu.vanier.strawberries.ui.MainApp;
 import javafx.scene.Cursor;
 import javafx.scene.ImageCursor;
@@ -40,14 +41,6 @@ public class DrawingTool {
 
     public String getCurrentAction() {
         return currentAction;
-    }
-
-    public ColorAdjust generateColorAdjust(Color target) {
-        double hue = -1+((target.getHue()+ (target.getHue()>180 ? -180 : 180))*2)/360;
-        double brightness = target.getBrightness()-1;
-        double saturation = target.getSaturation();
-
-        return new ColorAdjust(hue,saturation,brightness,1);
     }
 
     public void setPencilDown(boolean down) {

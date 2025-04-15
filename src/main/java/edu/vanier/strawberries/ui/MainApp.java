@@ -77,6 +77,7 @@ public class MainApp extends Application {
             public void handle(long now) {
                 if(Objects.equals(currentController, "mainController")){
                         mainAppFXMLController.update();
+
                 }
             }
         };

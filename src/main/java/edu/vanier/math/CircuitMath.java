@@ -1,7 +1,6 @@
 package edu.vanier.math;
 
 import edu.vanier.strawberries.Models.*;
-
 import java.util.*;
 import javafx.scene.control.Alert;
 
@@ -15,7 +14,6 @@ public class CircuitMath {
         this.visited = new boolean[circuit.arrayList.size()];
     }
 
-    // Depth-First Search traversal
     private void dfs(int current, List<Component> path) {
         if (visited[current]) return;
         visited[current] = true;
@@ -30,7 +28,6 @@ public class CircuitMath {
         }
     }
 
-    // Returns a list of components in order of connection
     public List<Component> getTraversalPath() {
         Arrays.fill(visited, false);
         List<Component> path = new ArrayList<>();
@@ -42,23 +39,29 @@ public class CircuitMath {
                 break;
             }
         }
-
         return path;
     }
 
-    // Total resistance (series only for now)
     public double getTotalResistance() {
         List<Component> path = getTraversalPath();
-        double resistance = 0.0;
+        double seriesResistance = 0.0;
+        double reciprocalSum = 0.0;
+        int resistorCount = 0;
+
         for (Component c : path) {
             if (c instanceof Resistor r) {
-                resistance += r.getResistance();
+                resistorCount++;
+                reciprocalSum += 1.0 / r.getResistance();
+                seriesResistance += r.getResistance();
             }
         }
-        return resistance;
+
+        if (resistorCount > 1) {
+            return 1.0 / reciprocalSum;  // Parallel Resistance
+        }
+        return seriesResistance; // Series Resistance
     }
 
-    // Total voltage provided by all batteries
     public double getTotalVoltage() {
         List<Component> path = getTraversalPath();
         double voltage = 0.0;
@@ -70,19 +73,18 @@ public class CircuitMath {
         return voltage;
     }
 
-    // Computes total current using Ohm’s Law: I = V / R
     public double getTotalCurrent() {
         double R = getTotalResistance();
         double V = getTotalVoltage();
         return R == 0 ? 0 : V / R;
     }
 
-    // Assigns voltage and current to each component
     public void assignValuesToComponents() {
         double totalCurrent = getTotalCurrent();
+        double totalVoltage = getTotalVoltage();
 
-        System.out.println("⚡ Total voltage: " + getTotalVoltage() + " V");
-        System.out.println("⚡ Total current: " + totalCurrent + " A");
+        System.out.println(" Total voltage: " + totalVoltage + " V");
+        System.out.println(" Total current: " + totalCurrent + " A");
 
         for (LinkedList<Component> list : circuit.arrayList) {
             Component c = list.getFirst();
@@ -90,29 +92,25 @@ public class CircuitMath {
             if (c instanceof Wire wire) {
                 wire.setCurrent(totalCurrent);
                 wire.setVoltage(0);
-                System.out.println(" Wire updated: I=" + wire.getCurrent());
             }
 
-        if (c instanceof Resistor resistor) {
-    if (!resistor.isConnected(circuit)) {
-        System.out.println("Warning: Resistor is not connected!");
-
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Unconnected Resistor");
-        alert.setHeaderText(null);
-        alert.setContentText("A resistor is not connected to any components.");
-        alert.showAndWait();
-    } else {
-        double R = resistor.getResistance();
-        resistor.setCurrent(totalCurrent);
-        resistor.setVoltage(totalCurrent * R);
-        System.out.println(" Resistor updated: V=" + resistor.getVoltage() + ", I=" + resistor.getCurrent());
-    }
-}
-
+            if (c instanceof Resistor resistor) {
+                if (!resistor.isConnected(circuit)) {
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
+                    alert.setTitle("Unconnected Resistor");
+                    alert.setHeaderText(null);
+                    alert.setContentText("A resistor is not connected to any components.");
+                    alert.showAndWait();
+                } else {
+                    double R = resistor.getResistance();
+                    resistor.setCurrent(totalVoltage / R);
+                    resistor.setVoltage(totalVoltage);
+                    System.out.println("Resistor updated: V=" + resistor.getVoltage() + "V, I=" + resistor.getCurrent() + "A");
+                }
+            }
 
             if (c instanceof Battery battery) {
-                System.out.println(" Battery detected with potential: " + battery.getPotential() + " V");
+                System.out.println("Battery detected with potential: " + battery.getPotential() + " V");
             }
         }
     }
