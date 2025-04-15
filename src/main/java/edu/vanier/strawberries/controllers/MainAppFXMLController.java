@@ -277,7 +277,7 @@ public class MainAppFXMLController {
                 case "place-capacitor" -> select(new Capacitor(eventLocation, tempEnd, 0, true, false));
                 case "place-fuse" -> select(new Fuse(eventLocation, tempEnd));
                 case "place-lightbulb" -> select(new Lightbulb(eventLocation, tempEnd));
-                case "place-resistor" -> select(new Resistor(eventLocation, tempEnd, 100));
+                case "place-resistor" -> select(new Resistor(eventLocation, tempEnd, 10));
                 case "place-switch" -> select(new Switch(eventLocation, tempEnd, false));
      case "select" -> {
     setCursor(Cursor.CLOSED_HAND);
