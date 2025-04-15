@@ -7,6 +7,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.transform.Rotate;
 
 import java.net.URL;
+import java.util.LinkedList;
 
 public class Resistor extends Component {
     private double resistance;
@@ -79,6 +80,23 @@ public class Resistor extends Component {
         });
     }
 
+    
+    public boolean isConnected(Circuit circuit) {
+    int resistorIndex = circuit.getIndex(this);
+
+    for (LinkedList<Component> list : circuit.arrayList) {
+        for (Component component : list) {
+            if (component == this) continue; // skip self
+            int otherIndex = circuit.getIndex(component);
+
+            if (circuit.checkEdge(resistorIndex, otherIndex)) {
+                return true; // Found connection
+            }
+        }
+    }
+
+    return false; // Not connected
+}
     // TODO: Fix the method above to have a text field pop up to input the information for the component
 
 

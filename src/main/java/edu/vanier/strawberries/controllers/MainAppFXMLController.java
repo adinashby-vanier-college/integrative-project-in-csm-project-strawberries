@@ -279,11 +279,16 @@ public class MainAppFXMLController {
                 case "place-lightbulb" -> select(new Lightbulb(eventLocation, tempEnd));
                 case "place-resistor" -> select(new Resistor(eventLocation, tempEnd, 100));
                 case "place-switch" -> select(new Switch(eventLocation, tempEnd, false));
-                case "select" -> {
-                    setCursor(Cursor.CLOSED_HAND);
-                    edit(selection);
-                    //show arrows to rotate OR right click to rotate (on click)
-                }
+     case "select" -> {
+    setCursor(Cursor.CLOSED_HAND);
+    edit(selection);
+    if (selection instanceof Battery battery) {
+       battery.handleEdit(leftPanel);  
+
+    }
+}
+
+
                 default -> {}
             }
             if (!Objects.equals(drawingTool.getCurrentAction(), "select")) {
@@ -484,23 +489,29 @@ public class MainAppFXMLController {
         window.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/" + cssFile)).toExternalForm());
     }
 
-    private void edit(Component component) {
-
-        if(editing != component) {
-            if (component != null) component.setEdit(true);
-            if (editing != null) {
-                if (component == null) {
-                    editing.setEdit(false);
-                    editing = null;
-                } else {
-                    editing.setEdit(false);
-                    editing = component;
-                }
-            } else { //Editing is null & component is either (does not matter)
+  private void edit(Component component) {
+    if (editing != component) {
+        if (component != null) component.setEdit(true);
+        if (editing != null) {
+            if (component == null) {
+                editing.setEdit(false);
+                editing = null;
+            } else {
+                editing.setEdit(false);
                 editing = component;
             }
+        } else {
+            editing = component;
         }
 
+      if (component instanceof Battery battery) {
+    battery.handleEdit(leftPanel); 
+}
+
     }
+
+
+}
+
 
 }

@@ -35,14 +35,16 @@ public class Circuit {
     }
 
     public boolean checkEdge(int src, int dst) {
-        LinkedList<Component> currentList = arrayList.get(src);
-        Component dest = arrayList.get(dst).getFirst();
+    LinkedList<Component> currentList = arrayList.get(src);
 
-        for(Component component:currentList) {
-            if(component==dest) return true;
+    for (Component component : currentList) {
+        if (arrayList.get(dst).contains(component)) {
+            return true;
         }
-        return false;
     }
+    return false;
+}
+
 
     public void clear() {
         arrayList.clear();

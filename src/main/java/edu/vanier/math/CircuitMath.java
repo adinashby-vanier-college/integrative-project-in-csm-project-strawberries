@@ -3,6 +3,7 @@ package edu.vanier.math;
 import edu.vanier.strawberries.Models.*;
 
 import java.util.*;
+import javafx.scene.control.Alert;
 
 public class CircuitMath {
 
@@ -92,12 +93,23 @@ public class CircuitMath {
                 System.out.println(" Wire updated: I=" + wire.getCurrent());
             }
 
-            if (c instanceof Resistor resistor) {
-                double R = resistor.getResistance();
-                resistor.setCurrent(totalCurrent);
-                resistor.setVoltage(totalCurrent * R);
-                System.out.println(" Resistor updated: V=" + resistor.getVoltage() + ", I=" + resistor.getCurrent());
-            }
+        if (c instanceof Resistor resistor) {
+    if (!resistor.isConnected(circuit)) {
+        System.out.println("Warning: Resistor is not connected!");
+
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Unconnected Resistor");
+        alert.setHeaderText(null);
+        alert.setContentText("A resistor is not connected to any components.");
+        alert.showAndWait();
+    } else {
+        double R = resistor.getResistance();
+        resistor.setCurrent(totalCurrent);
+        resistor.setVoltage(totalCurrent * R);
+        System.out.println(" Resistor updated: V=" + resistor.getVoltage() + ", I=" + resistor.getCurrent());
+    }
+}
+
 
             if (c instanceof Battery battery) {
                 System.out.println(" Battery detected with potential: " + battery.getPotential() + " V");
