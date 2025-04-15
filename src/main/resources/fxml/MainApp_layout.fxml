@@ -128,18 +128,18 @@
             <VBox fx:id="leftPanelVBox" prefHeight="375.0" prefWidth="538.0">
                 <ScrollPane fx:id="toolbarScrollPane" prefHeight="40.0" prefWidth="531.0" vbarPolicy="NEVER">
                     <AnchorPane minHeight="35.0" minWidth="0.0" prefHeight="35.0" prefWidth="732.0">
-                        <HBox fx:id="toolbarHBox" prefHeight="35.0" prefWidth="730.0">
-                            <Button fx:id="zoomInBtn" minWidth="65.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="74.0" text="Zoom in" />
-                            <Button fx:id="zoomOutBtn" layoutX="10.0" layoutY="10.0" minWidth="70.0" mnemonicParsing="false" text="Zoom out" />
-                            <Button fx:id="undoBtn" layoutX="184.0" layoutY="10.0" minWidth="50.0" mnemonicParsing="false" text="Undo" />
-                            <Button fx:id="redoBtn" layoutX="229.0" layoutY="10.0" minWidth="45.0" mnemonicParsing="false" text="Redo" />
-                            <Button fx:id="copyBtn" layoutX="71.0" layoutY="10.0" minWidth="45.0" mnemonicParsing="false" text="Copy" />
-                            <Button fx:id="pasteBtn" layoutX="140.0" layoutY="10.0" minWidth="45.0" mnemonicParsing="false" prefWidth="45.0" text="Paste" />
-                            <Button fx:id="addWireBtn" layoutX="274.0" layoutY="10.0" minWidth="70.0" mnemonicParsing="false" text="Add wire" />
-                            <Button fx:id="addResistorBtn" layoutX="319.0" layoutY="10.0" minWidth="80.0" mnemonicParsing="false" text="Add resistor" />
-                            <Button fx:id="addCapacitorBtn" layoutX="364.0" layoutY="10.0" minWidth="90.0" mnemonicParsing="false" text="Add capacitor" />
-                            <Button fx:id="addBatteryBtn" layoutX="409.0" layoutY="10.0" minWidth="90.0" mnemonicParsing="false" text="Add battery" />
-                            <Button fx:id="addSwitchBtn" layoutX="454.0" layoutY="10.0" minWidth="80.0" mnemonicParsing="false" text="Add switch" />
+                        <HBox fx:id="toolbarHBox" maxWidth="-Infinity" minWidth="-Infinity" prefHeight="35.0" prefWidth="1000.0">
+                            <Button fx:id="zoomInBtn" mnemonicParsing="false" prefHeight="25.0" text="Zoom in" />
+                            <Button fx:id="zoomOutBtn" layoutX="10.0" layoutY="10.0" maxWidth="-Infinity" mnemonicParsing="false" text="Zoom out" />
+                            <Button fx:id="undoBtn" layoutX="184.0" layoutY="10.0" mnemonicParsing="false" text="Undo" />
+                            <Button fx:id="redoBtn" layoutX="229.0" layoutY="10.0" mnemonicParsing="false" text="Redo" />
+                            <Button fx:id="copyBtn" layoutX="71.0" layoutY="10.0" mnemonicParsing="false" text="Copy" />
+                            <Button fx:id="pasteBtn" layoutX="140.0" layoutY="10.0" mnemonicParsing="false" text="Paste" />
+                            <Button fx:id="addWireBtn" layoutX="274.0" layoutY="10.0" mnemonicParsing="false" text="Add wire" />
+                            <Button fx:id="addResistorBtn" layoutX="319.0" layoutY="10.0" mnemonicParsing="false" text="Add resistor" />
+                            <Button fx:id="addCapacitorBtn" layoutX="364.0" layoutY="10.0" mnemonicParsing="false" text="Add capacitor" />
+                            <Button fx:id="addBatteryBtn" layoutX="409.0" layoutY="10.0" mnemonicParsing="false" text="Add battery" />
+                            <Button fx:id="addSwitchBtn" layoutX="454.0" layoutY="10.0" mnemonicParsing="false" text="Add switch" />
                         </HBox>
                     </AnchorPane>
                 </ScrollPane>
