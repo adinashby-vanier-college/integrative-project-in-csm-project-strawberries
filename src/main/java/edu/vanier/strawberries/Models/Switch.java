@@ -10,7 +10,6 @@ public class Switch extends Component {
     private boolean isClosed;
     private double mouseOffsetX;
     private double mouseOffsetY;
-    private final ImageView openswitchImageView;
 
     public Switch(Node begin, Node end, boolean isClosed) {
         super(begin, end);
@@ -20,20 +19,15 @@ public class Switch extends Component {
         if (imgUrl == null) {
             System.out.println("Could not load open switch image");
         }
-
-        Image openswitchImage = new Image(imgUrl.toExternalForm());
-        DIAGRAM_DISPLAY = openswitchImage;
-        openswitchImageView = new ImageView(openswitchImage);
-        openswitchImageView.setFitWidth(100);
-        openswitchImageView.setPreserveRatio(true);
-        getChildren().add(openswitchImageView);
-
-        enableDragAndRotate();
+        else {
+            display = new Image(imgUrl.toExternalForm());
+            enableDragAndRotate();
+        }
     }
 
     public void toggle() {
         isClosed = !isClosed;
-        // Optional: update image to show closed/open state
+        // TODO: update image to show closed/open state
     }
 
     public void setOpen(boolean open) {
@@ -42,14 +36,6 @@ public class Switch extends Component {
 
     public boolean isClosed() {
         return isClosed;
-    }
-
-    public ImageView getImageView() {
-        return openswitchImageView;
-    }
-
-    public Image getSymbol() {
-        return openswitchImageView.getImage();
     }
 
     public void enableDragAndRotate() {
@@ -82,17 +68,4 @@ public class Switch extends Component {
 
     // TODO: Fix the method above to have a text field pop up to input the information for the component
 
-    @Override
-    public void draw() {
-        double deltaX = end.getX() - begin.getX();
-        double deltaY = end.getY() - begin.getY();
-        double angle = Math.toDegrees(Math.atan2(deltaY, deltaX));
-
-        Rotate rotation = getAngleRotate();
-
-        display.getTransforms().clear();
-        display.getTransforms().add(rotation);
-        setLayoutX(begin.getX());
-        setLayoutY(begin.getY());
-    }
 }

@@ -4,9 +4,6 @@ import javafx.geometry.Point2D;
 import javafx.scene.layout.Pane;
 import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.transform.Rotate;
 
 import java.net.URL;
 
@@ -14,7 +11,6 @@ public class Battery extends Component {
     private double potential;
     private boolean startPolarity;
     private boolean endPolarity;
-    private final ImageView batteryImageView;
     private double mouseOffsetX;
     private double mouseOffsetY;
 
@@ -22,17 +18,15 @@ public class Battery extends Component {
         super(begin, end);
         this.potential = potential;
 
-        URL imgUrl = getClass().getResource("/images/battery_diagram.png"); // debug for the image
-        if (imgUrl == null) {
-            System.out.println("Could not load battery image");
+        try{
+            URL imgUrl = getClass().getResource("/images/battery_diagram.png"); // debug for the image
+            display = new Image(imgUrl.toExternalForm());
+            enableDragAndRotate();
         }
-        Image batteryImage = new Image(imgUrl.toExternalForm());
-        DIAGRAM_DISPLAY = batteryImage;
-        batteryImageView = new ImageView(batteryImage);
-        batteryImageView.setFitWidth(100);
-        batteryImageView.setPreserveRatio(true);
-        getChildren().add(batteryImageView);
-        enableDragAndRotate();
+        catch(NullPointerException e) {
+            System.out.println("Could not load battery image");
+            display = null;
+        }
     }
 
     public void enableDragAndRotate() {
@@ -97,32 +91,6 @@ public class Battery extends Component {
         endPolarity = temp;
     }
 
-    
-    @Override
-    public Image getSymbol() {
-        return batteryImageView.getImage();
-    }
-
-    @Override
-    public void draw() {
-       double deltaX = end.getX() - begin.getX();
-       double deltaY = end.getY() - begin.getY();
-       double angle = Math.toDegrees(Math.atan2(deltaY, deltaX));
-
-        Rotate rotation = getAngleRotate();
-
-        // Set the rotation of the battery image based on the angle
-
-        display.getTransforms().clear();
-        display.getTransforms().add(rotation);
-        setLayoutX(begin.getX());
-        setLayoutY(begin.getY());
-    }
-
-    public ImageView getImageView() {
-        return batteryImageView;
-    }
-
     public void snapNearbyNode(Node nodeToCheck) {
         Point2D nodePos = new Point2D(nodeToCheck.getX(), nodeToCheck.getY());
         Point2D beginPos = new Point2D(begin.getX(), begin.getY());
@@ -138,34 +106,34 @@ public class Battery extends Component {
     }
 
 
-   @Override
-public void handleEdit(MouseEvent event) {
-    javafx.scene.control.TextField inputField = new javafx.scene.control.TextField(String.valueOf(potential));
-    inputField.setPrefWidth(60);
-    inputField.setStyle("-fx-font-size: 10px; -fx-background-color: white; -fx-border-color: black;");
-
-    // Position the input next to the battery
-    double midX = (begin.getX() + end.getX()) / 2;
-    double midY = (begin.getY() + end.getY()) / 2;
-    inputField.setLayoutX(midX + 10);
-    inputField.setLayoutY(midY - 10);
-
-    Pane parentPane = (Pane) this.getParent();
-    if (parentPane == null) return;
-
-    parentPane.getChildren().add(inputField);
-    inputField.requestFocus();
-
-    // When user presses Enter or loses focus
-    inputField.setOnAction(_ -> {
-        updateVoltageFromField(inputField, parentPane);
-    });
-    inputField.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
-        if (!isNowFocused) {
-            updateVoltageFromField(inputField, parentPane);
-        }
-    });
-}
+//   @Override
+//public void handleEdit(MouseEvent event) {
+//    javafx.scene.control.TextField inputField = new javafx.scene.control.TextField(String.valueOf(potential));
+//    inputField.setPrefWidth(60);
+//    inputField.setStyle("-fx-font-size: 10px; -fx-background-color: white; -fx-border-color: black;");
+//
+//    // Position the input next to the battery
+//    double midX = (begin.getX() + end.getX()) / 2;
+//    double midY = (begin.getY() + end.getY()) / 2;
+//    inputField.setLayoutX(midX + 10);
+//    inputField.setLayoutY(midY - 10);
+//
+//    Pane parentPane = (Pane) this.getParent();
+//    if (parentPane == null) return;
+//
+//    parentPane.getChildren().add(inputField);
+//    inputField.requestFocus();
+//
+//    // When user presses Enter or loses focus
+//    inputField.setOnAction(_ -> {
+//        updateVoltageFromField(inputField, parentPane);
+//    });
+//    inputField.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+//        if (!isNowFocused) {
+//            updateVoltageFromField(inputField, parentPane);
+//        }
+//    });
+//}
 
 private void updateVoltageFromField(javafx.scene.control.TextField inputField, Pane parentPane) {
     try {

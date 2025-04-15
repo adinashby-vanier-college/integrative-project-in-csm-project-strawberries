@@ -8,7 +8,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
-import javafx.scene.ImageCursor;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.chart.LineChart;
@@ -21,8 +20,6 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -45,11 +42,15 @@ import java.util.Objects;
  */
 public class MainAppFXMLController {
 
+    //git commit -m "cleaned up some leftover code from the migration ImageView -> Canvas + polished selection logic"
+
     private final static Logger logger = LoggerFactory.getLogger(MainAppFXMLController.class);
 
     public boolean animationRunning;
-    public Component selection;
+    public Component selection,editing;
     public Circuit circuit;
+    private double posX,posY;
+    private Node[] toMove = new Node[2];
 
     //Import FXML variables
     @FXML
@@ -99,20 +100,39 @@ public class MainAppFXMLController {
         initUI();
         setUpKeyListeners();
         applyTheme("light-mode.css");
-        lightThemeItem.setOnAction(e -> applyTheme("light-mode.css"));
-        darkThemeItem.setOnAction(e -> applyTheme("dark-mode.css"));
-        strawThemeItem.setOnAction(e -> applyTheme("strawberries-theme.css"));
+        lightThemeItem.setOnAction(_ -> applyTheme("light-mode.css"));
+        darkThemeItem.setOnAction(_-> applyTheme("dark-mode.css"));
+        strawThemeItem.setOnAction(_-> applyTheme("strawberries-theme.css"));
 
         circuit = new Circuit();
 
         // SET UP EVENT LISTENERS
+        canvas.addEventHandler(MouseEvent.MOUSE_MOVED, this::mouseMoved);
         canvas.addEventHandler(MouseEvent.MOUSE_PRESSED, this::mousePressed);
         canvas.addEventHandler(MouseEvent.MOUSE_DRAGGED, this::mouseDragged);
         canvas.addEventHandler(MouseEvent.MOUSE_RELEASED, this::mouseReleased);
+
+        if(drawingArea.circuit==null) drawingArea.setCircuit(circuit);
     }
 
     public void update() {
-        if(drawingArea.circuit==null) drawingArea.setCircuit(circuit);
+        Point2D mouseAt = new Point2D(posX,posY);
+        if(editing == selection && drawingTool.getCurrentAction().equals("select")) {
+            for (LinkedList<Component> list : circuit.arrayList) {
+                for (Component current : list) {
+                    if (current instanceof Wire wire && checkLineCollision(mouseAt, wire)) {
+                        select(current);
+                    }
+                    else if (!(current instanceof Wire) && checkImageCollision(mouseAt, current)) {
+                        select(current);
+                    }
+                    else {
+                        unselect(current);
+                    }
+                }
+            }
+        }
+
         drawingArea.drawContent();
     }
 
@@ -151,8 +171,8 @@ public class MainAppFXMLController {
 
 // 4. SET UP UI ELEMENTS
         // Set button actions
-        zoomInBtn.setOnAction(_-> {drawingArea.zoomIn();});
-        zoomOutBtn.setOnAction(_-> {drawingArea.zoomOut();});
+        zoomInBtn.setOnAction(_-> drawingArea.zoomIn());
+        zoomOutBtn.setOnAction(_-> drawingArea.zoomOut());
         addWireBtn.setOnAction(_-> drawingTool.setCurrentAction("place-wire"));
         addResistorBtn.setOnAction(_->drawingTool.setCurrentAction("place-resistor"));
         addBatteryBtn.setOnAction(_->drawingTool.setCurrentAction("place-battery"));
@@ -226,7 +246,6 @@ public class MainAppFXMLController {
             if (animationRunning) {
                 runStopBtn.setText("Stop");
 
-
                 edu.vanier.math.CircuitMath math = new edu.vanier.math.CircuitMath(drawingArea.circuit);
                 math.assignValuesToComponents();
 
@@ -238,30 +257,32 @@ public class MainAppFXMLController {
         });
     }
 
+    private void mouseMoved(MouseEvent e) {
+        posX = e.getX();
+        posY = e.getY();
+        if(drawingTool.getCurrentAction().equals("select")) {
+            if (selection != null) setCursor(Cursor.OPEN_HAND);
+            else setCursor(Cursor.DEFAULT);
+        }
+    }
+
     private void mousePressed(MouseEvent e) {
         if(!Objects.equals(drawingTool.getCurrentAction(),"")) {
             drawingTool.setPencilDown(true);
             Node eventLocation = new Node(drawingArea.snap(e.getX()), drawingArea.snap(e.getY()));
             Node tempEnd = Node.copyOf(eventLocation);
             switch (drawingTool.getCurrentAction()) {
-                case "place-wire" -> selection = new Wire(eventLocation, tempEnd, drawingTool.defaultColor, 0, 0);
-                case "place-battery" -> selection = new Battery(eventLocation, tempEnd, 12);
-                case "place-capacitor" -> selection = new Capacitor(eventLocation, tempEnd, 0, true, false);
-                case "place-fuse" -> selection = new Fuse(eventLocation, tempEnd);
-                case "place-lightbulb" -> selection = new Lightbulb(eventLocation, tempEnd);
-                case "place-resistor" -> selection = new Resistor(eventLocation, tempEnd, 100);
-                case "place-switch" -> selection = new Switch(eventLocation, tempEnd, false);
+                case "place-wire" -> select(new Wire(eventLocation, tempEnd, drawingTool.defaultColor, 0, 0));
+                case "place-battery" -> select(new Battery(eventLocation, tempEnd, 12));
+                case "place-capacitor" -> select(new Capacitor(eventLocation, tempEnd, 0, true, false));
+                case "place-fuse" -> select(new Fuse(eventLocation, tempEnd));
+                case "place-lightbulb" -> select(new Lightbulb(eventLocation, tempEnd));
+                case "place-resistor" -> select(new Resistor(eventLocation, tempEnd, 100));
+                case "place-switch" -> select(new Switch(eventLocation, tempEnd, false));
                 case "select" -> {
-                    circuit.unselectAll();
-                    Point2D clickedAt = new Point2D(e.getX(), e.getY());
-                    for (LinkedList<Component> list : circuit.arrayList) {
-                        for (Component current : list) {
-                            if (current.intersects(e.getX(), e.getY(), 100, 100)) {
-                                selection = current;
-                                current.markAsSelected(true);
-                            }
-                        }
-                    }
+                    setCursor(Cursor.CLOSED_HAND);
+                    edit(selection);
+                    //show arrows to rotate OR right click to rotate (on click)
                 }
                 default -> {}
             }
@@ -269,6 +290,40 @@ public class MainAppFXMLController {
                 circuit.addComponent(selection);
             }
         }
+
+        if(editing != null) {
+            if(editing instanceof Wire wire) {
+                //find which node to move
+                Point2D begin = new Point2D(wire.begin.getX(), wire.begin.getY()),
+                        end = new Point2D(wire.end.getX(), wire.end.getY());
+
+                //1. Calculate the dist from the point to either node
+                double d1 = begin.distance(e.getX(), e.getY());
+                double d2 = end.distance(e.getX(), e.getY());
+                double buffer = 0.4; // Accounts for uncertainty due to cursor size
+
+                toMove = new Node[2]; //(re)initializing the array
+
+                if (d1 + buffer <= 20) {
+                    toMove[0] = wire.begin;
+                } else if (d2 + buffer <= 20) {
+                    toMove[0] = wire.end;
+                } else {
+                    toMove[0] = wire.begin;
+                    toMove[1] = wire.end;
+                }
+            }
+            else {
+                toMove[0] = editing.begin;
+                toMove[1] = null;
+            }
+        }
+    }
+
+    private boolean checkImageCollision(Point2D source, Component component) {
+        double minX = Math.min(component.begin.getX(),component.end.getX()),
+               minY = Math.min(component.begin.getY(),component.end.getY());
+        return (source.getX() <= minX+component.display.getWidth() && source.getY() <= minY+component.display.getHeight());
     }
 
     private void mouseDragged(MouseEvent e) {
@@ -277,26 +332,61 @@ public class MainAppFXMLController {
             double nearestY = drawingArea.snap(e.getY());
             selection.moveNode(selection.end, nearestX, nearestY);
         }
-        if(Objects.equals(drawingTool.getCurrentAction(), "select")) {
-            //TODO add modifying a node after it's been drawn
 
+        //TODO testing
+        if(editing != null) {
+            setCursor(Cursor.CLOSED_HAND);
+            //TODO add modifying a node after it's been drawn
+            if(editing instanceof Wire wire) {
+                for (Node node : toMove) {
+                    if (node != null) {
+                        node.setPosition(e.getX(), e.getY());
+                    }
+                }
+            }
+            else {
+                Node node = toMove[0];
+                node.setPosition(drawingArea.snap(e.getX()-editing.display.getWidth()/2),drawingArea.snap(e.getY()-editing.display.getHeight()/2));
+            }
         }
     }
+
+    private boolean checkLineCollision(Point2D source, Wire wire) {
+        Point2D begin = new Point2D(wire.begin.getX(),wire.begin.getY()),
+                end = new Point2D(wire.end.getX(),wire.end.getY());
+
+        //1. Calculate the dist from the point to either node
+        double d1 = source.distance(begin);
+        double d2 = source.distance(end);
+
+        //2. Verify that both add up to the length of the line wire
+        double length = begin.distance(end);
+        double buffer = 0.4; // Accounts for uncertainty due to cursor size
+
+        return (d1+d2 >= length-buffer && d1+d2 <= length+buffer);
+    }
+
 
     private void mouseReleased(MouseEvent e) {
         if (selection != null) {
             if (drawingTool.isPencilDown()) {
                 drawingTool.setPencilDown(false);
                 attemptConnection(selection, selection.end);
-
-                // Enable dragging and rotating if it's draggable
-                if (selection instanceof Battery battery) {
-                    battery.enableDragAndRotate();
-                } else if (selection instanceof Switch sw) {
-                    sw.enableDragAndRotate(); // Do the same for others
-                }
-                selection = null;
             }
+            if(canvas.getCursor().equals(Cursor.CLOSED_HAND)) setCursor(Cursor.OPEN_HAND);
+        }
+    }
+
+    private void select(Component component) {
+        if(selection!=null) selection.markAsSelected(false);
+        component.markAsSelected(true);
+        selection = component;
+    }
+
+    private void unselect(Component component) {
+        if(component != null && selection == component) {
+            component.markAsSelected(false);
+            selection = null;
         }
     }
 
@@ -323,11 +413,8 @@ public class MainAppFXMLController {
                 for (int i = 1; i < connectedNodes.size(); i++) {
                     if (!circuit.checkEdge(srcIndex, dstIndex)) circuit.addEdge(srcIndex, dstIndex);
                 }
-                connectedComponent.draw();
             }
         }
-
-        toCheck.draw();
     }
 
     private static LineChart<Number, Number> getChart() {
@@ -359,7 +446,6 @@ public class MainAppFXMLController {
 
     @FXML
     private void menuSelectBtnPressed() {
-        System.out.println("select pressed");
         drawingTool.setCurrentAction("select");
     }
 
@@ -367,37 +453,54 @@ public class MainAppFXMLController {
         window.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
             switch(event.getCode()) {
                 case S,ESCAPE -> {
+                    unselect(selection);
                     drawingTool.setCurrentAction("select");
-                    window.setCursor(Cursor.OPEN_HAND);
+                    setCursor(Cursor.DEFAULT);
                 }
-                case W -> {
-                    drawingTool.setCurrentAction("place-wire");
-                }
-                case DELETE,BACK_SPACE -> { //TODO deletion not working
-                    System.out.println("deleted");
-                    circuit.deleteComponent(selection);
+                case W -> drawingTool.setCurrentAction("place-wire");
+
+                case DELETE,BACK_SPACE -> { //TODO deletion not working properly
+                    circuit.deleteComponent(editing);
                     //delete selected element
                 }
                 case COMMA -> {
-                    System.out.println("ROTATING LEFT");
-                    //TODO rotate selected element 90 deg left
+                    if(editing!=null) {
+                        editing.rotate("left");
+                    }
                 }
                 case PERIOD -> {
-                    System.out.println("ROTATING RIGHT");
-                    //TODO rotate selected element 90 deg right
+                    if(editing!=null) editing.rotate("right");
                 }
             }
-            System.out.println(event.getCode());
         });
     }
 
     public void setCursor(Cursor cursor) {
-        window.setCursor(cursor);
+        canvas.setCursor(cursor);
     }
 
     private void applyTheme(String cssFile) {
         window.getStylesheets().clear();
         window.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/" + cssFile)).toExternalForm());
+    }
+
+    private void edit(Component component) {
+
+        if(editing != component) {
+            if (component != null) component.setEdit(true);
+            if (editing != null) {
+                if (component == null) {
+                    editing.setEdit(false);
+                    editing = null;
+                } else {
+                    editing.setEdit(false);
+                    editing = component;
+                }
+            } else { //Editing is null & component is either (does not matter)
+                editing = component;
+            }
+        }
+
     }
 
 }

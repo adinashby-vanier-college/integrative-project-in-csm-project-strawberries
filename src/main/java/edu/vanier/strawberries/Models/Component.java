@@ -2,9 +2,7 @@ package edu.vanier.strawberries.Models;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
-import javafx.scene.transform.Rotate;
 
 public abstract class Component extends StackPane {
 
@@ -15,16 +13,15 @@ public abstract class Component extends StackPane {
      * this will always be the right node.*/
     public Node end;
     protected Image DIAGRAM_DISPLAY, IMAGE_DISPLAY;
-    public ImageView display;
-    public boolean selected;
+    public Image display;
+    public boolean selected, edit;
     private double angle;
 
     public Component(Node begin, Node end) {
         this.begin = begin;
         this.end = end;
-        display = new ImageView();
-        addEventHandler(MouseEvent.MOUSE_PRESSED, this::handleEdit);
-        addEventHandler(MouseEvent.MOUSE_DRAGGED, this::handleDrag);
+        angle = 0;
+        getChildren().add(new ImageView(display));
     }
 
     /**
@@ -48,11 +45,6 @@ public abstract class Component extends StackPane {
         //update node end to new coordinates + x and y sizes calculated (maintain same angle)
     }
 
-    /** @return the symbol/image of the component */
-    public Image getSymbol() {
-        return DIAGRAM_DISPLAY;
-    }
-
     public void setBegin(double x, double y) {
         this.begin.setPosition(x,y);
     }
@@ -61,46 +53,39 @@ public abstract class Component extends StackPane {
 
     public void markAsSelected(boolean isSelected) {
         selected = isSelected;
-        begin.setMarkerVisible(isSelected);
-        end.setMarkerVisible(isSelected);
-
-        if(isSelected) {
-            if(!getChildren().contains(begin.getMarker())) getChildren().add(begin.getMarker());
-            if(!getChildren().contains(end.getMarker())) getChildren().add(end.getMarker());
-        } else {
-            getChildren().removeAll(begin.getMarker(), end.getMarker());
-        }
-    }
-
-    public void handleEdit(MouseEvent event) {}
-
-    public void handleDrag(MouseEvent event) {}
-
-    public Rotate getAngleRotate() {
-        // calculate angle of rotation
-        double x = end.getX() - begin.getX();
-        double y = end.getY() - begin.getY();
-
-        double angle = Math.toDegrees(Math.atan(y / x));
-        if (begin.getX() > end.getX()) {
-            if (begin.getY() < end.getY()) angle = 180 + angle;
-            else angle = -180 + angle;
-        }
-
-        this.angle = angle;
-        return new Rotate(angle,begin.getX(), begin.getY());
     }
 
     public double getAngle() {
         return angle;
     }
 
-    // ABSTRACT methods for each component type
+    public boolean isEdit() {
+        return edit;
+    }
+
+    public void setEdit(boolean state) {
+        edit = state;
+    }
 
     /**
-     * Show/Update the image of the component
-     * */
-    public abstract void draw();
+     *
+     * @param direction "left" or "right", not case-sensitive
+     */
+    public void rotate(String direction) {
+        switch(direction.toUpperCase()) {
+            case "LEFT" -> {
+                angle -= 90;
+                if(angle==-360) angle = 0;
+            }
+            case "RIGHT" -> {
+                angle += 90;
+                if(angle==360) angle = 0;
+            }
+            default -> {}
+        }
+    }
+
+    // ABSTRACT methods for each component type
 
     public void enableDragAndRotate() {
     }

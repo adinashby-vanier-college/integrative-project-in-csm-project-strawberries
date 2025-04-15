@@ -1,6 +1,7 @@
 package edu.vanier.strawberries.Models;
 
 
+import edu.vanier.strawberries.ui.MainApp;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -8,6 +9,9 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.animation.PathTransition;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Text;
+import javafx.scene.transform.Affine;
+import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
 import javafx.util.Duration;
 import javafx.scene.shape.Circle;
@@ -51,18 +55,27 @@ public class DrawingArea {
                 gc.setLineWidth(3);
                 gc.setStroke(wire.getColor());
                 gc.strokeLine(component.begin.getX(),component.begin.getY(),component.end.getX(),component.end.getY());
+
+                if(wire.selected) {
+                    gc.setFill(Color.BLACK);
+                    gc.fillOval(wire.begin.getX()-4,wire.begin.getY()-4,8,8);
+                    gc.fillOval(wire.end.getX()-4,wire.end.getY()-4,8,8);
+                }
             }
             else {
-                //TODO add angles
-                Image img = component.DIAGRAM_DISPLAY;
+                Image img = component.display;
+                Rotate rotateTransform = new Rotate(component.getAngle(),component.begin.getX(),component.begin.getY());
+                gc.save();
+                gc.setTransform(new Affine(rotateTransform));
                 gc.drawImage(img,component.begin.getX(),component.begin.getY()-(img.getHeight())/2,img.getWidth()*zoom,img.getHeight()*zoom);
-            }
-            if(component.selected) {
-                gc.setStroke(Color.PINK);
-                gc.setFill(Color.PINK);
-                gc.setLineWidth(2);
-                gc.rect(component.begin.getX(),component.begin.getY(),component.display.getFitWidth(),component.display.getFitHeight());
-                gc.rect(0,0,20,20);
+
+                if(component.isEdit()) {
+                    //show editing display
+                    gc.setStroke(Color.BLUE);
+                    gc.setLineWidth(1.2);
+                    gc.strokeRect(component.begin.getX(),component.begin.getY()-(img.getHeight())/2,img.getWidth()*zoom,img.getHeight()*zoom);
+                }
+                gc.restore();
             }
         }
     }
@@ -78,15 +91,6 @@ public class DrawingArea {
             return pos + (squareSize - remainder);
     }
 
-    private void unselectAll() {
-        for(LinkedList<Component> ll : circuit.arrayList) {
-            for(Component current : ll) {
-                current.markAsSelected(false);
-                current.draw();
-            }
-        }
-    }
-
     public void animateCurrentFlow(boolean b) {
         for (LinkedList<Component> list : circuit.arrayList) {
             for (Component c : list) {
@@ -95,8 +99,7 @@ public class DrawingArea {
                     // if (!wire.hasCurrent()) continue;
 
                     Circle currentDot = new Circle(5, Color.RED);
-//                    canvas.getGraphicsContext2D().fillOval();
-//                    canvas.getChildren().add(currentDot);
+                    gc.fillOval(wire.begin.getX(),wire.begin.getY(),10,10);
 
                     Line path = new Line(
                         wire.begin.getX(), wire.begin.getY(),

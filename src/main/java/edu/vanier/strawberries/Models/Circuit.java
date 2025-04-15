@@ -48,15 +48,6 @@ public class Circuit {
         arrayList.clear();
     }
 
-    public void unselectAll() {
-        for(LinkedList<Component> ll : arrayList) {
-            for(Component current : ll) {
-                current.markAsSelected(false);
-//                current.draw();
-            }
-        }
-    }
-
     public ArrayList<Component> toArrayList() {
         ArrayList<Component> al = new ArrayList<>();
         for(LinkedList<Component> currentList:arrayList) {

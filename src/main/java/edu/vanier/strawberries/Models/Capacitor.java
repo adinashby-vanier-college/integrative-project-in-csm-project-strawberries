@@ -12,7 +12,6 @@ public class Capacitor extends Component {
     private boolean isEndTerminal;
     private double mouseOffsetX;
     private double mouseOffsetY;
-    private final ImageView capacitorImageView;
 
     public Capacitor(Node begin, Node end, double storedEnergy, boolean isStartTerminal, boolean isEndTerminal) {
         super(begin, end);
@@ -25,18 +24,10 @@ public class Capacitor extends Component {
         if (imgUrl == null) {
             System.out.println("Could not load capacitor image.");
         }
-
-        Image capacitorImage = new Image(imgUrl.toExternalForm());
-        DIAGRAM_DISPLAY = capacitorImage;
-        capacitorImageView = new ImageView(capacitorImage);
-        capacitorImageView.setFitWidth(100);
-        capacitorImageView.setPreserveRatio(true);
-        getChildren().add(capacitorImageView);
-        enableDragAndRotate();
-    }
-
-    public ImageView getImageView() {
-        return capacitorImageView;
+        else {
+            display = new Image(imgUrl.toExternalForm());
+            enableDragAndRotate();
+        }
     }
 
     public void enableDragAndRotate() {
@@ -69,9 +60,6 @@ public class Capacitor extends Component {
 
     // TODO: Fix the method above to have a text field pop up to input the information for the component
 
-    public Image getSymbol() {
-        return capacitorImageView.getImage();
-    }
 
     public double getStoredEnergy() {
         return storedEnergy;
@@ -81,16 +69,4 @@ public class Capacitor extends Component {
         return storedEnergy == capacity;
     }
 
-    @Override
-    public void draw() {
-        double deltaX = end.getX() - begin.getX();
-        double deltaY = end.getY() - begin.getY();
-        double angle = Math.toDegrees(Math.atan2(deltaY, deltaX));
-
-        Rotate rotation = getAngleRotate();
-        display.getTransforms().clear();
-        display.getTransforms().add(rotation);
-        setLayoutX(begin.getX());
-        setLayoutY(begin.getY());
-    }
 }

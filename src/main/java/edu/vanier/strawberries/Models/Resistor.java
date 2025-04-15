@@ -14,7 +14,6 @@ public class Resistor extends Component {
     private double voltage;
     private double mouseOffsetX;
     private double mouseOffsetY;
-    private final Image resistorImage;
 
     public Resistor(Node begin, Node end, double resistance) {
         super(begin, end);
@@ -25,12 +24,10 @@ public class Resistor extends Component {
         if (imgUrl == null) {
             System.out.println("Could not load resistor image");
         }
-
-        Image resistorImage = new Image(imgUrl.toExternalForm());
-        DIAGRAM_DISPLAY = resistorImage;
-        this.resistorImage = resistorImage;
-
-        enableDragAndRotate();
+        else {
+            display = new Image(imgUrl.toExternalForm());
+            enableDragAndRotate();
+        }
     }
 
     public void enableDragAndRotate() {
@@ -84,13 +81,6 @@ public class Resistor extends Component {
 
     // TODO: Fix the method above to have a text field pop up to input the information for the component
 
-//    public ImageView getImageView() {
-//        return resistorImage;
-//    }
-
-    public Image getSymbol() {
-        return resistorImage;
-    }
 
     public double getResistance() {
         return resistance;
@@ -135,18 +125,5 @@ public class Resistor extends Component {
         }
 
         parentPane.getChildren().remove(inputField);
-    }
-
-    @Override
-    public void draw() {
-        double deltaX = end.getX() - begin.getX();
-        double deltaY = end.getY() - begin.getY();
-        double angle = Math.toDegrees(Math.atan2(deltaY, deltaX));
-
-        Rotate rotation = getAngleRotate();
-        display.getTransforms().clear();
-        display.getTransforms().add(rotation);
-        setLayoutX(begin.getX());
-        setLayoutY(begin.getY());
     }
 }

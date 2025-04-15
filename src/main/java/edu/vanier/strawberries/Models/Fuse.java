@@ -5,9 +5,6 @@ public class Fuse extends Component {
         super(begin, end);
     }
 
-    public void draw() {
-        // Implement the drawing logic here
-        System.out.println("Drawing a Fuse ");
-    }
+
 }
 

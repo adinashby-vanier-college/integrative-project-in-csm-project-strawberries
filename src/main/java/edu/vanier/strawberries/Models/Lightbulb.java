@@ -5,8 +5,5 @@ public class Lightbulb extends Component {
         super(begin, end);
     }
 
-    public void draw() {
-        // Implement the drawing logic here
-        System.out.println("Drawing a Lightbulb ??  ");
-    }
+
 }

@@ -14,8 +14,7 @@ public class Wire extends Component {
     private double current;
     private double voltage;
     private double resistance;
-    private Line line;
-    private final AtomicReference<String> toMove;
+//    private final AtomicReference<String> toMove;
     private PathTransition transition;
     private Circle animatedDot;
 
@@ -27,102 +26,101 @@ public class Wire extends Component {
         this.color = color;
         this.current = current;
         this.voltage = voltage;
-        toMove = new AtomicReference<>(null);
-        line = new Line();
+//        toMove = new AtomicReference<>(null);
 
-        begin.getMarker().addEventHandler(MouseEvent.MOUSE_PRESSED, _ -> toMove.set("begin"));
-        end.getMarker().addEventHandler(MouseEvent.MOUSE_PRESSED, _ -> toMove.set("end"));
-        line.addEventHandler(MouseEvent.MOUSE_PRESSED, _ -> toMove.set("full"));
+//        begin.getMarker().addEventHandler(MouseEvent.MOUSE_PRESSED, _ -> toMove.set("begin"));
+//        end.getMarker().addEventHandler(MouseEvent.MOUSE_PRESSED, _ -> toMove.set("end"));
     }
 
-    @Override
-    public void draw() {
-        getChildren().clear();
+//    @Override
+//    public void draw() {
+//        getChildren().clear();
+//
+//        line.setStartX(begin.getX());
+//        line.setStartY(begin.getY());
+//        line.setEndX(end.getX());
+//        line.setEndY(end.getY());
+//        line.setFill(color);
+//        line.setStrokeWidth(4);
+//        getChildren().add(line);
+//
+//        double minX = Math.min(begin.getX(), end.getX());
+//        double maxX = Math.max(begin.getX(), end.getX());
+//        double minY = Math.min(begin.getY(), end.getY());
+//        double maxY = Math.max(begin.getY(), end.getY());
+//
+//        if (selected) {
+//            getChildren().addAll(begin.getMarker(), end.getMarker());
+//            if (toMove.get() == null) toMove.set("full");
+//
+//            begin.getMarker().setTranslateX(((minX == begin.getX()) ? -Math.abs(maxX - minX) / 2 : Math.abs(maxX - minX) / 2));
+//            begin.getMarker().setTranslateY(((minY == begin.getY()) ? -Math.abs(maxY - minY) / 2 : Math.abs(maxY - minY) / 2));
+//            end.getMarker().setTranslateX(((minX == end.getX()) ? -Math.abs(maxX - minX) / 2 : Math.abs(maxX - minX) / 2));
+//            end.getMarker().setTranslateY(((minY == end.getY()) ? -Math.abs(maxY - minY) / 2 : Math.abs(maxY - minY) / 2));
+//        }
+//
+//        //set layout x and y
+//        setLayoutX(minX);
+//        setLayoutY(minY);
+//    }
 
-        line.setStartX(begin.getX());
-        line.setStartY(begin.getY());
-        line.setEndX(end.getX());
-        line.setEndY(end.getY());
-        line.setFill(color);
-        line.setStrokeWidth(4);
-        getChildren().add(line);
-
-        double minX = Math.min(begin.getX(), end.getX());
-        double maxX = Math.max(begin.getX(), end.getX());
-        double minY = Math.min(begin.getY(), end.getY());
-        double maxY = Math.max(begin.getY(), end.getY());
-
-        if (selected) {
-            getChildren().addAll(begin.getMarker(), end.getMarker());
-            if (toMove.get() == null) toMove.set("full");
-
-            begin.getMarker().setTranslateX(((minX == begin.getX()) ? -Math.abs(maxX - minX) / 2 : Math.abs(maxX - minX) / 2));
-            begin.getMarker().setTranslateY(((minY == begin.getY()) ? -Math.abs(maxY - minY) / 2 : Math.abs(maxY - minY) / 2));
-            end.getMarker().setTranslateX(((minX == end.getX()) ? -Math.abs(maxX - minX) / 2 : Math.abs(maxX - minX) / 2));
-            end.getMarker().setTranslateY(((minY == end.getY()) ? -Math.abs(maxY - minY) / 2 : Math.abs(maxY - minY) / 2));
-        }
-
-        //set layout x and y
-        setLayoutX(minX);
-        setLayoutY(minY);
-    }
-
-    @Override
-    public void handleEdit(MouseEvent event) {
-        markAsSelected(true);
-        draw();
-
-        Pane parentPane = (Pane) this.getParent();
-        if (parentPane == null) return;
-
-        // Remove label if it already exists (toggle)
-        if (infoLabel != null && parentPane.getChildren().contains(infoLabel)) {
-            parentPane.getChildren().remove(infoLabel);
-            infoLabel = null;
-            return;
-        }
-
-        // Create and style the label
-        infoLabel = new Label("V: " + getVoltage() + " V\nI: " + getCurrent() + " A");
-        infoLabel.setStyle("-fx-padding: 4px; -fx-font-size: 10px;");
-        infoLabel.getStyleClass().add("info-label");
-        // Position it near the wire's midpoint
-        double midX = (begin.getX() + end.getX()) / 2;
-        double midY = (begin.getY() + end.getY()) / 2;
-        infoLabel.setLayoutX(midX + 10);
-        infoLabel.setLayoutY(midY - 10);
-
-        parentPane.getChildren().add(infoLabel);
-
-        // Move the label with the wire if it's showing
-        if (infoLabel != null) {
-            double newMidX = (begin.getX() + end.getX()) / 2;
-            double newMidY = (begin.getY() + end.getY()) / 2;
-            infoLabel.setLayoutX(newMidX + 10);
-            infoLabel.setLayoutY(newMidY - 10);
-        }
-        this.draw();
-    }
-
-    @Override
-    public void handleDrag(MouseEvent event) {
-        System.out.println(toMove.get()); // There is a problem with BEGIN
-        switch (toMove.get()) {
-            case "begin" -> {
-                begin.setPosition(event.getSceneX(), event.getSceneY());
-            }
-            case "end" -> {
-                end.setPosition(event.getSceneX(), event.getSceneY());
-            }
-            case "full" -> {
-                //get displacement
-                double deltaX = event.getX()-begin.getX();
-                double deltaY = event.getY()-begin.getY();
-                begin.setPosition(begin.getX()+deltaX, begin.getY()+deltaY);
-                end.setPosition(end.getX()+deltaX, end.getY()+deltaY);
-            }
-            default -> markAsSelected(false);
-        }    }
+//    @Override
+//    public void handleEdit(MouseEvent event) {
+//        markAsSelected(true);
+//        draw();
+//
+//        Pane parentPane = (Pane) this.getParent();
+//        if (parentPane == null) return;
+//
+//        // Remove label if it already exists (toggle)
+//        if (infoLabel != null && parentPane.getChildren().contains(infoLabel)) {
+//            parentPane.getChildren().remove(infoLabel);
+//            infoLabel = null;
+//            return;
+//        }
+//
+//        // Create and style the label
+//        infoLabel = new Label("V: " + getVoltage() + " V\nI: " + getCurrent() + " A");
+//        infoLabel.setStyle("-fx-padding: 4px; -fx-font-size: 10px;");
+//        infoLabel.getStyleClass().add("info-label");
+//        // Position it near the wire's midpoint
+//        double midX = (begin.getX() + end.getX()) / 2;
+//        double midY = (begin.getY() + end.getY()) / 2;
+//        infoLabel.setLayoutX(midX + 10);
+//        infoLabel.setLayoutY(midY - 10);
+//
+//        parentPane.getChildren().add(infoLabel);
+//
+//        // Move the label with the wire if it's showing
+//        if (infoLabel != null) {
+//            double newMidX = (begin.getX() + end.getX()) / 2;
+//            double newMidY = (begin.getY() + end.getY()) / 2;
+//            infoLabel.setLayoutX(newMidX + 10);
+//            infoLabel.setLayoutY(newMidY - 10);
+//        }
+//        this.draw();
+//    }
+//
+//    @Override
+//    public void handleDrag(MouseEvent event) {
+//        System.out.println(toMove.get()); // There is a problem with BEGIN
+//        switch (toMove.get()) {
+//            case "begin" -> {
+//                begin.setPosition(event.getSceneX(), event.getSceneY());
+//            }
+//            case "end" -> {
+//                end.setPosition(event.getSceneX(), event.getSceneY());
+//            }
+//            case "full" -> {
+//                //get displacement
+//                double deltaX = event.getX()-begin.getX();
+//                double deltaY = event.getY()-begin.getY();
+//                begin.setPosition(begin.getX()+deltaX, begin.getY()+deltaY);
+//                end.setPosition(end.getX()+deltaX, end.getY()+deltaY);
+//            }
+//            default -> markAsSelected(false);
+//        }
+//        }
 
     public PathTransition getTransition() {
         return transition;
