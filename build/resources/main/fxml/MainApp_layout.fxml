@@ -114,7 +114,7 @@
             <MenuItem fx:id="menuPaste" mnemonicParsing="false" text="Paste" />
             <MenuItem fx:id="menuDelete" mnemonicParsing="false" text="Delete" />
             <SeparatorMenuItem mnemonicParsing="false" />
-         <MenuItem fx:id="menuSelect" mnemonicParsing="false" onAction="#menuSelectBtnPressed" text="Select" />
+            <MenuItem fx:id="menuSelect" mnemonicParsing="false" onAction="#menuSelectBtnPressed" text="Select" />
             <MenuItem fx:id="menuSelectAll" mnemonicParsing="false" text="Select All" />
             <MenuItem fx:id="menuUnselectAll" mnemonicParsing="false" text="Unselect All" />
         </Menu>
@@ -127,26 +127,26 @@
         <AnchorPane fx:id="leftPanel" minHeight="300.0" minWidth="300.0" prefHeight="373.0" prefWidth="533.0">
             <VBox fx:id="leftPanelVBox" prefHeight="375.0" prefWidth="538.0">
                 <ScrollPane fx:id="toolbarScrollPane" prefHeight="40.0" prefWidth="531.0" vbarPolicy="NEVER">
-                    <AnchorPane minHeight="35.0" minWidth="0.0" prefHeight="35.0" prefWidth="732.0">
+                    <AnchorPane minHeight="35.0" minWidth="0.0" prefHeight="35.0" prefWidth="780.0">
                         <HBox fx:id="toolbarHBox" prefHeight="35.0" prefWidth="730.0">
-                            <Button fx:id="zoomInBtn" minWidth="65.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="74.0" text="Zoom in" />
-                            <Button fx:id="zoomOutBtn" layoutX="10.0" layoutY="10.0" minWidth="70.0" mnemonicParsing="false" text="Zoom out" />
+                            <Button fx:id="zoomInBtn" minWidth="70.0" mnemonicParsing="false" prefHeight="25.0" text="Zoom in" />
+                            <Button fx:id="zoomOutBtn" layoutX="10.0" layoutY="10.0" minWidth="80.0" mnemonicParsing="false" text="Zoom out" />
                             <Button fx:id="undoBtn" layoutX="184.0" layoutY="10.0" minWidth="50.0" mnemonicParsing="false" text="Undo" />
-                            <Button fx:id="redoBtn" layoutX="229.0" layoutY="10.0" minWidth="45.0" mnemonicParsing="false" text="Redo" />
-                            <Button fx:id="copyBtn" layoutX="71.0" layoutY="10.0" minWidth="45.0" mnemonicParsing="false" text="Copy" />
-                            <Button fx:id="pasteBtn" layoutX="140.0" layoutY="10.0" minWidth="45.0" mnemonicParsing="false" prefWidth="45.0" text="Paste" />
+                            <Button fx:id="redoBtn" layoutX="229.0" layoutY="10.0" minWidth="50.0" mnemonicParsing="false" text="Redo" />
+                            <Button fx:id="copyBtn" layoutX="71.0" layoutY="10.0" minWidth="50.0" mnemonicParsing="false" text="Copy" />
+                            <Button fx:id="pasteBtn" layoutX="140.0" layoutY="10.0" minWidth="50.0" mnemonicParsing="false" text="Paste" />
                             <Button fx:id="addWireBtn" layoutX="274.0" layoutY="10.0" minWidth="70.0" mnemonicParsing="false" text="Add wire" />
-                            <Button fx:id="addResistorBtn" layoutX="319.0" layoutY="10.0" minWidth="80.0" mnemonicParsing="false" text="Add resistor" />
-                            <Button fx:id="addCapacitorBtn" layoutX="364.0" layoutY="10.0" minWidth="90.0" mnemonicParsing="false" text="Add capacitor" />
+                            <Button fx:id="addResistorBtn" layoutX="319.0" layoutY="10.0" minWidth="90.0" mnemonicParsing="false" text="Add resistor" />
+                            <Button fx:id="addCapacitorBtn" layoutX="364.0" layoutY="10.0" minWidth="100.0" mnemonicParsing="false" text="Add capacitor" />
                             <Button fx:id="addBatteryBtn" layoutX="409.0" layoutY="10.0" minWidth="90.0" mnemonicParsing="false" text="Add battery" />
                             <Button fx:id="addSwitchBtn" layoutX="454.0" layoutY="10.0" minWidth="80.0" mnemonicParsing="false" text="Add switch" />
                         </HBox>
                     </AnchorPane>
                 </ScrollPane>
-            <Canvas fx:id="canvas" height="337.0" width="534.0" />
+                <Canvas fx:id="canvas" height="337.0" width="534.0" />
             </VBox>
         </AnchorPane>
-        <AnchorPane fx:id="rightPanel" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+        <AnchorPane fx:id="rightPanel" minHeight="0.0" prefHeight="160.0" >
             <VBox fx:id="rightPanelVBox" prefHeight="373.0" prefWidth="178.0" spacing="10.0">
                 <padding>
                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -173,22 +173,13 @@
                     <VBox.margin>
                         <Insets />
                     </VBox.margin>
-                    <VBox>
-                        <Label fx:id="runStopLabel" layoutX="15.0" layoutY="147.0" text="Click here" />
-                        <Button fx:id="runStopBtn" mnemonicParsing="false" text="Run/Stop" />
-                    </VBox>
-                    <VBox>
-                        <Label layoutX="15.0" layoutY="147.0" text=" "> </Label>
-                        <Button fx:id="resetBtn" mnemonicParsing="false" text="Reset" />
-                    </VBox>
-                    <VBox>
-                        <Label layoutX="15.0" layoutY="147.0" text=" "> </Label>
-                        <Button fx:id="clearBtn" mnemonicParsing="false" style="-fx-background-color: ff645c;" text="Clear">
-                            <font>
-                                <Font name="System Bold" size="12.0" />
-                            </font>
-                        </Button>
-                    </VBox>
+                     <Button fx:id="runStopBtn" mnemonicParsing="false" text="Run/Stop" />
+                     <Button fx:id="resetBtn" mnemonicParsing="false" text="Reset" />
+                     <Button fx:id="clearBtn" mnemonicParsing="false" style="-fx-background-color: ff645c;" text="Clear">
+                         <font>
+                             <Font name="System Bold" size="12.0" />
+                         </font>
+                     </Button>
                 </FlowPane>
             </VBox>
         </AnchorPane>

@@ -88,7 +88,6 @@ public class MainAppFXMLController {
     menuSelect;
     @FXML
     MenuItem lightThemeItem, darkThemeItem, strawThemeItem;
-    private boolean isRunning = false;
     private DrawingTool drawingTool;
     public DrawingArea drawingArea;
 
