@@ -22,10 +22,12 @@ public class Circuit {
     }
 
     public void deleteComponent(Component component) {
+        LinkedList<Component> toBeDeleted = null;
         for(LinkedList<Component> list : arrayList) {
-            if(list.getFirst().equals(component)) arrayList.remove(list);
-            else for (Component comp : list) list.remove(comp);
+            if(list.getFirst().equals(component)) toBeDeleted = list;
+            else list.remove(component);
         }
+        arrayList.remove(toBeDeleted);
     }
 
     public void addEdge(int src, int dst) {

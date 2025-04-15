@@ -42,8 +42,6 @@ import java.util.Objects;
  */
 public class MainAppFXMLController {
 
-    //git commit -m "cleaned up some leftover code from the migration ImageView -> Canvas + polished selection logic"
-
     private final static Logger logger = LoggerFactory.getLogger(MainAppFXMLController.class);
 
     public boolean animationRunning;
@@ -51,6 +49,7 @@ public class MainAppFXMLController {
     public Circuit circuit;
     private double posX,posY;
     private Node[] toMove = new Node[2];
+    private Point2D mouseDownLocation,initialBegin,initialEnd;
 
     //Import FXML variables
     @FXML
@@ -94,6 +93,9 @@ public class MainAppFXMLController {
 
     @FXML
     public void initialize() {
+
+        //TODO fix selection bugs (selection stays when changing actions + selection of the wrong element)
+
         logger.info("Initializing MainAppController...");
 
         animationRunning = false;
@@ -117,6 +119,7 @@ public class MainAppFXMLController {
 
     public void update() {
         Point2D mouseAt = new Point2D(posX,posY);
+
         if(editing == selection && drawingTool.getCurrentAction().equals("select")) {
             for (LinkedList<Component> list : circuit.arrayList) {
                 for (Component current : list) {
@@ -182,7 +185,6 @@ public class MainAppFXMLController {
             drawingArea.circuit.print();
             drawingArea.circuit.clear();
             drawingArea.canvas.getGraphicsContext2D().clearRect(0,0,canvas.getWidth(), canvas.getHeight());
-            System.out.println("Cleared!");
         });
 
         defaultWireColorPicker.setValue(Color.BLACK);
@@ -193,9 +195,9 @@ public class MainAppFXMLController {
         });
         polarityCheckBox.setOnAction(_-> {
             if (polarityCheckBox.isSelected()) {
-                System.out.println("Clicked");
+                System.out.println("showing polarity");
             } else {
-                System.out.println("Un-clicked");
+                System.out.println("hiding polarity");
             }
         });
 
@@ -267,6 +269,8 @@ public class MainAppFXMLController {
     }
 
     private void mousePressed(MouseEvent e) {
+        mouseDownLocation = new Point2D(e.getX(),e.getY());
+
         if(!Objects.equals(drawingTool.getCurrentAction(),"")) {
             drawingTool.setPencilDown(true);
             Node eventLocation = new Node(drawingArea.snap(e.getX()), drawingArea.snap(e.getY()));
@@ -283,6 +287,11 @@ public class MainAppFXMLController {
                     setCursor(Cursor.CLOSED_HAND);
                     edit(selection);
                     //show arrows to rotate OR right click to rotate (on click)
+
+                    if(selection instanceof Wire wire) {
+                        initialBegin = new Point2D(wire.begin.getX(),wire.begin.getY());
+                        initialEnd = new Point2D(wire.end.getX(),wire.end.getY());
+                    }
                 }
                 default -> {}
             }
@@ -327,6 +336,9 @@ public class MainAppFXMLController {
     }
 
     private void mouseDragged(MouseEvent e) {
+        double displacementX = mouseDownLocation.getX() - e.getX();
+        double displacementY = mouseDownLocation.getY() - e.getY();
+
         if (drawingTool.isPencilDown() && selection != null) {
             double nearestX = drawingArea.snap(e.getX());
             double nearestY = drawingArea.snap(e.getY());
@@ -338,9 +350,16 @@ public class MainAppFXMLController {
             setCursor(Cursor.CLOSED_HAND);
             //TODO add modifying a node after it's been drawn
             if(editing instanceof Wire wire) {
-                for (Node node : toMove) {
-                    if (node != null) {
-                        node.setPosition(e.getX(), e.getY());
+                if(toMove[0]!=null && toMove[1]!=null) {
+                    //move both (keep length)
+                    wire.begin.setPosition(drawingArea.snap(initialBegin.getX()-displacementX),drawingArea.snap(initialBegin.getY()-displacementY));
+                    wire.end.setPosition(drawingArea.snap(initialEnd.getX()-displacementX), drawingArea.snap(initialEnd.getY()-displacementY));
+                }
+                else {
+                    for (Node node : toMove) {
+                        if (node != null) {
+                            node.setPosition(drawingArea.snap(e.getX()), drawingArea.snap(e.getY()));
+                        }
                     }
                 }
             }
@@ -371,19 +390,20 @@ public class MainAppFXMLController {
         if (selection != null) {
             if (drawingTool.isPencilDown()) {
                 drawingTool.setPencilDown(false);
-                attemptConnection(selection, selection.end);
+                if(selection instanceof Wire wire && (wire.begin.getX()==wire.end.getX() && wire.begin.getY()==wire.end.getY())) circuit.deleteComponent(wire);
+                else attemptConnection(selection, selection.end);
             }
             if(canvas.getCursor().equals(Cursor.CLOSED_HAND)) setCursor(Cursor.OPEN_HAND);
         }
     }
 
-    private void select(Component component) {
+    public void select(Component component) {
         if(selection!=null) selection.markAsSelected(false);
         component.markAsSelected(true);
         selection = component;
     }
 
-    private void unselect(Component component) {
+    public void unselect(Component component) {
         if(component != null && selection == component) {
             component.markAsSelected(false);
             selection = null;
@@ -459,14 +479,9 @@ public class MainAppFXMLController {
                 }
                 case W -> drawingTool.setCurrentAction("place-wire");
 
-                case DELETE,BACK_SPACE -> { //TODO deletion not working properly
-                    circuit.deleteComponent(editing);
-                    //delete selected element
-                }
+                case DELETE,BACK_SPACE -> circuit.deleteComponent(editing);
                 case COMMA -> {
-                    if(editing!=null) {
-                        editing.rotate("left");
-                    }
+                    if(editing!=null) editing.rotate("left");
                 }
                 case PERIOD -> {
                     if(editing!=null) editing.rotate("right");
