@@ -1,9 +1,6 @@
 package edu.vanier.strawberries.ui;
 
-import edu.vanier.strawberries.controllers.MainAppFXMLController;
-import edu.vanier.strawberries.controllers.SceneController;
-import edu.vanier.strawberries.controllers.SnapToGridController;
-import edu.vanier.strawberries.controllers.StartScreenFXMLController;
+import edu.vanier.strawberries.controllers.*;
 import edu.vanier.strawberries.helpers.FxUIHelper;
 import java.io.IOException;
 import java.util.Objects;
@@ -32,12 +29,19 @@ public class MainApp extends Application {
     public static final String MAINAPP_SCENE = "MainApp_layout";
     // The FXML file name of the secondary scene.
     public static final String START_SCENE = "StartScreen_layout";
+    // login scene
+    public static final String LOGIN_SCENE = "SignonScreen_layout";
+    // sign up scene
+    public static final String SIGNUP_SCENE = "SignupScreen_layout";
     private final static Logger logger = LoggerFactory.getLogger(MainApp.class);
     private static Scene scene;
     private static SceneController sceneController;
     public static Stage stage;
     public static MainAppFXMLController mainAppFXMLController;
     public static StartScreenFXMLController startScreenFXMLController;
+    public static SignOnLogInController signOnLogInController;
+    public static SignUpController signUpController;
+
     public static SnapToGridController snapToGridController;
     public static String currentController;
     public static AnimationTimer timer;
@@ -113,6 +117,22 @@ public class MainApp extends Application {
                 stage.setHeight(550);
                 stage.setWidth(860);
                 timer.start();
+            } else if (fxmlFileName.equals(LOGIN_SCENE)) {
+                if (!sceneController.sceneExists(fxmlFileName)) {
+                    SignOnLogInController loginController = new SignOnLogInController();
+                    Parent root = FxUIHelper.loadFXML(fxmlFileName, loginController);
+                    sceneController.addScene(LOGIN_SCENE, root);
+                }
+                sceneController.activateScene(fxmlFileName);
+                currentController = "loginController";
+            } else if (fxmlFileName.equals(SIGNUP_SCENE)) {
+                if (!sceneController.sceneExists(fxmlFileName)) {
+                    SignUpController signupController = new SignUpController();
+                    Parent root = FxUIHelper.loadFXML(fxmlFileName, signupController);
+                    sceneController.addScene(SIGNUP_SCENE, root);
+                }
+                sceneController.activateScene(fxmlFileName);
+                currentController = "signupController";
             }
             //You can register or activate additional scenes here, based on the logic used to add the secondary scene (as shown above).
         } catch (IOException ex) {

@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+<VBox prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <MenuBar VBox.vgrow="NEVER">
          <menus>
@@ -57,8 +57,8 @@
       </MenuBar>
       <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
          <children>
-            <TextField layoutX="267.0" layoutY="128.0" promptText="Username or email" />
-            <ToggleButton layoutX="239.0" layoutY="226.0" mnemonicParsing="false" style="-fx-background-color: #ffffff; -fx-text-fill: #000000; -fx-opacity: 80%;" text="New user? Sign in instead">
+            <TextField fx:id="username" layoutX="267.0" layoutY="128.0" promptText="Username or email" />
+            <ToggleButton fx:id="newUserBtn" layoutX="256.0" layoutY="244.0" mnemonicParsing="false" style="-fx-background-color: #ffffff; -fx-text-fill: #000000; -fx-opacity: 80%;" text="New user? Sign in instead">
                <font>
                   <Font size="10.0" />
                </font>
@@ -66,15 +66,16 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </ToggleButton>
-            <PasswordField layoutX="267.0" layoutY="177.0" prefHeight="26.0" prefWidth="152.0" promptText="Password" />
+            <PasswordField fx:id="password" layoutX="267.0" layoutY="177.0" prefHeight="26.0" prefWidth="152.0" promptText="Password" />
             <Label layoutX="194.0" layoutY="132.0" text="Username:" />
             <Label layoutX="194.0" layoutY="181.0" text="Password:" />
-            <Button layoutX="295.0" layoutY="277.0" mnemonicParsing="false" text="Log In">
+            <Label fx:id="statusLabel" alignment="CENTER" layoutX="161.0" layoutY="218.0" prefHeight="18.0" prefWidth="318.0" text="Please enter username and password" textAlignment="CENTER" textFill="#c7206e" />
+            <Button fx:id="signInBtn" layoutX="295.0" layoutY="277.0" mnemonicParsing="false" text="Log In">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
             </Button>
-            <Label layoutX="287.0" layoutY="72.0" text="Sign in">
+            <Label layoutX="287.0" layoutY="72.0" text="Log in">
                <font>
                   <Font size="22.0" />
                </font>

@@ -1,42 +1,119 @@
 package edu.vanier.strawberries.controllers;
 
+
 import edu.vanier.strawberries.ui.MainApp;
 import javafx.event.Event;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import javafx.scene.control.*;
 
-/**
- * FXML controller class for the secondary scene.
- *
- * @author frostybee
- */
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+
 public class SignOnLogInController {
+    @FXML
+    private TextField username;
+    @FXML
+    private TextField password;
+    @FXML
+    private Button signInBtn;
+    @FXML
+    private ToggleButton newUserBtn;
+    @FXML
+    private Label statusLabel;
 
-    @FXML
-    Button newCircuitBtn = new Button();
-    @FXML
-    Button savedCircuitsBtn = new Button();
-    @FXML
-    Button logInBtn = new Button();
-
-    private final static Logger logger = LoggerFactory.getLogger(StartScreenFXMLController.class);
+    private static final File USER_INFO = new File("src/main/resources/users.json");
 
     @FXML
     public void initialize() {
-        logger.info("Initializing StartScreenController...");
-
-        styleButton(newCircuitBtn);
-        styleButton(savedCircuitsBtn);
-        styleButton(logInBtn);
-
-        newCircuitBtn.setOnAction(this::loadPrimaryScene);
+        //styleButton(signInBtn);
+        System.out.println("StatusLabel: " + statusLabel);
+        newUserBtn.setOnAction(this::loadSingUpScene);
+        signInBtn.setOnAction(_-> Login());
     }
 
-    private void loadPrimaryScene(Event e) {
+    private void Login() {
+        String username = this.username.getText().trim();
+        String password = this.password.getText();
+
+        if (username.isEmpty() || password.isEmpty()) {
+            statusLabel.setText("Please enter both username and password.");
+            return;
+        }
+
+        if (!USER_INFO.exists()) {
+            statusLabel.setText("No users registered.");
+            return;
+        }
+
+        try { // main, call methods below
+            String content = readFile(USER_INFO);
+            String hashedInputPassword = hashSHA256(password);
+
+            if (findCheckUser(content, username, hashedInputPassword)) {
+                statusLabel.setText("Please enter both username and password.");
+                loadMainScene();
+            } else {
+                statusLabel.setText("Incorrect username or password.");
+            }
+
+        } catch (Exception e) {
+            statusLabel.setText("Error: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private boolean findCheckUser(String content, String username, String hashedPassword) { // check existing user
+        int index = 0;
+        while ((index = content.indexOf("\"username\":", index)) != -1) {
+            int startUser = content.indexOf("\"", index + 11) + 1;
+            int endUser = content.indexOf("\"", startUser);
+            String foundUsername = content.substring(startUser, endUser);
+
+            if (foundUsername.equals(username)) {
+                int passIndex = content.indexOf("\"password\":", endUser);
+                int startPass = content.indexOf("\"", passIndex + 11) + 1;
+                int endPass = content.indexOf("\"", startPass);
+                String storedPassword = content.substring(startPass, endPass);
+                return storedPassword.equals(hashedPassword);
+            }
+            index = endUser;
+        }
+        return false;
+    }
+
+    private String hashSHA256(String input) throws Exception { // ecrypt inputted password
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        byte[] encodedHash = digest.digest(input.getBytes(StandardCharsets.UTF_8));
+        StringBuilder hexString = new StringBuilder(2 * encodedHash.length);
+        for (byte b : encodedHash) {
+            String hex = Integer.toHexString(0xff & b);
+            if (hex.length() == 1) hexString.append('0');
+            hexString.append(hex);
+        }
+        return hexString.toString();
+    }
+
+    private String readFile(File file) throws IOException { // json format parser
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            sb.append(line).append("\n");
+        }
+        reader.close();
+        return sb.toString();
+    }
+
+    private void loadSingUpScene(Event e) {
+        MainApp.switchScene(MainApp.SIGNUP_SCENE);
+    }
+
+    private void loadMainScene() {
         MainApp.switchScene(MainApp.MAINAPP_SCENE);
-        logger.info("Loaded the main scene...");
     }
 
     private void styleButton(Button btn) {

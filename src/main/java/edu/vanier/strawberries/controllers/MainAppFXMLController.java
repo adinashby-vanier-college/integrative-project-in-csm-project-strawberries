@@ -177,6 +177,7 @@ public class MainAppFXMLController {
         addBatteryBtn.setOnAction(_->drawingTool.setCurrentAction("place-battery"));
         addCapacitorBtn.setOnAction(_->drawingTool.setCurrentAction("place-capacitor"));
         addSwitchBtn.setOnAction(_->drawingTool.setCurrentAction("place-switch"));
+        menuQuit.setOnAction(_->quit());
         clearBtn.setOnAction(_-> {
             drawingArea.circuit.print();
             drawingArea.circuit.clear();
@@ -328,6 +329,10 @@ public class MainAppFXMLController {
         double minX = Math.min(component.begin.getX(),component.end.getX()),
                minY = Math.min(component.begin.getY(),component.end.getY());
         return (source.getX() <= minX+component.display.getWidth() && source.getY() <= minY+component.display.getHeight());
+    }
+
+    private void quit() {
+        MainApp.switchScene(MainApp.START_SCENE);
     }
 
     private void mouseDragged(MouseEvent e) {
