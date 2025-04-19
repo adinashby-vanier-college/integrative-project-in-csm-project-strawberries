@@ -1,5 +1,6 @@
 package edu.vanier.strawberries.Models;
 
+import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
@@ -34,17 +35,6 @@ public abstract class Component extends StackPane {
         movingNode.setPosition(newX,newY);
     }
 
-    /**
-     * Moving an entire element in the screen, using the Node {@link #begin}
-     * @param newX the new X position of the element
-     * @param newY the new Y position of the element
-     */
-    public void moveComponent(double newX, double newY) {
-        //get the x and y sizes
-        //update node begin to new coordinates
-        //update node end to new coordinates + x and y sizes calculated (maintain same angle)
-    }
-
     public void setBegin(double x, double y) {
         this.begin.setPosition(x,y);
     }
@@ -72,6 +62,7 @@ public abstract class Component extends StackPane {
      * @param direction "left" or "right", not case-sensitive
      */
     public void rotate(String direction) {
+        double newX,newY; // To update END node position after rotation
         switch(direction.toUpperCase()) {
             case "LEFT" -> {
                 angle -= 90;
@@ -83,6 +74,18 @@ public abstract class Component extends StackPane {
             }
             default -> {}
         }
+        newX = begin.getX() + display.getWidth()*Math.sin(angle);
+        newY = begin.getY() - display.getWidth()*Math.cos(angle);
+        end.setPosition(newX,newY);
+    }
+
+    public double getLength() {
+        if(this instanceof Wire) {
+            Point2D begin = new Point2D(this.begin.getX(),this.begin.getY());
+            return begin.distance(end.getX(),end.getY());
+        }
+        else if (display!=null) return display.getWidth();
+        else return -1; //Something went wrong
     }
 
     // ABSTRACT methods for each component type

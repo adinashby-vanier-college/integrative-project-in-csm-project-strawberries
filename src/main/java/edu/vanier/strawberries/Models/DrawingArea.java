@@ -134,6 +134,10 @@ public class DrawingArea {
         if(zoom<2) setZoom(zoom+0.1);
     }
 
+    public double getZoom() {
+        return zoom;
+    }
+
     public void setCircuit(Circuit circuit) {
         this.circuit = circuit;
     }

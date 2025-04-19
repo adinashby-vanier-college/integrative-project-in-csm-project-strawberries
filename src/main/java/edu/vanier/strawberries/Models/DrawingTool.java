@@ -4,7 +4,6 @@ import edu.vanier.strawberries.controllers.MainAppFXMLController;
 import edu.vanier.strawberries.ui.MainApp;
 import javafx.scene.Cursor;
 import javafx.scene.ImageCursor;
-import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
