@@ -1,5 +1,6 @@
 package edu.vanier.strawberries.controllers;
 
+import edu.vanier.math.CircuitMath;
 import edu.vanier.strawberries.Models.*;
 import edu.vanier.strawberries.Models.DrawingArea;
 import edu.vanier.strawberries.ui.MainApp;
@@ -441,6 +442,9 @@ public class MainAppFXMLController {
         lineChart.setLegendVisible(false);
 
         XYChart.Series<Number, Number> series = new XYChart.Series<>();
+
+        // constant Voltage
+        // series.getData().add(new XYChart.Data<>(0.0, CircuitMath.getTotalVoltage()));
 
         series.getData().add(new XYChart.Data<>(0, 0));   // Start at 0V
         series.getData().add(new XYChart.Data<>(1, 10));  // Increase
