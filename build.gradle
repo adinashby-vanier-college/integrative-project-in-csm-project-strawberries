@@ -54,8 +54,6 @@ java {
         languageVersion = JavaLanguageVersion.of(22)
     }
 }
-application {       
-   // TODO: Specify the fully-qualified name of the class 
-   //       that contains the main method to be executed.
+application {
    mainClass = 'edu.vanier.Launcher'   
 }

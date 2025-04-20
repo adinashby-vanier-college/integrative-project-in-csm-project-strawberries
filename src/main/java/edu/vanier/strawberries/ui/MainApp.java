@@ -49,6 +49,8 @@ public class MainApp extends Application {
     @Override
     public void stop() {
         //TODO: Here, we need to perform teardown operations such as stopping running animation, etc.
+        timer.stop();
+        //TODO: log out user?
     }
 
     @Override

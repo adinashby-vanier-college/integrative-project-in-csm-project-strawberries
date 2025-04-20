@@ -31,6 +31,7 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Objects;
@@ -49,6 +50,7 @@ public class MainAppFXMLController {
     public Circuit circuit;
     private double posX,posY;
     private Node[] toMove = new Node[2];
+    Node pivot; //TEST
     private Point2D mouseDownLocation,initialBegin,initialEnd;
 
     //Import FXML variables
@@ -151,17 +153,15 @@ public class MainAppFXMLController {
 // 2. OTHER FORMATTING
         toolbarScrollPane.widthProperty().addListener(_-> {
             //TODO make that little space under the buttons disappear when there is no scrollbar...
-            //TODO make buttons stretch if they have extra space to do so.
         });
-
         leftPanel.widthProperty().addListener(_-> leftPanel.setPrefWidth(leftPanel.getWidth()));
+        window.widthProperty().addListener(_-> splitPane.setDividerPosition(0,window.getWidth()));
+
 // 3. INITIALIZE CLASSES
         // Linking to existing classes
         drawingArea = new DrawingArea(canvas);
         drawingArea.setCircuit(circuit);
         drawingTool = drawingArea.drawingTool;
-        edu.vanier.strawberries.MenuBar myMenu = new edu.vanier.strawberries.MenuBar(menuBar);
-
 
 // 4. SET UP UI ELEMENTS
         // Set button actions
@@ -262,6 +262,7 @@ public class MainAppFXMLController {
     }
 
     private void mousePressed(MouseEvent e) {
+        toMove = new Node[2];
         mouseDownLocation = new Point2D(e.getX(),e.getY());
 
         if(!Objects.equals(drawingTool.getCurrentAction(),"")) {
@@ -285,6 +286,9 @@ public class MainAppFXMLController {
                     if(selection instanceof Wire wire) {
                         initialBegin = new Point2D(wire.begin.getX(),wire.begin.getY());
                         initialEnd = new Point2D(wire.end.getX(),wire.end.getY());
+
+
+
                     }
                 }
                 default -> {}
@@ -306,22 +310,24 @@ public class MainAppFXMLController {
                 //1. Calculate the dist from the point to either node
                 double d1 = begin.distance(e.getX(), e.getY());
                 double d2 = end.distance(e.getX(), e.getY());
-                double buffer = 0.4; // Accounts for uncertainty due to cursor size
+                double buffer = 0.5; // Accounts for uncertainty due to cursor size
 
-                toMove = new Node[2]; //(re)initializing the array
-
-                if (d1 + buffer <= 20) {
+                if (d1 + buffer <= 25) {
                     toMove[0] = wire.begin;
-                } else if (d2 + buffer <= 20) {
+                    pivot = wire.end;
+                    System.out.println("moving begin");
+                } else if (d2 + buffer <= 25) {
                     toMove[0] = wire.end;
+                    pivot = wire.begin;
+                    System.out.println("moving end");
                 } else {
                     toMove[0] = wire.begin;
                     toMove[1] = wire.end;
                 }
             }
-            else {
-                toMove[0] = editing.begin;
-                toMove[1] = null;
+            else { //Images
+                if(editing.getAngle()==0 || editing.getAngle()==180) toMove[0] = (editing.begin.getX() < editing.end.getX() ? editing.begin : editing.end);
+                else toMove[0] = (editing.begin.getY() < editing.end.getY() ? editing.begin : editing.end);
             }
         }
     }
@@ -330,7 +336,6 @@ public class MainAppFXMLController {
         boolean vertical = (component.getAngle()==90 || component.getAngle()==270);
         double minX,minY,maxX,maxY;
         if(vertical) {
-//            minX = component.begin.getX() - (component.display.getHeight()/2);
             minX = Math.min(component.begin.getX(),component.end.getX()) - (component.display.getHeight()/2);
             maxX = component.begin.getX() + (component.display.getHeight()/2);
             minY = Math.min(component.begin.getY(),component.end.getY());
@@ -361,7 +366,6 @@ public class MainAppFXMLController {
 
         //TODO testing
         if(editing != null) {
-//            setCursor(Cursor.CLOSED_HAND);
             if(editing instanceof Wire wire) {
                 if(toMove[0]!=null && toMove[1]!=null) {
                     //move both (keep length)
@@ -369,10 +373,9 @@ public class MainAppFXMLController {
                     wire.end.setPosition(drawingArea.snap(initialEnd.getX()-displacementX), drawingArea.snap(initialEnd.getY()-displacementY));
                 }
                 else {
-                    System.out.println("begin: "+editing.begin+"\tend: "+editing.end);
-                    System.out.println(toMove[0]+" "+toMove[1]);
                     for (Node node : toMove) {
-                        if (node != null) {
+                        if (node != null && node != pivot) {
+                            if(node == editing.begin) System.out.println("begin"); else System.out.println("END");
                             node.setPosition(drawingArea.snap(e.getX()), drawingArea.snap(e.getY()));
                         }
                     }
@@ -395,13 +398,15 @@ public class MainAppFXMLController {
 
         //2. Verify that both add up to the length of the line wire
         double length = begin.distance(end);
-        double buffer = 0.4; // Accounts for uncertainty due to cursor size
+        double buffer = 1; // Accounts for uncertainty due to cursor size
 
         return (d1+d2 >= length-buffer && d1+d2 <= length+buffer);
     }
 
 
     private void mouseReleased(MouseEvent e) {
+        toMove = null;
+        pivot = null;
         if (selection != null) {
             if (drawingTool.isPencilDown()) {
                 drawingTool.setPencilDown(false);

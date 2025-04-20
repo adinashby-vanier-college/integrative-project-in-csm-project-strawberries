@@ -56,6 +56,11 @@ public class DrawingArea {
                 gc.setStroke(wire.getColor());
                 gc.strokeLine(component.begin.getX(),component.begin.getY(),component.end.getX(),component.end.getY());
 
+                gc.setFill(Color.RED);
+                gc.fillOval(wire.begin.getX()-6,wire.begin.getY()-6,12,12);
+                gc.setFill(Color.BLUE);
+                gc.fillOval(wire.end.getX()-6,wire.end.getY()-6,12,12);
+
                 if(wire.selected) {
                     gc.setFill(Color.BLACK);
                     gc.fillOval(wire.begin.getX()-4,wire.begin.getY()-4,8,8);
