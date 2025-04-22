@@ -30,23 +30,27 @@ public class SignOnLogInController {
     @FXML
     public void initialize() {
         //styleButton(signInBtn);
-        System.out.println("StatusLabel: " + statusLabel);
         newUserBtn.setOnAction(this::loadSingUpScene);
-        signInBtn.setOnAction(_-> Login());
+        signInBtn.setOnAction(_-> {
+            String recentProject = Login();
+            System.out.println(recentProject);
+            // send recentProject to Main Class
+        });
     }
 
-    private void Login() {
+    private String Login() {
+        String recentProject = "";
         String username = this.username.getText().trim();
         String password = this.password.getText();
 
         if (username.isEmpty() || password.isEmpty()) {
             statusLabel.setText("Please enter both username and password.");
-            return;
+            return "";
         }
 
         if (!USER_INFO.exists()) {
             statusLabel.setText("No users registered.");
-            return;
+            return "";
         }
 
         try { // main, call methods below
@@ -55,7 +59,9 @@ public class SignOnLogInController {
 
             if (findCheckUser(content, username, hashedInputPassword)) {
                 statusLabel.setText("Please enter both username and password.");
+                recentProject = findRecent(content, username);
                 loadMainScene();
+                return recentProject;
             } else {
                 statusLabel.setText("Incorrect username or password.");
             }
@@ -64,6 +70,7 @@ public class SignOnLogInController {
             statusLabel.setText("Error: " + e.getMessage());
             e.printStackTrace();
         }
+        return recentProject;
     }
 
     private boolean findCheckUser(String content, String username, String hashedPassword) { // check existing user
@@ -85,7 +92,26 @@ public class SignOnLogInController {
         return false;
     }
 
-    private String hashSHA256(String input) throws Exception { // ecrypt inputted password
+    private static String findRecent(String content, String username) { // return recent project
+        int index = 0;
+        while ((index = content.indexOf("\"username\":", index)) != -1) {
+            int startUser = content.indexOf("\"", index + 11) + 1;
+            int endUser = content.indexOf("\"", startUser);
+            String foundUsername = content.substring(startUser, endUser);
+
+            if (foundUsername.equals(username)) {
+                int recentIndex = content.indexOf("\"recent\":", endUser);
+                int startRecent = content.indexOf("\"", recentIndex + 9) +1;
+                int endRecent = content.indexOf("\"", startRecent);
+                String recentProject = content.substring(startRecent, endRecent);
+                return recentProject;
+            }
+            index = endUser;
+        }
+        return "";
+    }
+
+    public String hashSHA256(String input) throws Exception { // ecrypt inputted password
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
         byte[] encodedHash = digest.digest(input.getBytes(StandardCharsets.UTF_8));
         StringBuilder hexString = new StringBuilder(2 * encodedHash.length);

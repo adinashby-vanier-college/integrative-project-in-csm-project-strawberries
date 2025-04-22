@@ -2,13 +2,14 @@
   "users": [
     {
       "username": "natsto",
-      "password": "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918",
-      "recoveryCode": "A3X1V"
+      "password": "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918", // admin
+      "recoveryCode": "A3X1V",
+      "recent": "TEST HELLO :3"
     }
   ,
     {
       "username": "admin",
-      "password": "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8",
+      "password": "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8", // password
       "recoveryCode": "8135C"
     }
 ]
