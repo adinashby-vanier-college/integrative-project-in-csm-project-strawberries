@@ -101,15 +101,21 @@
             <MenuItem fx:id="menuSwitch" mnemonicParsing="false" text="Switch" />
             <MenuItem fx:id="menuBattery" mnemonicParsing="false" text="Battery" />
             <MenuItem fx:id="menuCapacitor" mnemonicParsing="false" text="Capacitor" />
-            <MenuItem fx:id="menuVoltmeter" mnemonicParsing="false" text="Voltmeter" />
-            <MenuItem fx:id="menuAmmeter" mnemonicParsing="false" text="Ammeter" />
             <Menu fx:id="menuLightbulb" mnemonicParsing="false" text="Lighbulb">
                 <MenuItem fx:id="menuYellow" mnemonicParsing="false" text="Yellow" />
                 <MenuItem fx:id="menuRed" mnemonicParsing="false" text="Red" />
                 <MenuItem fx:id="menuGreen" mnemonicParsing="false" text="Green" />
                 <MenuItem fx:id="menuBlue" mnemonicParsing="false" text="Blue" />
                 <SeparatorMenuItem mnemonicParsing="false" />
-                <MenuItem fx:id="menuColorLightbulb" mnemonicParsing="false" text="Custom" />
+            <Menu fx:id="menuColorLightbulb" mnemonicParsing="false" text="Custom Color">
+              <items>
+                      <MenuItem mnemonicParsing="false">
+                     <graphic>
+                        <ColorPicker fx:id="lightbulbColorPicker" />
+                     </graphic>
+                  </MenuItem>
+              </items>
+            </Menu>
             </Menu>
         </Menu>
         <Menu fx:id="menuEdit" mnemonicParsing="false" text="Edit">
