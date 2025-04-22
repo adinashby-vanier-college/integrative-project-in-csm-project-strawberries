@@ -32,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -195,9 +196,10 @@ public class MainAppFXMLController {
             codeStage.setHeight(500);
             codeStage.setWidth(600);
 
+            edu.vanier.math.CircuitMath maths = new edu.vanier.math.CircuitMath(drawingArea.circuit);
             // Create text display
             TextFlow infoText = new TextFlow(
-                    new Text("Total Resistance:\nBranch Voltage:\nBranch Current:\n")
+                    new Text("Total Resistance: " + maths.getTotalResistance() + " Ω\nTotal Voltage:" + maths.getTotalVoltage() + " V\nTotal Current:" + maths.getTotalCurrent() + " A\n")
             );
             infoText.setTextAlignment(TextAlignment.LEFT);
 
@@ -468,15 +470,16 @@ public class MainAppFXMLController {
         // constant Voltage
 
         edu.vanier.math.CircuitMath maths = new edu.vanier.math.CircuitMath(drawingArea.circuit);
-        double voltageValue = maths.getTotalVoltage();
-        series.getData().add(new XYChart.Data<>(0.0, voltageValue));
 
-        series.getData().add(new XYChart.Data<>(0, 0));   // Start at 0V
-        series.getData().add(new XYChart.Data<>(1, 10));  // Increase
-        series.getData().add(new XYChart.Data<>(2, 10));  // Stay constant
-        series.getData().add(new XYChart.Data<>(3, 5));   // Decrease
-        series.getData().add(new XYChart.Data<>(4, 5));   // Stay constant
-        series.getData().add(new XYChart.Data<>(5, 0));   // Return to 0V
+        List<Component> path = maths.getTraversalPath();
+        series.getData().add(new XYChart.Data<>(0, maths.getTotalVoltage()));
+        int i = 1;
+        for (Component c : path) {
+            if (c instanceof Battery b) {
+                series.getData().add(new XYChart.Data<>(i, b.getPotential()));
+            }
+            i =+ 1;
+        }
 
         lineChart.getData().add(series);
         return lineChart;
