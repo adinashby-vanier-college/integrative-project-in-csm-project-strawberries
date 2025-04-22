@@ -1,5 +1,6 @@
 package edu.vanier.strawberries.controllers;
 
+import edu.vanier.math.CircuitMath;
 import edu.vanier.strawberries.Models.*;
 import edu.vanier.strawberries.Models.DrawingArea;
 import edu.vanier.strawberries.ui.MainApp;
@@ -99,7 +100,6 @@ public class MainAppFXMLController {
         initUI();
         setUpKeyListeners();
         applyTheme("light-mode.css");
-
         circuit = new Circuit();
 
         // SET UP EVENT LISTENERS
@@ -119,8 +119,9 @@ public class MainAppFXMLController {
                     if (current instanceof Wire wire && checkLineCollision(mouseAt, wire)) {
                         select(current);
                     }
-                    else if (!(current instanceof Wire) && checkComponentCollision(mouseAt, current)) {
-                        select(current);}
+                    else if (!(current instanceof Wire) && checkImageCollision(mouseAt, current)) {
+                        select(current);
+                    }
                     else {
                         unselect(current);
                     }
@@ -180,11 +181,12 @@ public class MainAppFXMLController {
             if(pickedColor==null) pickedColor = Color.BLACK;
             drawingTool.defaultColor = pickedColor;
         });
+
         polarityCheckBox.setOnAction(_-> {
             if (polarityCheckBox.isSelected()) {
-                System.out.println("showing polarity");
+                System.out.println("Clicked");
             } else {
-                System.out.println("hiding polarity");
+                System.out.println("Un-clicked");
             }
         });
         moreInformationBtn.setOnAction(_ -> {
@@ -242,7 +244,6 @@ public class MainAppFXMLController {
                 drawingArea.animateCurrentFlow(false);
             }
         });
-
         setUpMenuActions();
     }
 
@@ -256,9 +257,6 @@ public class MainAppFXMLController {
     }
 
     private void mousePressed(MouseEvent e) {
-        toMove = new Node[2];
-        mouseDownLocation = new Point2D(e.getX(),e.getY());
-
         if(!Objects.equals(drawingTool.getCurrentAction(),"")) {
             drawingTool.setPencilDown(true);
             Node eventLocation = new Node(drawingArea.snap(e.getX()), drawingArea.snap(e.getY()));
@@ -399,6 +397,7 @@ public class MainAppFXMLController {
         return (d1+d2 >= length-buffer && d1+d2 <= length+buffer);
     }
 
+
     private void mouseReleased(MouseEvent e) {
         toMove = null;
         pivot = null;
@@ -467,6 +466,9 @@ public class MainAppFXMLController {
         lineChart.setLegendVisible(false);
 
         XYChart.Series<Number, Number> series = new XYChart.Series<>();
+
+        // constant Voltage
+        // series.getData().add(new XYChart.Data<>(0.0, CircuitMath.getTotalVoltage()));
 
         series.getData().add(new XYChart.Data<>(0, 0));   // Start at 0V
         series.getData().add(new XYChart.Data<>(1, 10));  // Increase
