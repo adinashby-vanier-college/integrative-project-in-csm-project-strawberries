@@ -86,7 +86,7 @@ public class MainAppFXMLController {
     Text mouseText;
     @FXML
     MenuItem menuNew, menuOpen, menuSave, menuSaveAs, menuQuit, menuPreferences, menuShowToolbar, menuHideToolbar, menuThemes, menuFitToScreen, menuZoomIn, menuZoomOut, menuToggleGrid,
-    menuSelect;
+            menuSelect;
     @FXML
     MenuItem lightThemeItem, darkThemeItem, strawThemeItem;
     private DrawingTool drawingTool;
@@ -138,7 +138,7 @@ public class MainAppFXMLController {
 
     private void initUI() {
 // 1. BIND DIMENSIONS:
-    // Heights
+        // Heights
         window.prefHeightProperty().bind(MainApp.stage.heightProperty());
         splitPane.prefHeightProperty().bind(window.heightProperty());
         leftPanel.prefHeightProperty().bind(splitPane.heightProperty());
@@ -148,7 +148,7 @@ public class MainAppFXMLController {
         rightPanel.prefHeightProperty().bind(splitPane.heightProperty());
         toolbarHBox.setPrefHeight(toolbarHBox.getChildren().getFirst().getLayoutBounds().getHeight());
         toolbarScrollPane.prefViewportHeightProperty().bind(toolbarHBox.heightProperty());
-    //Widths
+        //Widths
         leftPanelVBox.prefWidthProperty().bind(leftPanel.prefWidthProperty());
         toolbarScrollPane.prefWidthProperty().bind(leftPanelVBox.prefWidthProperty());
         toolbarHBox.prefWidthProperty().bind(toolbarScrollPane.prefWidthProperty());
@@ -328,7 +328,7 @@ public class MainAppFXMLController {
 
     private boolean checkImageCollision(Point2D source, Component component) {
         double minX = Math.min(component.begin.getX(),component.end.getX()),
-               minY = Math.min(component.begin.getY(),component.end.getY());
+                minY = Math.min(component.begin.getY(),component.end.getY());
         return (source.getX() <= minX+component.display.getWidth() && source.getY() <= minY+component.display.getHeight());
     }
 
