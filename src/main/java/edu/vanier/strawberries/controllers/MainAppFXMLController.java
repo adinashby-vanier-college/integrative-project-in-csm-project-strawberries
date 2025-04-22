@@ -258,6 +258,10 @@ public class MainAppFXMLController {
         }
     }
 
+    public void switchView() {
+        // TODO: switch view :3
+    }
+
     private void mousePressed(MouseEvent e) {
         mouseDownLocation = new Point2D(e.getX(),e.getY());
         if(!Objects.equals(drawingTool.getCurrentAction(),"")) {
