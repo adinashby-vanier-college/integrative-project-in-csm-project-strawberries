@@ -119,7 +119,7 @@ public class MainAppFXMLController {
                     if (current instanceof Wire wire && checkLineCollision(mouseAt, wire)) {
                         select(current);
                     }
-                    else if (!(current instanceof Wire) && checkImageCollision(mouseAt, current)) {
+                    else if (!(current instanceof Wire) && checkComponentCollision(mouseAt, current)) {
                         select(current);
                     }
                     else {

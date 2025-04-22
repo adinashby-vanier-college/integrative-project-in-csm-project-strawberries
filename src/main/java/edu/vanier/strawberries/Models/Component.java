@@ -1,5 +1,6 @@
 package edu.vanier.strawberries.Models;
 
+import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
@@ -57,6 +58,11 @@ public abstract class Component extends StackPane {
 
     public double getAngle() {
         return angle;
+    }
+
+    public double getLength() {
+        Point2D src = new Point2D(begin.getX(),begin.getY());
+        return src.distance(end.getX(),end.getY());
     }
 
     public boolean isEdit() {
