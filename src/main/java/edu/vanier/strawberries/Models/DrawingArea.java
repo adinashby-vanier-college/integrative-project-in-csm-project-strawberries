@@ -27,6 +27,7 @@ public class DrawingArea {
     public GraphicsContext gc;
     private double zoom;
     private double squareSize;
+    private boolean showGrid;
 
     public DrawingArea(Canvas canvas) {
         this.canvas = canvas;
@@ -39,11 +40,13 @@ public class DrawingArea {
         gc.clearRect(0,0,canvas.getWidth(),canvas.getHeight());
 
         //Draw the grid
-        gc.setStroke(Color.LIGHTGREY);
-        gc.setLineWidth(1);
-        for(int i=0;i<canvas.getWidth();i+= (int) (squareSize*zoom)) {
-            for(int j=0;j<canvas.getHeight();j+= (int) (squareSize*zoom)) {
-                gc.strokeRect(i,j,squareSize*zoom,squareSize*zoom);
+        if(showGrid) {
+            gc.setStroke(Color.LIGHTGREY);
+            gc.setLineWidth(1);
+            for (int i = 0; i < canvas.getWidth(); i += (int) (squareSize * zoom)) {
+                for (int j = 0; j < canvas.getHeight(); j += (int) (squareSize * zoom)) {
+                    gc.strokeRect(i, j, squareSize * zoom, squareSize * zoom);
+                }
             }
         }
 
@@ -141,6 +144,10 @@ public class DrawingArea {
 
     public double getZoom() {
         return zoom;
+    }
+
+    public void toggleGrid() {
+        showGrid = !showGrid;
     }
 
     public void setCircuit(Circuit circuit) {

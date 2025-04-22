@@ -42,7 +42,6 @@ public class MainApp extends Application {
     public static SignOnLogInController signOnLogInController;
     public static SignUpController signUpController;
 
-    public static SnapToGridController snapToGridController;
     public static String currentController;
     public static AnimationTimer timer;
 

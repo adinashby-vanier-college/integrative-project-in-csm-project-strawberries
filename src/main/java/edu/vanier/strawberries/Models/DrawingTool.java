@@ -10,6 +10,7 @@ import javafx.scene.paint.Color;
 public class DrawingTool {
 
     public Color defaultColor;
+    private Color currentColor;
     private String currentAction;
     private boolean pencilDown;
 
@@ -48,5 +49,13 @@ public class DrawingTool {
 
     public boolean isPencilDown() {
         return pencilDown;
+    }
+
+    public void setCurrentColor(Color color) {
+        currentColor = color;
+    }
+
+    public Color getCurrentColor() {
+        return currentColor;
     }
 }

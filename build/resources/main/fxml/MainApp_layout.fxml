@@ -65,7 +65,6 @@
             <MenuItem fx:id="menuQuit" mnemonicParsing="false" text="Quit" />
         </Menu>
         <Menu fx:id="menuSettings" mnemonicParsing="false" text="Settings">
-            <MenuItem fx:id="menuPreferences" mnemonicParsing="false" text="Preferences" />
             <Menu mnemonicParsing="false" text="View">
                 <MenuItem fx:id="menuShowToolbar" mnemonicParsing="false" text="Show toolbar" />
                 <MenuItem fx:id="menuHideToolbar" mnemonicParsing="false" text="Hide toolbar" />
@@ -86,9 +85,17 @@
                 <MenuItem fx:id="menuRedWire" mnemonicParsing="false" text="Red" />
                 <MenuItem fx:id="menuBlackWire" mnemonicParsing="false" text="Black" />
                 <SeparatorMenuItem mnemonicParsing="false" />
-                <MenuItem fx:id="menuDefaultColor" mnemonicParsing="false" text="Use default color" />
+                <MenuItem fx:id="menuDefaultColorWire" mnemonicParsing="false" text="Use default color" />
                 <SeparatorMenuItem mnemonicParsing="false" />
-                <MenuItem fx:id="menuChooseColorWire" mnemonicParsing="false" text="Choose color" />
+            <Menu fx:id="menuChooseColorWire" mnemonicParsing="false" text="Choose color">
+              <items>
+                      <MenuItem fx:id="menuChooseColorWire" mnemonicParsing="false">
+                     <graphic>
+                        <ColorPicker fx:id="menuColorPicker" />
+                     </graphic>
+                  </MenuItem>
+              </items>
+            </Menu>
             </Menu>
             <MenuItem fx:id="menuResistor" mnemonicParsing="false" text="Resistor" />
             <MenuItem fx:id="menuSwitch" mnemonicParsing="false" text="Switch" />
@@ -146,7 +153,7 @@
                 <Canvas fx:id="canvas" height="337.0" width="534.0" />
             </VBox>
         </AnchorPane>
-        <AnchorPane fx:id="rightPanel" minHeight="0.0" prefHeight="160.0" >
+        <AnchorPane fx:id="rightPanel" minHeight="0.0" prefHeight="160.0">
             <VBox fx:id="rightPanelVBox" prefHeight="373.0" prefWidth="178.0" spacing="10.0">
                 <padding>
                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

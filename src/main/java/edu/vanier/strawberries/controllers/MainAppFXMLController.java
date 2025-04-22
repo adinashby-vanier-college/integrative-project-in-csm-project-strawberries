@@ -30,8 +30,6 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Objects;
@@ -77,7 +75,7 @@ public class MainAppFXMLController {
     @FXML
     MenuButton viewMenuBtn;
     @FXML
-    ColorPicker defaultWireColorPicker;
+    ColorPicker defaultWireColorPicker, menuColorPicker;
     @FXML
     CheckBox polarityCheckBox;
     @FXML
@@ -85,8 +83,9 @@ public class MainAppFXMLController {
     @FXML
     Text mouseText;
     @FXML
-    MenuItem menuNew, menuOpen, menuSave, menuSaveAs, menuQuit, menuPreferences, menuShowToolbar, menuHideToolbar, menuThemes, menuFitToScreen, menuZoomIn, menuZoomOut, menuToggleGrid,
-    menuSelect;
+    MenuItem menuNew, menuOpen, menuOpenRecent, menuSave, menuSaveAs, menuQuit, menuShowToolbar, menuHideToolbar, menuThemes,
+            menuFitToScreen, menuZoomIn, menuZoomOut, menuToggleGrid, menuSelect, menuWire, menuRedWire, menuBlackWire,
+            menuDefaultColorWire, menuChooseColorWire, menuResistor, menuSwitch, menuBattery, menuCapacitor;
     @FXML
     MenuItem lightThemeItem, darkThemeItem, strawThemeItem;
     private DrawingTool drawingTool;
@@ -100,9 +99,6 @@ public class MainAppFXMLController {
         initUI();
         setUpKeyListeners();
         applyTheme("light-mode.css");
-        lightThemeItem.setOnAction(_ -> applyTheme("light-mode.css"));
-        darkThemeItem.setOnAction(_-> applyTheme("dark-mode.css"));
-        strawThemeItem.setOnAction(_-> applyTheme("strawberries-theme.css"));
 
         circuit = new Circuit();
 
@@ -164,7 +160,8 @@ public class MainAppFXMLController {
         drawingTool = drawingArea.drawingTool;
 
 // 4. SET UP UI ELEMENTS
-        // Set button actions
+
+        // SET BUTTON ACTIONS
         zoomInBtn.setOnAction(_-> drawingArea.zoomIn());
         zoomOutBtn.setOnAction(_-> drawingArea.zoomOut());
         addWireBtn.setOnAction(_-> drawingTool.setCurrentAction("place-wire"));
@@ -172,20 +169,17 @@ public class MainAppFXMLController {
         addBatteryBtn.setOnAction(_->drawingTool.setCurrentAction("place-battery"));
         addCapacitorBtn.setOnAction(_->drawingTool.setCurrentAction("place-capacitor"));
         addSwitchBtn.setOnAction(_->drawingTool.setCurrentAction("place-switch"));
-        menuQuit.setOnAction(_->quit());
         clearBtn.setOnAction(_-> {
             drawingArea.circuit.print();
             drawingArea.circuit.clear();
             drawingArea.canvas.getGraphicsContext2D().clearRect(0,0,canvas.getWidth(), canvas.getHeight());
         });
-
         defaultWireColorPicker.setValue(Color.BLACK);
         defaultWireColorPicker.setOnAction(_ -> {
             Color pickedColor = defaultWireColorPicker.getValue();
             if(pickedColor==null) pickedColor = Color.BLACK;
             drawingTool.defaultColor = pickedColor;
         });
-
         polarityCheckBox.setOnAction(_-> {
             if (polarityCheckBox.isSelected()) {
                 System.out.println("showing polarity");
@@ -193,7 +187,6 @@ public class MainAppFXMLController {
                 System.out.println("hiding polarity");
             }
         });
-
         moreInformationBtn.setOnAction(_ -> {
             Stage codeStage = new Stage();
             codeStage.setTitle("More information");
@@ -234,7 +227,6 @@ public class MainAppFXMLController {
             content.getChildren().add(bottomContainer);
             codeStage.show();
         });
-
         runStopBtn.setText("Run");
         runStopBtn.setOnAction(_ -> {
             animationRunning = !animationRunning;
@@ -250,6 +242,8 @@ public class MainAppFXMLController {
                 drawingArea.animateCurrentFlow(false);
             }
         });
+
+        setUpMenuActions();
     }
 
     private void mouseMoved(MouseEvent e) {
@@ -270,7 +264,7 @@ public class MainAppFXMLController {
             Node eventLocation = new Node(drawingArea.snap(e.getX()), drawingArea.snap(e.getY()));
             Node tempEnd = Node.copyOf(eventLocation);
             switch (drawingTool.getCurrentAction()) {
-                case "place-wire" -> select(new Wire(eventLocation, tempEnd, drawingTool.defaultColor, 0, 0));
+                case "place-wire" -> select(new Wire(eventLocation, tempEnd, ((drawingTool.getCurrentColor()==null) ? drawingTool.defaultColor : drawingTool.getCurrentColor()), 0, 0));
                 case "place-battery" -> select(new Battery(eventLocation, tempEnd, 12));
                 case "place-capacitor" -> select(new Capacitor(eventLocation, tempEnd, 0, true, false));
                 case "place-fuse" -> select(new Fuse(eventLocation, tempEnd));
@@ -293,9 +287,11 @@ public class MainAppFXMLController {
                 }
                 default -> {}
             }
+            drawingTool.setCurrentColor(null);
             if (!Objects.equals(drawingTool.getCurrentAction(), "select")) {
                 circuit.addComponent(selection);
                 if(!(selection instanceof Wire)) {
+                    System.out.println("testing something");
                     selection.end.setPosition(selection.begin.getX()+selection.display.getWidth(),selection.begin.getY());
                 }
             }
@@ -402,7 +398,6 @@ public class MainAppFXMLController {
 
         return (d1+d2 >= length-buffer && d1+d2 <= length+buffer);
     }
-
 
     private void mouseReleased(MouseEvent e) {
         toMove = null;
@@ -534,14 +529,44 @@ public class MainAppFXMLController {
             editing = component;
         }
 
-      if (component instanceof Battery battery) {
-    battery.handleEdit(leftPanel); 
-}
-
+        if (component instanceof Battery battery) {
+            battery.handleEdit(leftPanel);
+        }
     }
+  }
 
+  private void setUpMenuActions() {
+  //FILE MENU
+      menuNew.setOnAction(_-> {});
+      menuOpen.setOnAction(_->{});
+      menuOpenRecent.setOnAction(_->{});
+      menuSave.setOnAction(_->{});
+      menuSaveAs.setOnAction(_->{});
+      menuQuit.setOnAction(_->quit());
 
-}
+  // SETTINGS & VIEW MENU
+      menuShowToolbar.setOnAction(_-> showToolBar(true));
+      menuHideToolbar.setOnAction(_-> showToolBar(false));
+      lightThemeItem.setOnAction(_ -> applyTheme("light-mode.css"));
+      darkThemeItem.setOnAction(_-> applyTheme("dark-mode.css"));
+      strawThemeItem.setOnAction(_-> applyTheme("strawberries-theme.css"));
+      menuFitToScreen.setOnAction(_->{});
+      menuZoomIn.setOnAction(zoomInBtn.getOnAction());
+      menuZoomOut.setOnAction(zoomOutBtn.getOnAction());
+      menuToggleGrid.setOnAction(_->drawingArea.toggleGrid());
 
+  // INSERT MENU
+      //wire
+      menuWire.setOnAction(_-> drawingTool.setCurrentAction("place-wire"));
+      menuRedWire.setOnAction(_-> drawingTool.setCurrentColor(Color.RED));
+      menuBlackWire.setOnAction(_-> drawingTool.setCurrentColor(Color.BLACK));
+      menuColorPicker.setOnAction(_-> drawingTool.setCurrentColor(menuColorPicker.getValue()));
+      //other components
 
+  }
+
+  private void showToolBar(boolean show) {
+        if(show) leftPanelVBox.getChildren().addFirst(toolbarScrollPane);
+        else leftPanelVBox.getChildren().remove(toolbarScrollPane);
+  }
 }
