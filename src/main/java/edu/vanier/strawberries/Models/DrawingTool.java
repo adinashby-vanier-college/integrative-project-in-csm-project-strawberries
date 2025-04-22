@@ -1,23 +1,22 @@
 package edu.vanier.strawberries.Models;
 
-import edu.vanier.strawberries.controllers.MainAppFXMLController;
 import edu.vanier.strawberries.ui.MainApp;
 import javafx.scene.Cursor;
 import javafx.scene.ImageCursor;
-import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
 public class DrawingTool {
 
-    public Color defaultColor;
+    public Color defaultWireColor, defaultLightbulbColor;
     private Color currentColor;
     private String currentAction;
     private boolean pencilDown;
 
     public DrawingTool() {
         currentAction = "";
-        defaultColor = Color.BLACK;
+        defaultWireColor = Color.BLACK;
+        defaultLightbulbColor = Color.YELLOW;
     }
 
     public void setCurrentAction(String currentAction) {

@@ -1,6 +1,5 @@
 package edu.vanier.strawberries.controllers;
 
-import edu.vanier.math.CircuitMath;
 import edu.vanier.strawberries.Models.*;
 import edu.vanier.strawberries.Models.DrawingArea;
 import edu.vanier.strawberries.ui.MainApp;
@@ -76,7 +75,7 @@ public class MainAppFXMLController {
     @FXML
     MenuButton viewMenuBtn;
     @FXML
-    ColorPicker defaultWireColorPicker, menuColorPicker;
+    ColorPicker defaultWireColorPicker, menuColorPicker, lightbulbColorPicker;
     @FXML
     CheckBox polarityCheckBox;
     @FXML
@@ -86,7 +85,8 @@ public class MainAppFXMLController {
     @FXML
     MenuItem menuNew, menuOpen, menuOpenRecent, menuSave, menuSaveAs, menuQuit, menuShowToolbar, menuHideToolbar, menuThemes,
             menuFitToScreen, menuZoomIn, menuZoomOut, menuToggleGrid, menuSelect, menuWire, menuRedWire, menuBlackWire,
-            menuDefaultColorWire, menuChooseColorWire, menuResistor, menuSwitch, menuBattery, menuCapacitor;
+            menuDefaultColorWire, menuChooseColorWire, menuResistor, menuSwitch, menuBattery, menuCapacitor, menuLightbulb,
+            menuYellow, menuRed, menuGreen, menuBlue, menuColorLightbulb;
     @FXML
     MenuItem lightThemeItem, darkThemeItem, strawThemeItem;
     private DrawingTool drawingTool;
@@ -179,7 +179,7 @@ public class MainAppFXMLController {
         defaultWireColorPicker.setOnAction(_ -> {
             Color pickedColor = defaultWireColorPicker.getValue();
             if(pickedColor==null) pickedColor = Color.BLACK;
-            drawingTool.defaultColor = pickedColor;
+            drawingTool.defaultWireColor = pickedColor;
         });
 
         polarityCheckBox.setOnAction(_-> {
@@ -257,16 +257,17 @@ public class MainAppFXMLController {
     }
 
     private void mousePressed(MouseEvent e) {
+        mouseDownLocation = new Point2D(e.getX(),e.getY());
         if(!Objects.equals(drawingTool.getCurrentAction(),"")) {
             drawingTool.setPencilDown(true);
             Node eventLocation = new Node(drawingArea.snap(e.getX()), drawingArea.snap(e.getY()));
             Node tempEnd = Node.copyOf(eventLocation);
             switch (drawingTool.getCurrentAction()) {
-                case "place-wire" -> select(new Wire(eventLocation, tempEnd, ((drawingTool.getCurrentColor()==null) ? drawingTool.defaultColor : drawingTool.getCurrentColor()), 0, 0));
+                case "place-wire" -> select(new Wire(eventLocation, tempEnd, ((drawingTool.getCurrentColor()==null) ? drawingTool.defaultWireColor : drawingTool.getCurrentColor()), 0, 0));
                 case "place-battery" -> select(new Battery(eventLocation, tempEnd, 12));
                 case "place-capacitor" -> select(new Capacitor(eventLocation, tempEnd, 0, true, false));
                 case "place-fuse" -> select(new Fuse(eventLocation, tempEnd));
-                case "place-lightbulb" -> select(new Lightbulb(eventLocation, tempEnd));
+                case "place-lightbulb" -> select(new Lightbulb(eventLocation, tempEnd,(drawingTool.getCurrentColor()==null) ? drawingTool.defaultLightbulbColor : drawingTool.getCurrentColor(),0));
                 case "place-resistor" -> select(new Resistor(eventLocation, tempEnd, 10));
                 case "place-switch" -> select(new Switch(eventLocation, tempEnd, false));
                 case "select" -> {
@@ -278,9 +279,6 @@ public class MainAppFXMLController {
                     if(selection instanceof Wire wire) {
                         initialBegin = new Point2D(wire.begin.getX(),wire.begin.getY());
                         initialEnd = new Point2D(wire.end.getX(),wire.end.getY());
-
-
-
                     }
                 }
                 default -> {}
@@ -564,7 +562,16 @@ public class MainAppFXMLController {
       menuBlackWire.setOnAction(_-> drawingTool.setCurrentColor(Color.BLACK));
       menuColorPicker.setOnAction(_-> drawingTool.setCurrentColor(menuColorPicker.getValue()));
       //other components
-
+      menuResistor.setOnAction(_-> drawingTool.setCurrentAction("place-resistor"));
+      menuBattery.setOnAction(_-> drawingTool.setCurrentAction("place-battery"));
+      menuSwitch.setOnAction(_-> drawingTool.setCurrentAction("place-switch"));
+      menuCapacitor.setOnAction(_-> drawingTool.setCurrentAction("place-capacitor"));
+      menuLightbulb.setOnAction(_-> drawingTool.setCurrentAction("place-lightbulb"));
+      menuYellow.setOnAction(_-> drawingTool.setCurrentColor(Color.YELLOW));
+      menuRed.setOnAction(_-> drawingTool.setCurrentColor(Color.RED));
+      menuGreen.setOnAction(_-> drawingTool.setCurrentColor(Color.GREEN));
+      menuBlue.setOnAction(_-> drawingTool.setCurrentColor(Color.BLUE));
+      lightbulbColorPicker.setOnAction(_-> drawingTool.setCurrentColor(lightbulbColorPicker.getValue()));
   }
 
   private void showToolBar(boolean show) {
