@@ -38,6 +38,10 @@ public class SignOnLogInController {
         });
     }
 
+    public String getRecent() {
+        return Login();
+    }
+
     private String Login() {
         String recentProject = "";
         String username = this.username.getText().trim();

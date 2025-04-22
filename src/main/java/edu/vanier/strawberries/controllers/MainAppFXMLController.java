@@ -206,7 +206,7 @@ public class MainAppFXMLController {
             graphTitle.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
 
             // Graph
-            final LineChart<Number, Number> lineChart = getChart();
+            final LineChart<Number, Number> lineChart = getChart(drawingArea);
 
             // Close button
             Button closeButton = new Button("Close");
@@ -451,7 +451,7 @@ public class MainAppFXMLController {
         }
     }
 
-    private static LineChart<Number, Number> getChart() {
+    private static LineChart<Number, Number> getChart(DrawingArea drawingArea) {
         final NumberAxis xAxis = new NumberAxis();
         final NumberAxis yAxis = new NumberAxis();
         xAxis.setLabel("Loop Position");
@@ -468,7 +468,10 @@ public class MainAppFXMLController {
         XYChart.Series<Number, Number> series = new XYChart.Series<>();
 
         // constant Voltage
-        // series.getData().add(new XYChart.Data<>(0.0, CircuitMath.getTotalVoltage()));
+
+        edu.vanier.math.CircuitMath maths = new edu.vanier.math.CircuitMath(drawingArea.circuit);
+        double voltageValue = maths.getTotalVoltage();
+        series.getData().add(new XYChart.Data<>(0.0, voltageValue));
 
         series.getData().add(new XYChart.Data<>(0, 0));   // Start at 0V
         series.getData().add(new XYChart.Data<>(1, 10));  // Increase
@@ -516,6 +519,10 @@ public class MainAppFXMLController {
         window.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/" + cssFile)).toExternalForm());
     }
 
+    private void openRecent(String project) {
+        // TODO: open project
+    }
+
   private void edit(Component component) {
     if (editing != component) {
         if (component != null) component.setEdit(true);
@@ -556,6 +563,8 @@ public class MainAppFXMLController {
       menuZoomIn.setOnAction(zoomInBtn.getOnAction());
       menuZoomOut.setOnAction(zoomOutBtn.getOnAction());
       menuToggleGrid.setOnAction(_->drawingArea.toggleGrid());
+      //String recentProject = MainApp.signOnLogInController.getRecent();
+      //menuOpenRecent.setOnAction(_->openRecent(recentProject));
 
   // INSERT MENU
       //wire
