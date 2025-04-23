@@ -14,6 +14,24 @@ public class Battery extends Component {
     private boolean endPolarity;
     private double mouseOffsetX;
     private double mouseOffsetY;
+    // Add this to Battery.java
+    
+public Battery(Node begin, Node end, double potential, boolean skipUI) {
+    super(begin, end);
+    this.potential = potential;
+
+    if (!skipUI) {
+        try {
+            URL imgUrl = getClass().getResource("/images/battery_diagram.png");
+            display = new Image(imgUrl.toExternalForm());
+            enableDragAndRotate();
+        } catch (NullPointerException e) {
+            System.out.println("Could not load battery image");
+            display = null;
+        }
+    }
+}
+
 
     public Battery(Node begin, Node end, double potential) {
         super(begin, end);
