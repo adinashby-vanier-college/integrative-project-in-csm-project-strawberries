@@ -1,6 +1,7 @@
 package edu.vanier.strawberries.Models;
 
 import edu.vanier.strawberries.ui.MainApp;
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -53,6 +54,14 @@ public class DrawingArea {
                 }
             }
         }
+        if (animateCurrent) {
+            GraphicsContext gc = canvas.getGraphicsContext2D();
+            gc.setFill(Color.RED);
+            for (Electron e : animatedElectrons) {
+                Point2D pos = e.getPosition();
+                gc.fillOval(pos.getX() - 3, pos.getY() - 3, 10, 10);
+            }
+        }
 
         // Draw the Components
         for(Component component : circuit.toArrayList()) {
@@ -100,54 +109,54 @@ public class DrawingArea {
         else
             return pos + (squareSize - remainder);
     }
+    //make a list to store the electrons to that r going to get animated
+    private final List<Electron> animatedElectrons = new ArrayList<>();
+    private boolean animateCurrent = false;
 
-    public void animateCurrentFlow(boolean start) {
-        stopElectronAnimation(); // Stop previous animations before starting a new one
+    private static class Electron {
+        private final Wire wire;
+        private double progress;
 
-        // Ensure the canvas is inside a Pane (important for animations)
-        if (!(canvas.getParent() instanceof Pane parent)) {
-            System.err.println("Parent is not a Pane. Cannot animate current.");
-            return;
+        public Electron(Wire wire) {
+            this.wire = wire;
+            this.progress = 0;
         }
 
+        public void update() {
+            progress += 0.01; // Adjust speed here
+            if (progress > 1.0) {
+                progress = 0; // Loop the electron back to start
+            }
+        }
+
+        public Point2D getPosition() { //get wire position
+            double x = wire.begin.getX() + (wire.end.getX() - wire.begin.getX()) * progress;
+            double y = wire.begin.getY() + (wire.end.getY() - wire.begin.getY()) * progress;
+            return new Point2D(x, y);
+        }
+    }
+
+
+    public void animateCurrentFlow(boolean start) {
+        animateCurrent = start;
+        animatedElectrons.clear();  // Reset electrons when toggled
+
         if (start) {
-            // Animation: Draw multiple animated dots along the wire
+            int dotsPerWire = 5;
+
             for (LinkedList<Component> list : circuit.arrayList) {
                 for (Component c : list) {
                     if (c instanceof Wire wire) {
-                        // Check if wire has valid coordinates
-                        System.out.println("Animating Wire: " + wire.begin + " to " + wire.end);
-
-                        // Draw animated electrons along the wire
-                        int dotCount = 5;
-                        double durationMillis = 2000; // Duration for full animation
-
-                        Line path = new Line(
-                                wire.begin.getX(), wire.begin.getY(),
-                                wire.end.getX(), wire.end.getY()
-                        );
-
-                        for (int i = 0; i < dotCount; i++) {
-                            Circle dot = new Circle(4, Color.RED);
-                            parent.getChildren().add(dot);  // Add to the parent container
-
-                            PathTransition transition = new PathTransition();
-                            transition.setNode(dot);
-                            transition.setPath(path);
-                            transition.setDuration(Duration.millis(durationMillis));
-                            transition.setDelay(Duration.millis(i * (durationMillis / dotCount)));
-                            transition.setCycleCount(PathTransition.INDEFINITE);
-                            transition.setAutoReverse(false);
-                            transition.play();
-
-                            activeTransitions.add(transition);
+                        for (int i = 0; i < dotsPerWire; i++) {
+                            Electron e = new Electron(wire);
+                            e.progress = i / (double) dotsPerWire;
+                            animatedElectrons.add(e);
                         }
                     }
                 }
             }
         }
     }
-
     public void stopElectronAnimation() {
         if (!(canvas.getParent() instanceof Pane parent)) return;
 
@@ -181,5 +190,13 @@ public class DrawingArea {
 
     public void setCircuit(Circuit circuit) {
         this.circuit = circuit;
+    }
+
+    public void updateAnimation() { // update the electrons animation
+        if (animateCurrent) {
+            for (Electron e : animatedElectrons) {
+                e.update();
+            }
+        }
     }
 }

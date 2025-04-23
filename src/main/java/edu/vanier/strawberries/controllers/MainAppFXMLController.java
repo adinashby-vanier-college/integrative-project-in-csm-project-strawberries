@@ -43,7 +43,6 @@ import java.util.Objects;
 public class MainAppFXMLController {
 
     private final static Logger logger = LoggerFactory.getLogger(MainAppFXMLController.class);
-
     public boolean animationRunning;
     public Component selection,editing;
     public Circuit circuit;
@@ -113,22 +112,25 @@ public class MainAppFXMLController {
     }
 
     public void update() {
-        Point2D mouseAt = new Point2D(posX,posY);
-        if(drawingTool.getCurrentAction().equals("select")) {
+        Point2D mouseAt = new Point2D(posX, posY);
+        // Update selection
+        if (drawingTool.getCurrentAction().equals("select")) {
             for (LinkedList<Component> list : circuit.arrayList) {
                 for (Component current : list) {
                     if (current instanceof Wire wire && checkLineCollision(mouseAt, wire)) {
                         select(current);
-                    }
-                    else if (!(current instanceof Wire) && checkComponentCollision(mouseAt, current)) {
+                    } else if (!(current instanceof Wire) && checkComponentCollision(mouseAt, current)) {
                         select(current);
-                    }
-                    else {
+                    } else {
                         unselect(current);
                     }
                 }
             }
         }
+        // electrons get animated
+        drawingArea.updateAnimation();
+
+        // Draw everything
         drawingArea.drawContent();
     }
 
