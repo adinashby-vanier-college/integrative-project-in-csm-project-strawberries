@@ -1,13 +1,13 @@
 package edu.vanier.strawberries.Models;
 
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
-import javafx.scene.transform.Rotate;
 
 import java.net.URL;
 import java.util.LinkedList;
+import static javafx.scene.input.KeyCode.ENTER;
+import static javafx.scene.input.KeyCode.ESCAPE;
 
 public class Resistor extends Component {
     private double resistance;
@@ -16,6 +16,25 @@ public class Resistor extends Component {
     private double mouseOffsetX;
     private double mouseOffsetY;
 
+    
+    public Resistor(Node begin, Node end, double resistance, boolean skipUI) {
+        super(begin, end);
+        this.resistance = resistance;
+        this.current = 0;
+
+        if (!skipUI) {
+            try {
+                URL imgUrl = getClass().getResource("/images/resistor_diagram.png");
+                display = new Image(imgUrl.toExternalForm());
+                enableDragAndRotate();
+            } catch (NullPointerException e) {
+                System.out.println("Could not load resistor image");
+                display = null;
+            }
+        }
+    }
+
+ 
     public Resistor(Node begin, Node end, double resistance) {
         super(begin, end);
         this.resistance = resistance;
@@ -24,8 +43,7 @@ public class Resistor extends Component {
         URL imgUrl = getClass().getResource("/images/resistor_diagram.png");
         if (imgUrl == null) {
             System.out.println("Could not load resistor image");
-        }
-        else {
+        } else {
             display = new Image(imgUrl.toExternalForm());
             enableDragAndRotate();
         }
@@ -50,7 +68,6 @@ public class Resistor extends Component {
                 this.setLayoutX(newX);
                 this.setLayoutY(newY);
                 this.begin.setPosition(newX, newY);
-
                 double deltaX = end.getX() - begin.getX();
                 double deltaY = end.getY() - begin.getY();
                 this.end.setPosition(newX + deltaX, newY + deltaY);
@@ -58,13 +75,11 @@ public class Resistor extends Component {
             e.consume();
         });
 
-        // Double-click to edit resistance
         this.setOnMouseClicked(e -> {
             if (e.getClickCount() == 2 && e.isPrimaryButtonDown()) {
                 TextField inputField = new TextField();
                 inputField.setLayoutX(this.getLayoutX());
-                inputField.setLayoutY(this.getLayoutY() - 25); // slightly above the component
-
+                inputField.setLayoutY(this.getLayoutY() - 25);
                 Pane parentPane = (Pane) this.getParent();
                 parentPane.getChildren().add(inputField);
                 inputField.requestFocus();
@@ -80,25 +95,35 @@ public class Resistor extends Component {
         });
     }
 
-    
-    public boolean isConnected(Circuit circuit) {
-    int resistorIndex = circuit.getIndex(this);
-
-    for (LinkedList<Component> list : circuit.arrayList) {
-        for (Component component : list) {
-            if (component == this) continue; // skip self
-            int otherIndex = circuit.getIndex(component);
-
-            if (circuit.checkEdge(resistorIndex, otherIndex)) {
-                return true; // Found connection
+    private void updateResistanceFromField(TextField inputField, Pane parentPane) {
+        try {
+            double newResistance = Double.parseDouble(inputField.getText());
+            if (newResistance >= 0 && newResistance <= 10000) {
+                this.resistance = newResistance;
+                System.out.println("Resistance updated to: " + resistance + " Ω");
+            } else {
+                System.out.println("Resistance must be between 0–10000 Ω");
             }
+        } catch (NumberFormatException ex) {
+            System.out.println("Invalid resistance input.");
         }
+
+        parentPane.getChildren().remove(inputField);
     }
 
-    return false; // Not connected
-}
-    // TODO: Fix the method above to have a text field pop up to input the information for the component
-
+    public boolean isConnected(Circuit circuit) {
+        int resistorIndex = circuit.getIndex(this);
+        for (LinkedList<Component> list : circuit.arrayList) {
+            for (Component component : list) {
+                if (component == this) continue;
+                int otherIndex = circuit.getIndex(component);
+                if (circuit.checkEdge(resistorIndex, otherIndex)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     public double getResistance() {
         return resistance;
@@ -127,21 +152,5 @@ public class Resistor extends Component {
     public void calculateCurrent(double voltage) {
         this.voltage = voltage;
         this.current = (resistance != 0) ? voltage / resistance : 0;
-    }
-
-    private void updateResistanceFromField(TextField inputField, Pane parentPane) {
-        try {
-            double newResistance = Double.parseDouble(inputField.getText());
-            if (newResistance >= 0 && newResistance <= 10000) {
-                this.resistance = newResistance;
-                System.out.println("Resistance updated to: " + resistance + " Ω");
-            } else {
-                System.out.println("Resistance must be between 0–10000 Ω");
-            }
-        } catch (NumberFormatException ex) {
-            System.out.println("Invalid resistance input.");
-        }
-
-        parentPane.getChildren().remove(inputField);
     }
 }
