@@ -1,0 +1,625 @@
+<html>
+<head>
+<title>MainAppFXMLController.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #5f826b; font-style: italic;}
+.s4 { color: #67a37c; font-style: italic;}
+.s5 { color: #2aacb8;}
+.s6 { color: #7a7e85;}
+.s7 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+MainAppFXMLController.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">edu</span><span class="s2">.</span><span class="s1">vanier</span><span class="s2">.</span><span class="s1">strawberries</span><span class="s2">.</span><span class="s1">controllers</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">edu</span><span class="s2">.</span><span class="s1">vanier</span><span class="s2">.</span><span class="s1">strawberries</span><span class="s2">.</span><span class="s1">Models</span><span class="s2">.*;</span>
+<span class="s0">import </span><span class="s1">edu</span><span class="s2">.</span><span class="s1">vanier</span><span class="s2">.</span><span class="s1">strawberries</span><span class="s2">.</span><span class="s1">Models</span><span class="s2">.</span><span class="s1">DrawingArea</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">edu</span><span class="s2">.</span><span class="s1">vanier</span><span class="s2">.</span><span class="s1">strawberries</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">MainApp</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">fxml</span><span class="s2">.</span><span class="s1">FXML</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">geometry</span><span class="s2">.</span><span class="s1">Insets</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">geometry</span><span class="s2">.</span><span class="s1">Point2D</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">geometry</span><span class="s2">.</span><span class="s1">Pos</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">Cursor</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">Scene</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">canvas</span><span class="s2">.</span><span class="s1">Canvas</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">chart</span><span class="s2">.</span><span class="s1">LineChart</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">chart</span><span class="s2">.</span><span class="s1">NumberAxis</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">chart</span><span class="s2">.</span><span class="s1">XYChart</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">control</span><span class="s2">.*;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">control</span><span class="s2">.</span><span class="s1">Button</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">control</span><span class="s2">.</span><span class="s1">Label</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">control</span><span class="s2">.</span><span class="s1">MenuBar</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">control</span><span class="s2">.</span><span class="s1">MenuItem</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">control</span><span class="s2">.</span><span class="s1">ScrollPane</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">control</span><span class="s2">.</span><span class="s1">TextField</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">input</span><span class="s2">.</span><span class="s1">KeyEvent</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">input</span><span class="s2">.</span><span class="s1">MouseEvent</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.*;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">paint</span><span class="s2">.</span><span class="s1">Color</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">text</span><span class="s2">.</span><span class="s1">Text</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">text</span><span class="s2">.</span><span class="s1">TextAlignment</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">text</span><span class="s2">.</span><span class="s1">TextFlow</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">stage</span><span class="s2">.</span><span class="s1">Stage</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">org</span><span class="s2">.</span><span class="s1">slf4j</span><span class="s2">.</span><span class="s1">Logger</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">org</span><span class="s2">.</span><span class="s1">slf4j</span><span class="s2">.</span><span class="s1">LoggerFactory</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">ArrayList</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">LinkedList</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">List</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">Objects</span><span class="s2">;</span>
+
+<span class="s3">/**</span>
+ <span class="s3">* FXML controller class for the primary stage scene.</span>
+ <span class="s3">*</span>
+ <span class="s3">* </span><span class="s4">@author </span><span class="s3">frostybee</span>
+ <span class="s3">*/</span>
+<span class="s0">public class </span><span class="s1">MainAppFXMLController </span><span class="s2">{</span>
+
+    <span class="s0">private final static </span><span class="s1">Logger logger </span><span class="s2">= </span><span class="s1">LoggerFactory</span><span class="s2">.</span><span class="s1">getLogger</span><span class="s2">(</span><span class="s1">MainAppFXMLController</span><span class="s2">.</span><span class="s0">class</span><span class="s2">);</span>
+
+    <span class="s0">public boolean </span><span class="s1">animationRunning</span><span class="s2">;</span>
+    <span class="s0">public </span><span class="s1">Component selection</span><span class="s2">,</span><span class="s1">editing</span><span class="s2">;</span>
+    <span class="s0">public </span><span class="s1">Circuit circuit</span><span class="s2">;</span>
+    <span class="s0">private double </span><span class="s1">posX</span><span class="s2">,</span><span class="s1">posY</span><span class="s2">;</span>
+    <span class="s0">private </span><span class="s1">Node</span><span class="s2">[] </span><span class="s1">toMove </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Node</span><span class="s2">[</span><span class="s5">2</span><span class="s2">];</span>
+    <span class="s1">Node pivot</span><span class="s2">; </span><span class="s6">//TEST</span>
+    <span class="s0">private </span><span class="s1">Point2D mouseDownLocation</span><span class="s2">,</span><span class="s1">initialBegin</span><span class="s2">,</span><span class="s1">initialEnd</span><span class="s2">;</span>
+
+    <span class="s6">//Import FXML variables</span>
+    <span class="s1">@FXML</span>
+    <span class="s1">VBox window</span><span class="s2">,</span><span class="s1">leftPanelVBox</span><span class="s2">,</span><span class="s1">rightPanelVBox</span><span class="s2">;</span>
+    <span class="s1">@FXML</span>
+    <span class="s1">SplitPane splitPane</span><span class="s2">;</span>
+    <span class="s1">@FXML</span>
+    <span class="s1">ScrollPane toolbarScrollPane</span><span class="s2">;</span>
+    <span class="s1">@FXML</span>
+    <span class="s1">HBox toolbarHBox</span><span class="s2">;</span>
+    <span class="s1">@FXML</span>
+    <span class="s1">Button zoomInBtn</span><span class="s2">,</span><span class="s1">zoomOutBtn</span><span class="s2">,</span><span class="s1">undoBtn</span><span class="s2">,</span><span class="s1">redoBtn</span><span class="s2">,</span><span class="s1">copyBtn</span><span class="s2">,</span><span class="s1">pasteBtn</span><span class="s2">,</span><span class="s1">addWireBtn</span><span class="s2">,</span><span class="s1">addResistorBtn</span><span class="s2">,</span><span class="s1">addCapacitorBtn</span><span class="s2">,</span><span class="s1">addBatteryBtn</span><span class="s2">,</span><span class="s1">addSwitchBtn</span><span class="s2">;</span>
+    <span class="s1">@FXML</span>
+    <span class="s1">Canvas canvas</span><span class="s2">;</span>
+    <span class="s1">@FXML</span>
+    <span class="s1">AnchorPane leftPanel</span><span class="s2">, </span><span class="s1">rightPanel</span><span class="s2">;</span>
+    <span class="s1">@FXML</span>
+    <span class="s1">TextField circuitNameField</span><span class="s2">;</span>
+    <span class="s1">@FXML</span>
+    <span class="s1">Button exportBtn</span><span class="s2">,</span><span class="s1">moreInformationBtn</span><span class="s2">,</span><span class="s1">runStopBtn</span><span class="s2">,</span><span class="s1">resetBtn</span><span class="s2">,</span><span class="s1">clearBtn</span><span class="s2">;</span>
+    <span class="s1">@FXML</span>
+    <span class="s1">Label runStopLabel</span><span class="s2">;</span>
+    <span class="s1">@FXML</span>
+    <span class="s1">MenuButton viewMenuBtn</span><span class="s2">;</span>
+    <span class="s1">@FXML</span>
+    <span class="s1">ColorPicker defaultWireColorPicker</span><span class="s2">, </span><span class="s1">menuColorPicker</span><span class="s2">, </span><span class="s1">lightbulbColorPicker</span><span class="s2">;</span>
+    <span class="s1">@FXML</span>
+    <span class="s1">CheckBox polarityCheckBox</span><span class="s2">;</span>
+    <span class="s1">@FXML</span>
+    <span class="s1">MenuBar menuBar</span><span class="s2">;</span>
+    <span class="s1">@FXML</span>
+    <span class="s1">Text mouseText</span><span class="s2">;</span>
+    <span class="s1">@FXML</span>
+    <span class="s1">MenuItem menuNew</span><span class="s2">, </span><span class="s1">menuOpen</span><span class="s2">, </span><span class="s1">menuOpenRecent</span><span class="s2">, </span><span class="s1">menuSave</span><span class="s2">, </span><span class="s1">menuSaveAs</span><span class="s2">, </span><span class="s1">menuQuit</span><span class="s2">, </span><span class="s1">menuShowToolbar</span><span class="s2">, </span><span class="s1">menuHideToolbar</span><span class="s2">, </span><span class="s1">menuThemes</span><span class="s2">,</span>
+            <span class="s1">menuFitToScreen</span><span class="s2">, </span><span class="s1">menuZoomIn</span><span class="s2">, </span><span class="s1">menuZoomOut</span><span class="s2">, </span><span class="s1">menuToggleGrid</span><span class="s2">, </span><span class="s1">menuSelect</span><span class="s2">, </span><span class="s1">menuWire</span><span class="s2">, </span><span class="s1">menuRedWire</span><span class="s2">, </span><span class="s1">menuBlackWire</span><span class="s2">,</span>
+            <span class="s1">menuDefaultColorWire</span><span class="s2">, </span><span class="s1">menuChooseColorWire</span><span class="s2">, </span><span class="s1">menuResistor</span><span class="s2">, </span><span class="s1">menuSwitch</span><span class="s2">, </span><span class="s1">menuBattery</span><span class="s2">, </span><span class="s1">menuCapacitor</span><span class="s2">, </span><span class="s1">menuLightbulb</span><span class="s2">,</span>
+            <span class="s1">menuYellow</span><span class="s2">, </span><span class="s1">menuRed</span><span class="s2">, </span><span class="s1">menuGreen</span><span class="s2">, </span><span class="s1">menuBlue</span><span class="s2">, </span><span class="s1">menuColorLightbulb</span><span class="s2">;</span>
+    <span class="s1">@FXML</span>
+    <span class="s1">MenuItem lightThemeItem</span><span class="s2">, </span><span class="s1">darkThemeItem</span><span class="s2">, </span><span class="s1">strawThemeItem</span><span class="s2">;</span>
+    <span class="s0">private </span><span class="s1">DrawingTool drawingTool</span><span class="s2">;</span>
+    <span class="s0">public </span><span class="s1">DrawingArea drawingArea</span><span class="s2">;</span>
+
+    <span class="s1">@FXML</span>
+    <span class="s0">public void </span><span class="s1">initialize</span><span class="s2">() {</span>
+        <span class="s1">logger</span><span class="s2">.</span><span class="s1">info</span><span class="s2">(</span><span class="s7">&quot;Initializing MainAppController...&quot;</span><span class="s2">);</span>
+
+        <span class="s1">animationRunning </span><span class="s2">= </span><span class="s0">false</span><span class="s2">;</span>
+        <span class="s1">initUI</span><span class="s2">();</span>
+        <span class="s1">setUpKeyListeners</span><span class="s2">();</span>
+        <span class="s1">applyTheme</span><span class="s2">(</span><span class="s7">&quot;light-mode.css&quot;</span><span class="s2">);</span>
+        <span class="s1">circuit </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Circuit</span><span class="s2">();</span>
+
+        <span class="s6">// SET UP EVENT LISTENERS</span>
+        <span class="s1">canvas</span><span class="s2">.</span><span class="s1">addEventHandler</span><span class="s2">(</span><span class="s1">MouseEvent</span><span class="s2">.</span><span class="s1">MOUSE_MOVED</span><span class="s2">, </span><span class="s0">this</span><span class="s1">::mouseMoved</span><span class="s2">);</span>
+        <span class="s1">canvas</span><span class="s2">.</span><span class="s1">addEventHandler</span><span class="s2">(</span><span class="s1">MouseEvent</span><span class="s2">.</span><span class="s1">MOUSE_PRESSED</span><span class="s2">, </span><span class="s0">this</span><span class="s1">::mousePressed</span><span class="s2">);</span>
+        <span class="s1">canvas</span><span class="s2">.</span><span class="s1">addEventHandler</span><span class="s2">(</span><span class="s1">MouseEvent</span><span class="s2">.</span><span class="s1">MOUSE_DRAGGED</span><span class="s2">, </span><span class="s0">this</span><span class="s1">::mouseDragged</span><span class="s2">);</span>
+        <span class="s1">canvas</span><span class="s2">.</span><span class="s1">addEventHandler</span><span class="s2">(</span><span class="s1">MouseEvent</span><span class="s2">.</span><span class="s1">MOUSE_RELEASED</span><span class="s2">, </span><span class="s0">this</span><span class="s1">::mouseReleased</span><span class="s2">);</span>
+
+        <span class="s0">if</span><span class="s2">(</span><span class="s1">drawingArea</span><span class="s2">.</span><span class="s1">circuit</span><span class="s2">==</span><span class="s0">null</span><span class="s2">) </span><span class="s1">drawingArea</span><span class="s2">.</span><span class="s1">setCircuit</span><span class="s2">(</span><span class="s1">circuit</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">update</span><span class="s2">() {</span>
+        <span class="s1">Point2D mouseAt </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Point2D</span><span class="s2">(</span><span class="s1">posX</span><span class="s2">,</span><span class="s1">posY</span><span class="s2">);</span>
+        <span class="s0">if</span><span class="s2">(</span><span class="s1">drawingTool</span><span class="s2">.</span><span class="s1">getCurrentAction</span><span class="s2">().</span><span class="s1">equals</span><span class="s2">(</span><span class="s7">&quot;select&quot;</span><span class="s2">)) {</span>
+            <span class="s0">for </span><span class="s2">(</span><span class="s1">LinkedList</span><span class="s2">&lt;</span><span class="s1">Component</span><span class="s2">&gt; </span><span class="s1">list </span><span class="s2">: </span><span class="s1">circuit</span><span class="s2">.</span><span class="s1">arrayList</span><span class="s2">) {</span>
+                <span class="s0">for </span><span class="s2">(</span><span class="s1">Component current </span><span class="s2">: </span><span class="s1">list</span><span class="s2">) {</span>
+                    <span class="s0">if </span><span class="s2">(</span><span class="s1">current </span><span class="s0">instanceof </span><span class="s1">Wire wire </span><span class="s2">&amp;&amp; </span><span class="s1">checkLineCollision</span><span class="s2">(</span><span class="s1">mouseAt</span><span class="s2">, </span><span class="s1">wire</span><span class="s2">)) {</span>
+                        <span class="s1">select</span><span class="s2">(</span><span class="s1">current</span><span class="s2">);</span>
+                    <span class="s2">}</span>
+                    <span class="s0">else if </span><span class="s2">(!(</span><span class="s1">current </span><span class="s0">instanceof </span><span class="s1">Wire</span><span class="s2">) &amp;&amp; </span><span class="s1">checkComponentCollision</span><span class="s2">(</span><span class="s1">mouseAt</span><span class="s2">, </span><span class="s1">current</span><span class="s2">)) {</span>
+                        <span class="s1">select</span><span class="s2">(</span><span class="s1">current</span><span class="s2">);</span>
+                    <span class="s2">}</span>
+                    <span class="s0">else </span><span class="s2">{</span>
+                        <span class="s1">unselect</span><span class="s2">(</span><span class="s1">current</span><span class="s2">);</span>
+                    <span class="s2">}</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+        <span class="s1">drawingArea</span><span class="s2">.</span><span class="s1">drawContent</span><span class="s2">();</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">initUI</span><span class="s2">() {</span>
+<span class="s6">// 1. BIND DIMENSIONS:</span>
+    <span class="s6">// Heights</span>
+        <span class="s1">window</span><span class="s2">.</span><span class="s1">prefHeightProperty</span><span class="s2">().</span><span class="s1">bind</span><span class="s2">(</span><span class="s1">MainApp</span><span class="s2">.</span><span class="s1">stage</span><span class="s2">.</span><span class="s1">heightProperty</span><span class="s2">());</span>
+        <span class="s1">splitPane</span><span class="s2">.</span><span class="s1">prefHeightProperty</span><span class="s2">().</span><span class="s1">bind</span><span class="s2">(</span><span class="s1">window</span><span class="s2">.</span><span class="s1">heightProperty</span><span class="s2">());</span>
+        <span class="s1">leftPanel</span><span class="s2">.</span><span class="s1">prefHeightProperty</span><span class="s2">().</span><span class="s1">bind</span><span class="s2">(</span><span class="s1">splitPane</span><span class="s2">.</span><span class="s1">heightProperty</span><span class="s2">());</span>
+        <span class="s1">canvas</span><span class="s2">.</span><span class="s1">heightProperty</span><span class="s2">().</span><span class="s1">bind</span><span class="s2">(</span><span class="s1">leftPanel</span><span class="s2">.</span><span class="s1">prefHeightProperty</span><span class="s2">());</span>
+        <span class="s1">rightPanel</span><span class="s2">.</span><span class="s1">prefHeightProperty</span><span class="s2">().</span><span class="s1">bind</span><span class="s2">(</span><span class="s1">splitPane</span><span class="s2">.</span><span class="s1">heightProperty</span><span class="s2">());</span>
+        <span class="s1">toolbarHBox</span><span class="s2">.</span><span class="s1">setPrefHeight</span><span class="s2">(</span><span class="s1">toolbarHBox</span><span class="s2">.</span><span class="s1">getChildren</span><span class="s2">().</span><span class="s1">getFirst</span><span class="s2">().</span><span class="s1">getLayoutBounds</span><span class="s2">().</span><span class="s1">getHeight</span><span class="s2">());</span>
+        <span class="s1">toolbarScrollPane</span><span class="s2">.</span><span class="s1">prefViewportHeightProperty</span><span class="s2">().</span><span class="s1">bind</span><span class="s2">(</span><span class="s1">toolbarHBox</span><span class="s2">.</span><span class="s1">heightProperty</span><span class="s2">());</span>
+    <span class="s6">//Widths</span>
+        <span class="s1">leftPanelVBox</span><span class="s2">.</span><span class="s1">prefWidthProperty</span><span class="s2">().</span><span class="s1">bind</span><span class="s2">(</span><span class="s1">leftPanel</span><span class="s2">.</span><span class="s1">prefWidthProperty</span><span class="s2">());</span>
+        <span class="s1">toolbarScrollPane</span><span class="s2">.</span><span class="s1">prefWidthProperty</span><span class="s2">().</span><span class="s1">bind</span><span class="s2">(</span><span class="s1">leftPanelVBox</span><span class="s2">.</span><span class="s1">prefWidthProperty</span><span class="s2">());</span>
+        <span class="s1">toolbarHBox</span><span class="s2">.</span><span class="s1">prefWidthProperty</span><span class="s2">().</span><span class="s1">bind</span><span class="s2">(</span><span class="s1">toolbarScrollPane</span><span class="s2">.</span><span class="s1">prefWidthProperty</span><span class="s2">());</span>
+        <span class="s1">canvas</span><span class="s2">.</span><span class="s1">widthProperty</span><span class="s2">().</span><span class="s1">bind</span><span class="s2">(</span><span class="s1">leftPanel</span><span class="s2">.</span><span class="s1">prefWidthProperty</span><span class="s2">());</span>
+
+<span class="s6">// 2. OTHER FORMATTING</span>
+        <span class="s1">toolbarScrollPane</span><span class="s2">.</span><span class="s1">widthProperty</span><span class="s2">().</span><span class="s1">addListener</span><span class="s2">(</span><span class="s1">_-&gt; </span><span class="s2">{</span>
+            <span class="s6">//TODO make that little space under the buttons disappear when there is no scrollbar...</span>
+        <span class="s2">});</span>
+        <span class="s1">leftPanel</span><span class="s2">.</span><span class="s1">widthProperty</span><span class="s2">().</span><span class="s1">addListener</span><span class="s2">(</span><span class="s1">_-&gt; leftPanel</span><span class="s2">.</span><span class="s1">setPrefWidth</span><span class="s2">(</span><span class="s1">leftPanel</span><span class="s2">.</span><span class="s1">getWidth</span><span class="s2">()));</span>
+        <span class="s1">window</span><span class="s2">.</span><span class="s1">widthProperty</span><span class="s2">().</span><span class="s1">addListener</span><span class="s2">(</span><span class="s1">_-&gt; splitPane</span><span class="s2">.</span><span class="s1">setDividerPosition</span><span class="s2">(</span><span class="s5">0</span><span class="s2">,</span><span class="s1">window</span><span class="s2">.</span><span class="s1">getWidth</span><span class="s2">()));</span>
+
+<span class="s6">// 3. INITIALIZE CLASSES</span>
+        <span class="s6">// Linking to existing classes</span>
+        <span class="s1">drawingArea </span><span class="s2">= </span><span class="s0">new </span><span class="s1">DrawingArea</span><span class="s2">(</span><span class="s1">canvas</span><span class="s2">);</span>
+        <span class="s1">drawingArea</span><span class="s2">.</span><span class="s1">setCircuit</span><span class="s2">(</span><span class="s1">circuit</span><span class="s2">);</span>
+        <span class="s1">drawingTool </span><span class="s2">= </span><span class="s1">drawingArea</span><span class="s2">.</span><span class="s1">drawingTool</span><span class="s2">;</span>
+
+<span class="s6">// 4. SET UP UI ELEMENTS</span>
+
+        <span class="s6">// SET BUTTON ACTIONS</span>
+        <span class="s1">zoomInBtn</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">_-&gt; drawingArea</span><span class="s2">.</span><span class="s1">zoomIn</span><span class="s2">());</span>
+        <span class="s1">zoomOutBtn</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">_-&gt; drawingArea</span><span class="s2">.</span><span class="s1">zoomOut</span><span class="s2">());</span>
+        <span class="s1">addWireBtn</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">_-&gt; drawingTool</span><span class="s2">.</span><span class="s1">setCurrentAction</span><span class="s2">(</span><span class="s7">&quot;place-wire&quot;</span><span class="s2">));</span>
+        <span class="s1">addResistorBtn</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">_-&gt;drawingTool</span><span class="s2">.</span><span class="s1">setCurrentAction</span><span class="s2">(</span><span class="s7">&quot;place-resistor&quot;</span><span class="s2">));</span>
+        <span class="s1">addBatteryBtn</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">_-&gt;drawingTool</span><span class="s2">.</span><span class="s1">setCurrentAction</span><span class="s2">(</span><span class="s7">&quot;place-battery&quot;</span><span class="s2">));</span>
+        <span class="s1">addCapacitorBtn</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">_-&gt;drawingTool</span><span class="s2">.</span><span class="s1">setCurrentAction</span><span class="s2">(</span><span class="s7">&quot;place-capacitor&quot;</span><span class="s2">));</span>
+        <span class="s1">addSwitchBtn</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">_-&gt;drawingTool</span><span class="s2">.</span><span class="s1">setCurrentAction</span><span class="s2">(</span><span class="s7">&quot;place-switch&quot;</span><span class="s2">));</span>
+        <span class="s1">clearBtn</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">_-&gt; </span><span class="s2">{</span>
+            <span class="s1">drawingArea</span><span class="s2">.</span><span class="s1">circuit</span><span class="s2">.</span><span class="s1">print</span><span class="s2">();</span>
+            <span class="s1">drawingArea</span><span class="s2">.</span><span class="s1">circuit</span><span class="s2">.</span><span class="s1">clear</span><span class="s2">();</span>
+            <span class="s1">drawingArea</span><span class="s2">.</span><span class="s1">canvas</span><span class="s2">.</span><span class="s1">getGraphicsContext2D</span><span class="s2">().</span><span class="s1">clearRect</span><span class="s2">(</span><span class="s5">0</span><span class="s2">,</span><span class="s5">0</span><span class="s2">,</span><span class="s1">canvas</span><span class="s2">.</span><span class="s1">getWidth</span><span class="s2">(), </span><span class="s1">canvas</span><span class="s2">.</span><span class="s1">getHeight</span><span class="s2">());</span>
+        <span class="s2">});</span>
+        <span class="s1">defaultWireColorPicker</span><span class="s2">.</span><span class="s1">setValue</span><span class="s2">(</span><span class="s1">Color</span><span class="s2">.</span><span class="s1">BLACK</span><span class="s2">);</span>
+        <span class="s1">defaultWireColorPicker</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">_ -&gt; </span><span class="s2">{</span>
+            <span class="s1">Color pickedColor </span><span class="s2">= </span><span class="s1">defaultWireColorPicker</span><span class="s2">.</span><span class="s1">getValue</span><span class="s2">();</span>
+            <span class="s0">if</span><span class="s2">(</span><span class="s1">pickedColor</span><span class="s2">==</span><span class="s0">null</span><span class="s2">) </span><span class="s1">pickedColor </span><span class="s2">= </span><span class="s1">Color</span><span class="s2">.</span><span class="s1">BLACK</span><span class="s2">;</span>
+            <span class="s1">drawingTool</span><span class="s2">.</span><span class="s1">defaultWireColor </span><span class="s2">= </span><span class="s1">pickedColor</span><span class="s2">;</span>
+        <span class="s2">});</span>
+
+        <span class="s1">polarityCheckBox</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">_-&gt; </span><span class="s2">{</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">polarityCheckBox</span><span class="s2">.</span><span class="s1">isSelected</span><span class="s2">()) {</span>
+                <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s7">&quot;Clicked&quot;</span><span class="s2">);</span>
+            <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s7">&quot;Un-clicked&quot;</span><span class="s2">);</span>
+            <span class="s2">}</span>
+        <span class="s2">});</span>
+        <span class="s1">moreInformationBtn</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">_ -&gt; </span><span class="s2">{</span>
+            <span class="s1">Stage codeStage </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Stage</span><span class="s2">();</span>
+            <span class="s1">codeStage</span><span class="s2">.</span><span class="s1">setTitle</span><span class="s2">(</span><span class="s7">&quot;More information&quot;</span><span class="s2">);</span>
+            <span class="s1">codeStage</span><span class="s2">.</span><span class="s1">setHeight</span><span class="s2">(</span><span class="s5">500</span><span class="s2">);</span>
+            <span class="s1">codeStage</span><span class="s2">.</span><span class="s1">setWidth</span><span class="s2">(</span><span class="s5">600</span><span class="s2">);</span>
+
+            <span class="s1">edu</span><span class="s2">.</span><span class="s1">vanier</span><span class="s2">.</span><span class="s1">math</span><span class="s2">.</span><span class="s1">CircuitMath maths </span><span class="s2">= </span><span class="s0">new </span><span class="s1">edu</span><span class="s2">.</span><span class="s1">vanier</span><span class="s2">.</span><span class="s1">math</span><span class="s2">.</span><span class="s1">CircuitMath</span><span class="s2">(</span><span class="s1">drawingArea</span><span class="s2">.</span><span class="s1">circuit</span><span class="s2">);</span>
+            <span class="s6">// Create text display</span>
+            <span class="s1">TextFlow infoText </span><span class="s2">= </span><span class="s0">new </span><span class="s1">TextFlow</span><span class="s2">(</span>
+                    <span class="s0">new </span><span class="s1">Text</span><span class="s2">(</span><span class="s7">&quot;Total Resistance: &quot; </span><span class="s2">+ </span><span class="s1">maths</span><span class="s2">.</span><span class="s1">getTotalResistance</span><span class="s2">() + </span><span class="s7">&quot; Ω</span><span class="s0">\n</span><span class="s7">Total Voltage:&quot; </span><span class="s2">+ </span><span class="s1">maths</span><span class="s2">.</span><span class="s1">getTotalVoltage</span><span class="s2">() + </span><span class="s7">&quot; V</span><span class="s0">\n</span><span class="s7">Total Current:&quot; </span><span class="s2">+ </span><span class="s1">maths</span><span class="s2">.</span><span class="s1">getTotalCurrent</span><span class="s2">() + </span><span class="s7">&quot; A</span><span class="s0">\n</span><span class="s7">&quot;</span><span class="s2">)</span>
+            <span class="s2">);</span>
+            <span class="s1">infoText</span><span class="s2">.</span><span class="s1">setTextAlignment</span><span class="s2">(</span><span class="s1">TextAlignment</span><span class="s2">.</span><span class="s1">LEFT</span><span class="s2">);</span>
+
+            <span class="s6">// Graph title</span>
+            <span class="s1">Label graphTitle </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Label</span><span class="s2">(</span><span class="s7">&quot;Kirchhoff's Loop Rule Graph&quot;</span><span class="s2">);</span>
+            <span class="s1">graphTitle</span><span class="s2">.</span><span class="s1">setStyle</span><span class="s2">(</span><span class="s7">&quot;-fx-font-weight: bold; -fx-font-size: 14px;&quot;</span><span class="s2">);</span>
+
+            <span class="s6">// Graph</span>
+            <span class="s0">final </span><span class="s1">LineChart</span><span class="s2">&lt;</span><span class="s1">Number</span><span class="s2">, </span><span class="s1">Number</span><span class="s2">&gt; </span><span class="s1">lineChart </span><span class="s2">= </span><span class="s1">getChart</span><span class="s2">(</span><span class="s1">drawingArea</span><span class="s2">);</span>
+
+            <span class="s6">// Close button</span>
+            <span class="s1">Button closeButton </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Button</span><span class="s2">(</span><span class="s7">&quot;Close&quot;</span><span class="s2">);</span>
+            <span class="s1">closeButton</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">_ -&gt; codeStage</span><span class="s2">.</span><span class="s1">close</span><span class="s2">());</span>
+
+            <span class="s6">// VBox layout</span>
+            <span class="s1">VBox content </span><span class="s2">= </span><span class="s0">new </span><span class="s1">VBox</span><span class="s2">(</span><span class="s5">10</span><span class="s2">, </span><span class="s1">infoText</span><span class="s2">, </span><span class="s1">graphTitle</span><span class="s2">, </span><span class="s1">lineChart</span><span class="s2">, </span><span class="s1">closeButton</span><span class="s2">);</span>
+            <span class="s1">content</span><span class="s2">.</span><span class="s1">setPadding</span><span class="s2">(</span><span class="s0">new </span><span class="s1">Insets</span><span class="s2">(</span><span class="s5">10</span><span class="s2">));</span>
+            <span class="s1">content</span><span class="s2">.</span><span class="s1">setAlignment</span><span class="s2">(</span><span class="s1">Pos</span><span class="s2">.</span><span class="s1">CENTER</span><span class="s2">);</span>
+
+            <span class="s1">Scene scene </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Scene</span><span class="s2">(</span><span class="s1">content</span><span class="s2">, </span><span class="s5">600</span><span class="s2">, </span><span class="s5">500</span><span class="s2">);</span>
+            <span class="s1">codeStage</span><span class="s2">.</span><span class="s1">setScene</span><span class="s2">(</span><span class="s1">scene</span><span class="s2">);</span>
+            <span class="s1">codeStage</span><span class="s2">.</span><span class="s1">show</span><span class="s2">();</span>
+
+            <span class="s6">// Animation: the real thing coming soon</span>
+
+            <span class="s1">VBox bottomContainer </span><span class="s2">= </span><span class="s0">new </span><span class="s1">VBox</span><span class="s2">(</span><span class="s1">closeButton</span><span class="s2">);</span>
+            <span class="s1">bottomContainer</span><span class="s2">.</span><span class="s1">setAlignment</span><span class="s2">(</span><span class="s1">Pos</span><span class="s2">.</span><span class="s1">CENTER</span><span class="s2">);</span>
+            <span class="s1">bottomContainer</span><span class="s2">.</span><span class="s1">setSpacing</span><span class="s2">(</span><span class="s5">10</span><span class="s2">);</span>
+            <span class="s1">content</span><span class="s2">.</span><span class="s1">getChildren</span><span class="s2">().</span><span class="s1">add</span><span class="s2">(</span><span class="s1">bottomContainer</span><span class="s2">);</span>
+            <span class="s1">codeStage</span><span class="s2">.</span><span class="s1">show</span><span class="s2">();</span>
+        <span class="s2">});</span>
+        <span class="s1">runStopBtn</span><span class="s2">.</span><span class="s1">setText</span><span class="s2">(</span><span class="s7">&quot;Run&quot;</span><span class="s2">);</span>
+        <span class="s1">runStopBtn</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">_ -&gt; </span><span class="s2">{</span>
+            <span class="s1">animationRunning </span><span class="s2">= !</span><span class="s1">animationRunning</span><span class="s2">;  </span><span class="s6">// Toggle the animation state</span>
+
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">animationRunning</span><span class="s2">) {</span>
+                <span class="s1">runStopBtn</span><span class="s2">.</span><span class="s1">setText</span><span class="s2">(</span><span class="s7">&quot;Stop&quot;</span><span class="s2">);  </span><span class="s6">// Change button text to &quot;Stop&quot;</span>
+
+                <span class="s6">// Create the CircuitMath instance and assign values to components</span>
+                <span class="s1">edu</span><span class="s2">.</span><span class="s1">vanier</span><span class="s2">.</span><span class="s1">math</span><span class="s2">.</span><span class="s1">CircuitMath math </span><span class="s2">= </span><span class="s0">new </span><span class="s1">edu</span><span class="s2">.</span><span class="s1">vanier</span><span class="s2">.</span><span class="s1">math</span><span class="s2">.</span><span class="s1">CircuitMath</span><span class="s2">(</span><span class="s1">drawingArea</span><span class="s2">.</span><span class="s1">circuit</span><span class="s2">);</span>
+                <span class="s1">math</span><span class="s2">.</span><span class="s1">assignValuesToComponents</span><span class="s2">();  </span><span class="s6">// Assuming this method assigns current, voltage, resistance values to components.</span>
+
+                <span class="s6">// Start the current flow animation</span>
+                <span class="s1">drawingArea</span><span class="s2">.</span><span class="s1">animateCurrentFlow</span><span class="s2">(</span><span class="s0">true</span><span class="s2">);</span>
+            <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                <span class="s1">runStopBtn</span><span class="s2">.</span><span class="s1">setText</span><span class="s2">(</span><span class="s7">&quot;Run&quot;</span><span class="s2">);  </span><span class="s6">// Change button text back to &quot;Run&quot;</span>
+
+                <span class="s6">// Stop the current flow animation</span>
+                <span class="s1">drawingArea</span><span class="s2">.</span><span class="s1">animateCurrentFlow</span><span class="s2">(</span><span class="s0">false</span><span class="s2">);</span>
+            <span class="s2">}</span>
+        <span class="s2">});</span>
+        <span class="s1">setUpMenuActions</span><span class="s2">();</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">mouseMoved</span><span class="s2">(</span><span class="s1">MouseEvent e</span><span class="s2">) {</span>
+        <span class="s1">posX </span><span class="s2">= </span><span class="s1">e</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">();</span>
+        <span class="s1">posY </span><span class="s2">= </span><span class="s1">e</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">();</span>
+        <span class="s0">if</span><span class="s2">(</span><span class="s1">drawingTool</span><span class="s2">.</span><span class="s1">getCurrentAction</span><span class="s2">().</span><span class="s1">equals</span><span class="s2">(</span><span class="s7">&quot;select&quot;</span><span class="s2">)) {</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">selection </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) </span><span class="s1">setCursor</span><span class="s2">(</span><span class="s1">Cursor</span><span class="s2">.</span><span class="s1">OPEN_HAND</span><span class="s2">);</span>
+            <span class="s0">else </span><span class="s1">setCursor</span><span class="s2">(</span><span class="s1">Cursor</span><span class="s2">.</span><span class="s1">DEFAULT</span><span class="s2">);</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">switchView</span><span class="s2">() {</span>
+        <span class="s6">// TODO: switch view :3</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">mousePressed</span><span class="s2">(</span><span class="s1">MouseEvent e</span><span class="s2">) {</span>
+        <span class="s1">mouseDownLocation </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Point2D</span><span class="s2">(</span><span class="s1">e</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">(),</span><span class="s1">e</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">());</span>
+        <span class="s0">if</span><span class="s2">(!</span><span class="s1">Objects</span><span class="s2">.</span><span class="s1">equals</span><span class="s2">(</span><span class="s1">drawingTool</span><span class="s2">.</span><span class="s1">getCurrentAction</span><span class="s2">(),</span><span class="s7">&quot;&quot;</span><span class="s2">)) {</span>
+            <span class="s1">drawingTool</span><span class="s2">.</span><span class="s1">setPencilDown</span><span class="s2">(</span><span class="s0">true</span><span class="s2">);</span>
+            <span class="s1">Node eventLocation </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Node</span><span class="s2">(</span><span class="s1">drawingArea</span><span class="s2">.</span><span class="s1">snap</span><span class="s2">(</span><span class="s1">e</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">()), </span><span class="s1">drawingArea</span><span class="s2">.</span><span class="s1">snap</span><span class="s2">(</span><span class="s1">e</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">()));</span>
+            <span class="s1">Node tempEnd </span><span class="s2">= </span><span class="s1">Node</span><span class="s2">.</span><span class="s1">copyOf</span><span class="s2">(</span><span class="s1">eventLocation</span><span class="s2">);</span>
+            <span class="s0">switch </span><span class="s2">(</span><span class="s1">drawingTool</span><span class="s2">.</span><span class="s1">getCurrentAction</span><span class="s2">()) {</span>
+                <span class="s0">case </span><span class="s7">&quot;place-wire&quot; </span><span class="s1">-&gt; select</span><span class="s2">(</span><span class="s0">new </span><span class="s1">Wire</span><span class="s2">(</span><span class="s1">eventLocation</span><span class="s2">, </span><span class="s1">tempEnd</span><span class="s2">, ((</span><span class="s1">drawingTool</span><span class="s2">.</span><span class="s1">getCurrentColor</span><span class="s2">()==</span><span class="s0">null</span><span class="s2">) ? </span><span class="s1">drawingTool</span><span class="s2">.</span><span class="s1">defaultWireColor </span><span class="s2">: </span><span class="s1">drawingTool</span><span class="s2">.</span><span class="s1">getCurrentColor</span><span class="s2">()), </span><span class="s5">0</span><span class="s2">, </span><span class="s5">0</span><span class="s2">));</span>
+                <span class="s0">case </span><span class="s7">&quot;place-battery&quot; </span><span class="s1">-&gt; select</span><span class="s2">(</span><span class="s0">new </span><span class="s1">Battery</span><span class="s2">(</span><span class="s1">eventLocation</span><span class="s2">, </span><span class="s1">tempEnd</span><span class="s2">, </span><span class="s5">12</span><span class="s2">));</span>
+                <span class="s0">case </span><span class="s7">&quot;place-capacitor&quot; </span><span class="s1">-&gt; select</span><span class="s2">(</span><span class="s0">new </span><span class="s1">Capacitor</span><span class="s2">(</span><span class="s1">eventLocation</span><span class="s2">, </span><span class="s1">tempEnd</span><span class="s2">, </span><span class="s5">0</span><span class="s2">, </span><span class="s0">true</span><span class="s2">, </span><span class="s0">false</span><span class="s2">));</span>
+                <span class="s0">case </span><span class="s7">&quot;place-fuse&quot; </span><span class="s1">-&gt; select</span><span class="s2">(</span><span class="s0">new </span><span class="s1">Fuse</span><span class="s2">(</span><span class="s1">eventLocation</span><span class="s2">, </span><span class="s1">tempEnd</span><span class="s2">));</span>
+                <span class="s0">case </span><span class="s7">&quot;place-lightbulb&quot; </span><span class="s1">-&gt; select</span><span class="s2">(</span><span class="s0">new </span><span class="s1">Lightbulb</span><span class="s2">(</span><span class="s1">eventLocation</span><span class="s2">, </span><span class="s1">tempEnd</span><span class="s2">,(</span><span class="s1">drawingTool</span><span class="s2">.</span><span class="s1">getCurrentColor</span><span class="s2">()==</span><span class="s0">null</span><span class="s2">) ? </span><span class="s1">drawingTool</span><span class="s2">.</span><span class="s1">defaultLightbulbColor </span><span class="s2">: </span><span class="s1">drawingTool</span><span class="s2">.</span><span class="s1">getCurrentColor</span><span class="s2">(),</span><span class="s5">0</span><span class="s2">));</span>
+                <span class="s0">case </span><span class="s7">&quot;place-resistor&quot; </span><span class="s1">-&gt; select</span><span class="s2">(</span><span class="s0">new </span><span class="s1">Resistor</span><span class="s2">(</span><span class="s1">eventLocation</span><span class="s2">, </span><span class="s1">tempEnd</span><span class="s2">, </span><span class="s5">10</span><span class="s2">));</span>
+                <span class="s0">case </span><span class="s7">&quot;place-switch&quot; </span><span class="s1">-&gt; select</span><span class="s2">(</span><span class="s0">new </span><span class="s1">Switch</span><span class="s2">(</span><span class="s1">eventLocation</span><span class="s2">, </span><span class="s1">tempEnd</span><span class="s2">, </span><span class="s0">false</span><span class="s2">));</span>
+                <span class="s0">case </span><span class="s7">&quot;select&quot; </span><span class="s1">-&gt; </span><span class="s2">{</span>
+                    <span class="s0">if</span><span class="s2">(</span><span class="s1">selection </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) </span><span class="s1">setCursor</span><span class="s2">(</span><span class="s1">Cursor</span><span class="s2">.</span><span class="s1">CLOSED_HAND</span><span class="s2">);</span>
+                    <span class="s1">edit</span><span class="s2">(</span><span class="s1">selection</span><span class="s2">);</span>
+                    <span class="s0">if </span><span class="s2">(</span><span class="s1">selection </span><span class="s0">instanceof </span><span class="s1">Battery battery</span><span class="s2">) {</span>
+                        <span class="s1">battery</span><span class="s2">.</span><span class="s1">handleEdit</span><span class="s2">(</span><span class="s1">leftPanel</span><span class="s2">);</span>
+                    <span class="s2">}</span>
+                    <span class="s0">if</span><span class="s2">(</span><span class="s1">selection </span><span class="s0">instanceof </span><span class="s1">Wire wire</span><span class="s2">) {</span>
+                        <span class="s1">initialBegin </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Point2D</span><span class="s2">(</span><span class="s1">wire</span><span class="s2">.</span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">(),</span><span class="s1">wire</span><span class="s2">.</span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">());</span>
+                        <span class="s1">initialEnd </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Point2D</span><span class="s2">(</span><span class="s1">wire</span><span class="s2">.</span><span class="s1">end</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">(),</span><span class="s1">wire</span><span class="s2">.</span><span class="s1">end</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">());</span>
+                    <span class="s2">}</span>
+                <span class="s2">}</span>
+                <span class="s0">default </span><span class="s1">-&gt; </span><span class="s2">{}</span>
+            <span class="s2">}</span>
+            <span class="s1">drawingTool</span><span class="s2">.</span><span class="s1">setCurrentColor</span><span class="s2">(</span><span class="s0">null</span><span class="s2">);</span>
+            <span class="s0">if </span><span class="s2">(!</span><span class="s1">Objects</span><span class="s2">.</span><span class="s1">equals</span><span class="s2">(</span><span class="s1">drawingTool</span><span class="s2">.</span><span class="s1">getCurrentAction</span><span class="s2">(), </span><span class="s7">&quot;select&quot;</span><span class="s2">)) {</span>
+                <span class="s1">circuit</span><span class="s2">.</span><span class="s1">addComponent</span><span class="s2">(</span><span class="s1">selection</span><span class="s2">);</span>
+                <span class="s0">if</span><span class="s2">(!(</span><span class="s1">selection </span><span class="s0">instanceof </span><span class="s1">Wire</span><span class="s2">)) {</span>
+                    <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s7">&quot;testing something&quot;</span><span class="s2">);</span>
+                    <span class="s1">selection</span><span class="s2">.</span><span class="s1">end</span><span class="s2">.</span><span class="s1">setPosition</span><span class="s2">(</span><span class="s1">selection</span><span class="s2">.</span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">()+</span><span class="s1">selection</span><span class="s2">.</span><span class="s1">display</span><span class="s2">.</span><span class="s1">getWidth</span><span class="s2">(),</span><span class="s1">selection</span><span class="s2">.</span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">());</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s0">if</span><span class="s2">(</span><span class="s1">editing </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) {</span>
+            <span class="s0">if</span><span class="s2">(</span><span class="s1">editing </span><span class="s0">instanceof </span><span class="s1">Wire wire</span><span class="s2">) {</span>
+                <span class="s6">//find which node to move</span>
+                <span class="s1">Point2D begin </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Point2D</span><span class="s2">(</span><span class="s1">wire</span><span class="s2">.</span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">(), </span><span class="s1">wire</span><span class="s2">.</span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">()),</span>
+                        <span class="s1">end </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Point2D</span><span class="s2">(</span><span class="s1">wire</span><span class="s2">.</span><span class="s1">end</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">(), </span><span class="s1">wire</span><span class="s2">.</span><span class="s1">end</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">());</span>
+
+                <span class="s6">//1. Calculate the dist from the point to either node</span>
+                <span class="s0">double </span><span class="s1">d1 </span><span class="s2">= </span><span class="s1">begin</span><span class="s2">.</span><span class="s1">distance</span><span class="s2">(</span><span class="s1">e</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">(), </span><span class="s1">e</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">());</span>
+                <span class="s0">double </span><span class="s1">d2 </span><span class="s2">= </span><span class="s1">end</span><span class="s2">.</span><span class="s1">distance</span><span class="s2">(</span><span class="s1">e</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">(), </span><span class="s1">e</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">());</span>
+                <span class="s0">double </span><span class="s1">buffer </span><span class="s2">= </span><span class="s5">0.5</span><span class="s2">; </span><span class="s6">// Accounts for uncertainty due to cursor size</span>
+
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">d1 </span><span class="s2">+ </span><span class="s1">buffer </span><span class="s2">&lt;= </span><span class="s5">25</span><span class="s2">) {</span>
+                    <span class="s1">toMove</span><span class="s2">[</span><span class="s5">0</span><span class="s2">] = </span><span class="s1">wire</span><span class="s2">.</span><span class="s1">begin</span><span class="s2">;</span>
+                    <span class="s1">pivot </span><span class="s2">= </span><span class="s1">wire</span><span class="s2">.</span><span class="s1">end</span><span class="s2">;</span>
+                    <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s7">&quot;moving begin&quot;</span><span class="s2">);</span>
+                <span class="s2">} </span><span class="s0">else if </span><span class="s2">(</span><span class="s1">d2 </span><span class="s2">+ </span><span class="s1">buffer </span><span class="s2">&lt;= </span><span class="s5">25</span><span class="s2">) {</span>
+                    <span class="s1">toMove</span><span class="s2">[</span><span class="s5">0</span><span class="s2">] = </span><span class="s1">wire</span><span class="s2">.</span><span class="s1">end</span><span class="s2">;</span>
+                    <span class="s1">pivot </span><span class="s2">= </span><span class="s1">wire</span><span class="s2">.</span><span class="s1">begin</span><span class="s2">;</span>
+                    <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s7">&quot;moving end&quot;</span><span class="s2">);</span>
+                <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                    <span class="s1">toMove</span><span class="s2">[</span><span class="s5">0</span><span class="s2">] = </span><span class="s1">wire</span><span class="s2">.</span><span class="s1">begin</span><span class="s2">;</span>
+                    <span class="s1">toMove</span><span class="s2">[</span><span class="s5">1</span><span class="s2">] = </span><span class="s1">wire</span><span class="s2">.</span><span class="s1">end</span><span class="s2">;</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+            <span class="s0">else </span><span class="s2">{ </span><span class="s6">//Images</span>
+                <span class="s0">if</span><span class="s2">(</span><span class="s1">editing</span><span class="s2">.</span><span class="s1">getAngle</span><span class="s2">()==</span><span class="s5">0 </span><span class="s2">|| </span><span class="s1">editing</span><span class="s2">.</span><span class="s1">getAngle</span><span class="s2">()==</span><span class="s5">180</span><span class="s2">) </span><span class="s1">toMove</span><span class="s2">[</span><span class="s5">0</span><span class="s2">] = (</span><span class="s1">editing</span><span class="s2">.</span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">() &lt; </span><span class="s1">editing</span><span class="s2">.</span><span class="s1">end</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">() ? </span><span class="s1">editing</span><span class="s2">.</span><span class="s1">begin </span><span class="s2">: </span><span class="s1">editing</span><span class="s2">.</span><span class="s1">end</span><span class="s2">);</span>
+                <span class="s0">else </span><span class="s1">toMove</span><span class="s2">[</span><span class="s5">0</span><span class="s2">] = (</span><span class="s1">editing</span><span class="s2">.</span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">() &lt; </span><span class="s1">editing</span><span class="s2">.</span><span class="s1">end</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">() ? </span><span class="s1">editing</span><span class="s2">.</span><span class="s1">begin </span><span class="s2">: </span><span class="s1">editing</span><span class="s2">.</span><span class="s1">end</span><span class="s2">);</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private boolean </span><span class="s1">checkComponentCollision</span><span class="s2">(</span><span class="s1">Point2D source</span><span class="s2">, </span><span class="s1">Component component</span><span class="s2">) {</span>
+        <span class="s0">boolean </span><span class="s1">vertical </span><span class="s2">= (</span><span class="s1">component</span><span class="s2">.</span><span class="s1">getAngle</span><span class="s2">()==</span><span class="s5">90 </span><span class="s2">|| </span><span class="s1">component</span><span class="s2">.</span><span class="s1">getAngle</span><span class="s2">()==</span><span class="s5">270</span><span class="s2">);</span>
+        <span class="s0">double </span><span class="s1">minX</span><span class="s2">,</span><span class="s1">minY</span><span class="s2">,</span><span class="s1">maxX</span><span class="s2">,</span><span class="s1">maxY</span><span class="s2">;</span>
+        <span class="s0">if</span><span class="s2">(</span><span class="s1">vertical</span><span class="s2">) {</span>
+            <span class="s1">minX </span><span class="s2">= </span><span class="s1">Math</span><span class="s2">.</span><span class="s1">min</span><span class="s2">(</span><span class="s1">component</span><span class="s2">.</span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">(),</span><span class="s1">component</span><span class="s2">.</span><span class="s1">end</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">()) - (</span><span class="s1">component</span><span class="s2">.</span><span class="s1">display</span><span class="s2">.</span><span class="s1">getHeight</span><span class="s2">()/</span><span class="s5">2</span><span class="s2">);</span>
+            <span class="s1">maxX </span><span class="s2">= </span><span class="s1">component</span><span class="s2">.</span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">() + (</span><span class="s1">component</span><span class="s2">.</span><span class="s1">display</span><span class="s2">.</span><span class="s1">getHeight</span><span class="s2">()/</span><span class="s5">2</span><span class="s2">);</span>
+            <span class="s1">minY </span><span class="s2">= </span><span class="s1">Math</span><span class="s2">.</span><span class="s1">min</span><span class="s2">(</span><span class="s1">component</span><span class="s2">.</span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">(),</span><span class="s1">component</span><span class="s2">.</span><span class="s1">end</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">());</span>
+            <span class="s1">maxY </span><span class="s2">= </span><span class="s1">minY </span><span class="s2">+ </span><span class="s1">component</span><span class="s2">.</span><span class="s1">display</span><span class="s2">.</span><span class="s1">getWidth</span><span class="s2">();</span>
+        <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+             <span class="s1">minX </span><span class="s2">= </span><span class="s1">Math</span><span class="s2">.</span><span class="s1">min</span><span class="s2">(</span><span class="s1">component</span><span class="s2">.</span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">(),</span><span class="s1">component</span><span class="s2">.</span><span class="s1">end</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">());</span>
+             <span class="s1">minY </span><span class="s2">= (</span><span class="s1">component</span><span class="s2">.</span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">()-</span><span class="s1">component</span><span class="s2">.</span><span class="s1">display</span><span class="s2">.</span><span class="s1">getHeight</span><span class="s2">()/</span><span class="s5">2</span><span class="s2">);</span>
+             <span class="s1">maxX </span><span class="s2">= </span><span class="s1">minX </span><span class="s2">+ </span><span class="s1">component</span><span class="s2">.</span><span class="s1">display</span><span class="s2">.</span><span class="s1">getWidth</span><span class="s2">();</span>
+             <span class="s1">maxY </span><span class="s2">= </span><span class="s1">minY </span><span class="s2">+ </span><span class="s1">component</span><span class="s2">.</span><span class="s1">display</span><span class="s2">.</span><span class="s1">getHeight</span><span class="s2">();</span>
+        <span class="s2">}</span>
+
+        <span class="s0">return </span><span class="s2">((</span><span class="s1">source</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">() &lt;= </span><span class="s1">maxX </span><span class="s2">&amp;&amp; </span><span class="s1">source</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">() &gt;= </span><span class="s1">minX</span><span class="s2">) &amp;&amp; (</span><span class="s1">source</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">() &lt;= </span><span class="s1">maxY </span><span class="s2">&amp;&amp; </span><span class="s1">source</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">() &gt;= </span><span class="s1">minY</span><span class="s2">));</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">quit</span><span class="s2">() {</span>
+        <span class="s1">MainApp</span><span class="s2">.</span><span class="s1">switchScene</span><span class="s2">(</span><span class="s1">MainApp</span><span class="s2">.</span><span class="s1">START_SCENE</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">mouseDragged</span><span class="s2">(</span><span class="s1">MouseEvent e</span><span class="s2">) {</span>
+        <span class="s0">double </span><span class="s1">displacementX </span><span class="s2">= </span><span class="s1">mouseDownLocation</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">() - </span><span class="s1">e</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">();</span>
+        <span class="s0">double </span><span class="s1">displacementY </span><span class="s2">= </span><span class="s1">mouseDownLocation</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">() - </span><span class="s1">e</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">();</span>
+
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">drawingTool</span><span class="s2">.</span><span class="s1">isPencilDown</span><span class="s2">() &amp;&amp; </span><span class="s1">selection </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) {</span>
+            <span class="s0">double </span><span class="s1">nearestX </span><span class="s2">= </span><span class="s1">drawingArea</span><span class="s2">.</span><span class="s1">snap</span><span class="s2">(</span><span class="s1">e</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">());</span>
+            <span class="s0">double </span><span class="s1">nearestY </span><span class="s2">= </span><span class="s1">drawingArea</span><span class="s2">.</span><span class="s1">snap</span><span class="s2">(</span><span class="s1">e</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">());</span>
+            <span class="s1">selection</span><span class="s2">.</span><span class="s1">moveNode</span><span class="s2">(</span><span class="s1">selection</span><span class="s2">.</span><span class="s1">end</span><span class="s2">, </span><span class="s1">nearestX</span><span class="s2">, </span><span class="s1">nearestY</span><span class="s2">);</span>
+        <span class="s2">}</span>
+
+        <span class="s6">//TODO testing</span>
+        <span class="s0">if</span><span class="s2">(</span><span class="s1">editing </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) {</span>
+            <span class="s0">if</span><span class="s2">(</span><span class="s1">editing </span><span class="s0">instanceof </span><span class="s1">Wire wire</span><span class="s2">) {</span>
+                <span class="s0">if</span><span class="s2">(</span><span class="s1">toMove</span><span class="s2">[</span><span class="s5">0</span><span class="s2">]!=</span><span class="s0">null </span><span class="s2">&amp;&amp; </span><span class="s1">toMove</span><span class="s2">[</span><span class="s5">1</span><span class="s2">]!=</span><span class="s0">null</span><span class="s2">) {</span>
+                    <span class="s6">//move both (keep length)</span>
+                    <span class="s1">wire</span><span class="s2">.</span><span class="s1">begin</span><span class="s2">.</span><span class="s1">setPosition</span><span class="s2">(</span><span class="s1">drawingArea</span><span class="s2">.</span><span class="s1">snap</span><span class="s2">(</span><span class="s1">initialBegin</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">()-</span><span class="s1">displacementX</span><span class="s2">),</span><span class="s1">drawingArea</span><span class="s2">.</span><span class="s1">snap</span><span class="s2">(</span><span class="s1">initialBegin</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">()-</span><span class="s1">displacementY</span><span class="s2">));</span>
+                    <span class="s1">wire</span><span class="s2">.</span><span class="s1">end</span><span class="s2">.</span><span class="s1">setPosition</span><span class="s2">(</span><span class="s1">drawingArea</span><span class="s2">.</span><span class="s1">snap</span><span class="s2">(</span><span class="s1">initialEnd</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">()-</span><span class="s1">displacementX</span><span class="s2">), </span><span class="s1">drawingArea</span><span class="s2">.</span><span class="s1">snap</span><span class="s2">(</span><span class="s1">initialEnd</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">()-</span><span class="s1">displacementY</span><span class="s2">));</span>
+                <span class="s2">}</span>
+                <span class="s0">else </span><span class="s2">{</span>
+                    <span class="s0">for </span><span class="s2">(</span><span class="s1">Node node </span><span class="s2">: </span><span class="s1">toMove</span><span class="s2">) {</span>
+                        <span class="s0">if </span><span class="s2">(</span><span class="s1">node </span><span class="s2">!= </span><span class="s0">null </span><span class="s2">&amp;&amp; </span><span class="s1">node </span><span class="s2">!= </span><span class="s1">pivot</span><span class="s2">) {</span>
+                            <span class="s0">if</span><span class="s2">(</span><span class="s1">node </span><span class="s2">== </span><span class="s1">editing</span><span class="s2">.</span><span class="s1">begin</span><span class="s2">) </span><span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s7">&quot;begin&quot;</span><span class="s2">); </span><span class="s0">else </span><span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s7">&quot;END&quot;</span><span class="s2">);</span>
+                            <span class="s1">node</span><span class="s2">.</span><span class="s1">setPosition</span><span class="s2">(</span><span class="s1">drawingArea</span><span class="s2">.</span><span class="s1">snap</span><span class="s2">(</span><span class="s1">e</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">()), </span><span class="s1">drawingArea</span><span class="s2">.</span><span class="s1">snap</span><span class="s2">(</span><span class="s1">e</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">()));</span>
+                        <span class="s2">}</span>
+                    <span class="s2">}</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+            <span class="s0">else </span><span class="s2">{</span>
+                <span class="s1">Node node </span><span class="s2">= </span><span class="s1">toMove</span><span class="s2">[</span><span class="s5">0</span><span class="s2">];</span>
+                <span class="s1">node</span><span class="s2">.</span><span class="s1">setPosition</span><span class="s2">(</span><span class="s1">drawingArea</span><span class="s2">.</span><span class="s1">snap</span><span class="s2">(</span><span class="s1">e</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">()-</span><span class="s1">editing</span><span class="s2">.</span><span class="s1">display</span><span class="s2">.</span><span class="s1">getWidth</span><span class="s2">()/</span><span class="s5">2</span><span class="s2">),</span><span class="s1">drawingArea</span><span class="s2">.</span><span class="s1">snap</span><span class="s2">(</span><span class="s1">e</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">()-</span><span class="s1">editing</span><span class="s2">.</span><span class="s1">display</span><span class="s2">.</span><span class="s1">getHeight</span><span class="s2">()/</span><span class="s5">2</span><span class="s2">));</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private boolean </span><span class="s1">checkLineCollision</span><span class="s2">(</span><span class="s1">Point2D source</span><span class="s2">, </span><span class="s1">Wire wire</span><span class="s2">) {</span>
+        <span class="s1">Point2D begin </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Point2D</span><span class="s2">(</span><span class="s1">wire</span><span class="s2">.</span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">(),</span><span class="s1">wire</span><span class="s2">.</span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">()),</span>
+                <span class="s1">end </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Point2D</span><span class="s2">(</span><span class="s1">wire</span><span class="s2">.</span><span class="s1">end</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">(),</span><span class="s1">wire</span><span class="s2">.</span><span class="s1">end</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">());</span>
+
+        <span class="s6">//1. Calculate the dist from the point to either node</span>
+        <span class="s0">double </span><span class="s1">d1 </span><span class="s2">= </span><span class="s1">source</span><span class="s2">.</span><span class="s1">distance</span><span class="s2">(</span><span class="s1">begin</span><span class="s2">);</span>
+        <span class="s0">double </span><span class="s1">d2 </span><span class="s2">= </span><span class="s1">source</span><span class="s2">.</span><span class="s1">distance</span><span class="s2">(</span><span class="s1">end</span><span class="s2">);</span>
+
+        <span class="s6">//2. Verify that both add up to the length of the line wire</span>
+        <span class="s0">double </span><span class="s1">length </span><span class="s2">= </span><span class="s1">begin</span><span class="s2">.</span><span class="s1">distance</span><span class="s2">(</span><span class="s1">end</span><span class="s2">);</span>
+        <span class="s0">double </span><span class="s1">buffer </span><span class="s2">= </span><span class="s5">1</span><span class="s2">; </span><span class="s6">// Accounts for uncertainty due to cursor size</span>
+
+        <span class="s0">return </span><span class="s2">(</span><span class="s1">d1</span><span class="s2">+</span><span class="s1">d2 </span><span class="s2">&gt;= </span><span class="s1">length</span><span class="s2">-</span><span class="s1">buffer </span><span class="s2">&amp;&amp; </span><span class="s1">d1</span><span class="s2">+</span><span class="s1">d2 </span><span class="s2">&lt;= </span><span class="s1">length</span><span class="s2">+</span><span class="s1">buffer</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+
+    <span class="s0">private void </span><span class="s1">mouseReleased</span><span class="s2">(</span><span class="s1">MouseEvent e</span><span class="s2">) {</span>
+        <span class="s1">toMove </span><span class="s2">= </span><span class="s0">null</span><span class="s2">;</span>
+        <span class="s1">pivot </span><span class="s2">= </span><span class="s0">null</span><span class="s2">;</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">selection </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) {</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">drawingTool</span><span class="s2">.</span><span class="s1">isPencilDown</span><span class="s2">()) {</span>
+                <span class="s1">drawingTool</span><span class="s2">.</span><span class="s1">setPencilDown</span><span class="s2">(</span><span class="s0">false</span><span class="s2">);</span>
+                <span class="s0">if</span><span class="s2">(</span><span class="s1">selection</span><span class="s2">.</span><span class="s1">getLength</span><span class="s2">()&lt;=</span><span class="s5">0</span><span class="s2">) </span><span class="s1">circuit</span><span class="s2">.</span><span class="s1">deleteComponent</span><span class="s2">(</span><span class="s1">selection</span><span class="s2">);</span>
+                <span class="s0">else </span><span class="s1">attemptConnection</span><span class="s2">(</span><span class="s1">selection</span><span class="s2">, </span><span class="s1">selection</span><span class="s2">.</span><span class="s1">end</span><span class="s2">);</span>
+            <span class="s2">}</span>
+            <span class="s0">if</span><span class="s2">(</span><span class="s1">canvas</span><span class="s2">.</span><span class="s1">getCursor</span><span class="s2">().</span><span class="s1">equals</span><span class="s2">(</span><span class="s1">Cursor</span><span class="s2">.</span><span class="s1">CLOSED_HAND</span><span class="s2">)) </span><span class="s1">setCursor</span><span class="s2">(</span><span class="s1">Cursor</span><span class="s2">.</span><span class="s1">OPEN_HAND</span><span class="s2">);</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">select</span><span class="s2">(</span><span class="s1">Component component</span><span class="s2">) {</span>
+        <span class="s0">if</span><span class="s2">(</span><span class="s1">selection</span><span class="s2">!=</span><span class="s0">null</span><span class="s2">) </span><span class="s1">selection</span><span class="s2">.</span><span class="s1">markAsSelected</span><span class="s2">(</span><span class="s0">false</span><span class="s2">);</span>
+        <span class="s1">component</span><span class="s2">.</span><span class="s1">markAsSelected</span><span class="s2">(</span><span class="s0">true</span><span class="s2">);</span>
+        <span class="s1">selection </span><span class="s2">= </span><span class="s1">component</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">unselect</span><span class="s2">(</span><span class="s1">Component component</span><span class="s2">) {</span>
+        <span class="s0">if</span><span class="s2">(</span><span class="s1">component </span><span class="s2">!= </span><span class="s0">null </span><span class="s2">&amp;&amp; </span><span class="s1">selection </span><span class="s2">== </span><span class="s1">component</span><span class="s2">) {</span>
+            <span class="s1">component</span><span class="s2">.</span><span class="s1">markAsSelected</span><span class="s2">(</span><span class="s0">false</span><span class="s2">);</span>
+            <span class="s1">selection </span><span class="s2">= </span><span class="s0">null</span><span class="s2">;</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">attemptConnection</span><span class="s2">(</span><span class="s1">Component toCheck</span><span class="s2">, </span><span class="s1">Node node</span><span class="s2">) {</span>
+        <span class="s0">int </span><span class="s1">srcIndex </span><span class="s2">= </span><span class="s1">circuit</span><span class="s2">.</span><span class="s1">getIndex</span><span class="s2">(</span><span class="s1">toCheck</span><span class="s2">);</span>
+        <span class="s1">Point2D checkPoint </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Point2D</span><span class="s2">(</span><span class="s1">node</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">(), </span><span class="s1">node</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">());</span>
+        <span class="s1">ArrayList</span><span class="s2">&lt;</span><span class="s1">Node</span><span class="s2">&gt; </span><span class="s1">connectedNodes </span><span class="s2">= </span><span class="s0">new </span><span class="s1">ArrayList</span><span class="s2">&lt;&gt;();</span>
+        <span class="s1">connectedNodes</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">node</span><span class="s2">);</span>
+
+        <span class="s0">for </span><span class="s2">(</span><span class="s1">LinkedList</span><span class="s2">&lt;</span><span class="s1">Component</span><span class="s2">&gt; </span><span class="s1">currentList </span><span class="s2">: </span><span class="s1">circuit</span><span class="s2">.</span><span class="s1">arrayList</span><span class="s2">) {</span>
+            <span class="s0">for </span><span class="s2">(</span><span class="s1">Component connectedComponent </span><span class="s2">: </span><span class="s1">currentList</span><span class="s2">) {</span>
+                <span class="s0">int </span><span class="s1">dstIndex </span><span class="s2">= </span><span class="s1">circuit</span><span class="s2">.</span><span class="s1">getIndex</span><span class="s2">(</span><span class="s1">connectedComponent</span><span class="s2">);</span>
+
+                <span class="s1">Point2D componentBegin </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Point2D</span><span class="s2">(</span><span class="s1">connectedComponent</span><span class="s2">.</span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">(), </span><span class="s1">connectedComponent</span><span class="s2">.</span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">());</span>
+                <span class="s1">Point2D componentEnd </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Point2D</span><span class="s2">(</span><span class="s1">connectedComponent</span><span class="s2">.</span><span class="s1">end</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">(), </span><span class="s1">connectedComponent</span><span class="s2">.</span><span class="s1">end</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">());</span>
+
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">componentBegin</span><span class="s2">.</span><span class="s1">distance</span><span class="s2">(</span><span class="s1">checkPoint</span><span class="s2">) == </span><span class="s5">0</span><span class="s2">) {</span>
+                    <span class="s1">connectedNodes</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">connectedComponent</span><span class="s2">.</span><span class="s1">begin</span><span class="s2">);</span>
+                <span class="s2">}</span>
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">componentEnd</span><span class="s2">.</span><span class="s1">distance</span><span class="s2">(</span><span class="s1">checkPoint</span><span class="s2">) == </span><span class="s5">0</span><span class="s2">) {</span>
+                    <span class="s1">connectedNodes</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">connectedComponent</span><span class="s2">.</span><span class="s1">end</span><span class="s2">);</span>
+                <span class="s2">}</span>
+
+                <span class="s0">for </span><span class="s2">(</span><span class="s0">int </span><span class="s1">i </span><span class="s2">= </span><span class="s5">1</span><span class="s2">; </span><span class="s1">i </span><span class="s2">&lt; </span><span class="s1">connectedNodes</span><span class="s2">.</span><span class="s1">size</span><span class="s2">(); </span><span class="s1">i</span><span class="s2">++) {</span>
+                    <span class="s0">if </span><span class="s2">(!</span><span class="s1">circuit</span><span class="s2">.</span><span class="s1">checkEdge</span><span class="s2">(</span><span class="s1">srcIndex</span><span class="s2">, </span><span class="s1">dstIndex</span><span class="s2">)) </span><span class="s1">circuit</span><span class="s2">.</span><span class="s1">addEdge</span><span class="s2">(</span><span class="s1">srcIndex</span><span class="s2">, </span><span class="s1">dstIndex</span><span class="s2">);</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private static </span><span class="s1">LineChart</span><span class="s2">&lt;</span><span class="s1">Number</span><span class="s2">, </span><span class="s1">Number</span><span class="s2">&gt; </span><span class="s1">getChart</span><span class="s2">(</span><span class="s1">DrawingArea drawingArea</span><span class="s2">) {</span>
+        <span class="s0">final </span><span class="s1">NumberAxis xAxis </span><span class="s2">= </span><span class="s0">new </span><span class="s1">NumberAxis</span><span class="s2">();</span>
+        <span class="s0">final </span><span class="s1">NumberAxis yAxis </span><span class="s2">= </span><span class="s0">new </span><span class="s1">NumberAxis</span><span class="s2">();</span>
+        <span class="s1">xAxis</span><span class="s2">.</span><span class="s1">setLabel</span><span class="s2">(</span><span class="s7">&quot;Loop Position&quot;</span><span class="s2">);</span>
+        <span class="s1">yAxis</span><span class="s2">.</span><span class="s1">setLabel</span><span class="s2">(</span><span class="s7">&quot;Potential Difference (V)&quot;</span><span class="s2">);</span>
+        <span class="s1">xAxis</span><span class="s2">.</span><span class="s1">setTickLabelsVisible</span><span class="s2">(</span><span class="s0">false</span><span class="s2">);</span>
+        <span class="s1">xAxis</span><span class="s2">.</span><span class="s1">setTickMarkVisible</span><span class="s2">(</span><span class="s0">false</span><span class="s2">);</span>
+        <span class="s1">xAxis</span><span class="s2">.</span><span class="s1">setMinorTickVisible</span><span class="s2">(</span><span class="s0">false</span><span class="s2">);</span>
+
+        <span class="s6">// Creating the chart</span>
+        <span class="s0">final </span><span class="s1">LineChart</span><span class="s2">&lt;</span><span class="s1">Number</span><span class="s2">, </span><span class="s1">Number</span><span class="s2">&gt; </span><span class="s1">lineChart </span><span class="s2">= </span><span class="s0">new </span><span class="s1">LineChart</span><span class="s2">&lt;&gt;(</span><span class="s1">xAxis</span><span class="s2">, </span><span class="s1">yAxis</span><span class="s2">);</span>
+        <span class="s1">lineChart</span><span class="s2">.</span><span class="s1">setTitle</span><span class="s2">(</span><span class="s7">&quot;Potential Difference in Kirchhoff's Loop&quot;</span><span class="s2">);</span>
+        <span class="s1">lineChart</span><span class="s2">.</span><span class="s1">setLegendVisible</span><span class="s2">(</span><span class="s0">false</span><span class="s2">);</span>
+
+        <span class="s1">XYChart</span><span class="s2">.</span><span class="s1">Series</span><span class="s2">&lt;</span><span class="s1">Number</span><span class="s2">, </span><span class="s1">Number</span><span class="s2">&gt; </span><span class="s1">series </span><span class="s2">= </span><span class="s0">new </span><span class="s1">XYChart</span><span class="s2">.</span><span class="s1">Series</span><span class="s2">&lt;&gt;();</span>
+
+        <span class="s6">// constant Voltage</span>
+
+        <span class="s1">edu</span><span class="s2">.</span><span class="s1">vanier</span><span class="s2">.</span><span class="s1">math</span><span class="s2">.</span><span class="s1">CircuitMath maths </span><span class="s2">= </span><span class="s0">new </span><span class="s1">edu</span><span class="s2">.</span><span class="s1">vanier</span><span class="s2">.</span><span class="s1">math</span><span class="s2">.</span><span class="s1">CircuitMath</span><span class="s2">(</span><span class="s1">drawingArea</span><span class="s2">.</span><span class="s1">circuit</span><span class="s2">);</span>
+
+        <span class="s1">List</span><span class="s2">&lt;</span><span class="s1">Component</span><span class="s2">&gt; </span><span class="s1">path </span><span class="s2">= </span><span class="s1">maths</span><span class="s2">.</span><span class="s1">getTraversalPath</span><span class="s2">();</span>
+        <span class="s1">series</span><span class="s2">.</span><span class="s1">getData</span><span class="s2">().</span><span class="s1">add</span><span class="s2">(</span><span class="s0">new </span><span class="s1">XYChart</span><span class="s2">.</span><span class="s1">Data</span><span class="s2">&lt;&gt;(</span><span class="s5">0</span><span class="s2">, </span><span class="s1">maths</span><span class="s2">.</span><span class="s1">getTotalVoltage</span><span class="s2">()));</span>
+        <span class="s0">int </span><span class="s1">i </span><span class="s2">= </span><span class="s5">1</span><span class="s2">;</span>
+        <span class="s0">for </span><span class="s2">(</span><span class="s1">Component c </span><span class="s2">: </span><span class="s1">path</span><span class="s2">) {</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">c </span><span class="s0">instanceof </span><span class="s1">Battery b</span><span class="s2">) {</span>
+                <span class="s1">series</span><span class="s2">.</span><span class="s1">getData</span><span class="s2">().</span><span class="s1">add</span><span class="s2">(</span><span class="s0">new </span><span class="s1">XYChart</span><span class="s2">.</span><span class="s1">Data</span><span class="s2">&lt;&gt;(</span><span class="s1">i</span><span class="s2">, </span><span class="s1">b</span><span class="s2">.</span><span class="s1">getPotential</span><span class="s2">()));</span>
+            <span class="s2">}</span>
+            <span class="s1">i </span><span class="s2">=+ </span><span class="s5">1</span><span class="s2">;</span>
+        <span class="s2">}</span>
+
+        <span class="s1">lineChart</span><span class="s2">.</span><span class="s1">getData</span><span class="s2">().</span><span class="s1">add</span><span class="s2">(</span><span class="s1">series</span><span class="s2">);</span>
+        <span class="s0">return </span><span class="s1">lineChart</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s1">@FXML</span>
+    <span class="s0">private void </span><span class="s1">menuSelectBtnPressed</span><span class="s2">() {</span>
+        <span class="s1">drawingTool</span><span class="s2">.</span><span class="s1">setCurrentAction</span><span class="s2">(</span><span class="s7">&quot;select&quot;</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">setUpKeyListeners</span><span class="s2">() {</span>
+        <span class="s1">window</span><span class="s2">.</span><span class="s1">addEventHandler</span><span class="s2">(</span><span class="s1">KeyEvent</span><span class="s2">.</span><span class="s1">KEY_PRESSED</span><span class="s2">, </span><span class="s1">event -&gt; </span><span class="s2">{</span>
+            <span class="s0">switch</span><span class="s2">(</span><span class="s1">event</span><span class="s2">.</span><span class="s1">getCode</span><span class="s2">()) {</span>
+                <span class="s0">case </span><span class="s1">S</span><span class="s2">,</span><span class="s1">ESCAPE -&gt; </span><span class="s2">{</span>
+                    <span class="s1">unselect</span><span class="s2">(</span><span class="s1">selection</span><span class="s2">);</span>
+                    <span class="s1">drawingTool</span><span class="s2">.</span><span class="s1">setCurrentAction</span><span class="s2">(</span><span class="s7">&quot;select&quot;</span><span class="s2">);</span>
+                    <span class="s1">setCursor</span><span class="s2">(</span><span class="s1">Cursor</span><span class="s2">.</span><span class="s1">DEFAULT</span><span class="s2">);</span>
+                <span class="s2">}</span>
+                <span class="s0">case </span><span class="s1">W -&gt; drawingTool</span><span class="s2">.</span><span class="s1">setCurrentAction</span><span class="s2">(</span><span class="s7">&quot;place-wire&quot;</span><span class="s2">);</span>
+
+                <span class="s0">case </span><span class="s1">DELETE</span><span class="s2">,</span><span class="s1">BACK_SPACE -&gt; circuit</span><span class="s2">.</span><span class="s1">deleteComponent</span><span class="s2">(</span><span class="s1">editing</span><span class="s2">);</span>
+                <span class="s0">case </span><span class="s1">COMMA -&gt; </span><span class="s2">{</span>
+                    <span class="s0">if</span><span class="s2">(</span><span class="s1">editing</span><span class="s2">!=</span><span class="s0">null</span><span class="s2">) </span><span class="s1">editing</span><span class="s2">.</span><span class="s1">rotate</span><span class="s2">(</span><span class="s7">&quot;left&quot;</span><span class="s2">);</span>
+                <span class="s2">}</span>
+                <span class="s0">case </span><span class="s1">PERIOD -&gt; </span><span class="s2">{</span>
+                    <span class="s0">if</span><span class="s2">(</span><span class="s1">editing</span><span class="s2">!=</span><span class="s0">null</span><span class="s2">) </span><span class="s1">editing</span><span class="s2">.</span><span class="s1">rotate</span><span class="s2">(</span><span class="s7">&quot;right&quot;</span><span class="s2">);</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">});</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">setCursor</span><span class="s2">(</span><span class="s1">Cursor cursor</span><span class="s2">) {</span>
+        <span class="s1">canvas</span><span class="s2">.</span><span class="s1">setCursor</span><span class="s2">(</span><span class="s1">cursor</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">applyTheme</span><span class="s2">(</span><span class="s1">String cssFile</span><span class="s2">) {</span>
+        <span class="s1">window</span><span class="s2">.</span><span class="s1">getStylesheets</span><span class="s2">().</span><span class="s1">clear</span><span class="s2">();</span>
+        <span class="s1">window</span><span class="s2">.</span><span class="s1">getStylesheets</span><span class="s2">().</span><span class="s1">add</span><span class="s2">(</span><span class="s1">Objects</span><span class="s2">.</span><span class="s1">requireNonNull</span><span class="s2">(</span><span class="s1">getClass</span><span class="s2">().</span><span class="s1">getResource</span><span class="s2">(</span><span class="s7">&quot;/css/&quot; </span><span class="s2">+ </span><span class="s1">cssFile</span><span class="s2">)).</span><span class="s1">toExternalForm</span><span class="s2">());</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">openRecent</span><span class="s2">(</span><span class="s1">String project</span><span class="s2">) {</span>
+        <span class="s6">// TODO: open project</span>
+    <span class="s2">}</span>
+
+  <span class="s0">private void </span><span class="s1">edit</span><span class="s2">(</span><span class="s1">Component component</span><span class="s2">) {</span>
+    <span class="s0">if </span><span class="s2">(</span><span class="s1">editing </span><span class="s2">!= </span><span class="s1">component</span><span class="s2">) {</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">component </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) </span><span class="s1">component</span><span class="s2">.</span><span class="s1">setEdit</span><span class="s2">(</span><span class="s0">true</span><span class="s2">);</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">editing </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) {</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">component </span><span class="s2">== </span><span class="s0">null</span><span class="s2">) {</span>
+                <span class="s1">editing</span><span class="s2">.</span><span class="s1">setEdit</span><span class="s2">(</span><span class="s0">false</span><span class="s2">);</span>
+                <span class="s1">editing </span><span class="s2">= </span><span class="s0">null</span><span class="s2">;</span>
+            <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                <span class="s1">editing</span><span class="s2">.</span><span class="s1">setEdit</span><span class="s2">(</span><span class="s0">false</span><span class="s2">);</span>
+                <span class="s1">editing </span><span class="s2">= </span><span class="s1">component</span><span class="s2">;</span>
+            <span class="s2">}</span>
+        <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+            <span class="s1">editing </span><span class="s2">= </span><span class="s1">component</span><span class="s2">;</span>
+        <span class="s2">}</span>
+
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">component </span><span class="s0">instanceof </span><span class="s1">Battery battery</span><span class="s2">) {</span>
+            <span class="s1">battery</span><span class="s2">.</span><span class="s1">handleEdit</span><span class="s2">(</span><span class="s1">leftPanel</span><span class="s2">);</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+  <span class="s2">}</span>
+
+  <span class="s0">private void </span><span class="s1">setUpMenuActions</span><span class="s2">() {</span>
+  <span class="s6">//FILE MENU</span>
+      <span class="s1">menuNew</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">_-&gt; </span><span class="s2">{});</span>
+      <span class="s1">menuOpen</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">_-&gt;</span><span class="s2">{});</span>
+      <span class="s1">menuOpenRecent</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">_-&gt;</span><span class="s2">{});</span>
+      <span class="s1">menuSave</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">_-&gt;</span><span class="s2">{});</span>
+      <span class="s1">menuSaveAs</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">_-&gt;</span><span class="s2">{});</span>
+      <span class="s1">menuQuit</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">_-&gt;quit</span><span class="s2">());</span>
+
+  <span class="s6">// SETTINGS &amp; VIEW MENU</span>
+      <span class="s1">menuShowToolbar</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">_-&gt; showToolBar</span><span class="s2">(</span><span class="s0">true</span><span class="s2">));</span>
+      <span class="s1">menuHideToolbar</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">_-&gt; showToolBar</span><span class="s2">(</span><span class="s0">false</span><span class="s2">));</span>
+      <span class="s1">lightThemeItem</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">_ -&gt; applyTheme</span><span class="s2">(</span><span class="s7">&quot;light-mode.css&quot;</span><span class="s2">));</span>
+      <span class="s1">darkThemeItem</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">_-&gt; applyTheme</span><span class="s2">(</span><span class="s7">&quot;dark-mode.css&quot;</span><span class="s2">));</span>
+      <span class="s1">strawThemeItem</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">_-&gt; applyTheme</span><span class="s2">(</span><span class="s7">&quot;strawberries-theme.css&quot;</span><span class="s2">));</span>
+      <span class="s1">menuFitToScreen</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">_-&gt;</span><span class="s2">{});</span>
+      <span class="s1">menuZoomIn</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">zoomInBtn</span><span class="s2">.</span><span class="s1">getOnAction</span><span class="s2">());</span>
+      <span class="s1">menuZoomOut</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">zoomOutBtn</span><span class="s2">.</span><span class="s1">getOnAction</span><span class="s2">());</span>
+      <span class="s1">menuToggleGrid</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">_-&gt;drawingArea</span><span class="s2">.</span><span class="s1">toggleGrid</span><span class="s2">());</span>
+      <span class="s6">//String recentProject = MainApp.signOnLogInController.getRecent();</span>
+      <span class="s6">//menuOpenRecent.setOnAction(_-&gt;openRecent(recentProject));</span>
+
+  <span class="s6">// INSERT MENU</span>
+      <span class="s6">//wire</span>
+      <span class="s1">menuWire</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">_-&gt; drawingTool</span><span class="s2">.</span><span class="s1">setCurrentAction</span><span class="s2">(</span><span class="s7">&quot;place-wire&quot;</span><span class="s2">));</span>
+      <span class="s1">menuRedWire</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">_-&gt; drawingTool</span><span class="s2">.</span><span class="s1">setCurrentColor</span><span class="s2">(</span><span class="s1">Color</span><span class="s2">.</span><span class="s1">RED</span><span class="s2">));</span>
+      <span class="s1">menuBlackWire</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">_-&gt; drawingTool</span><span class="s2">.</span><span class="s1">setCurrentColor</span><span class="s2">(</span><span class="s1">Color</span><span class="s2">.</span><span class="s1">BLACK</span><span class="s2">));</span>
+      <span class="s1">menuColorPicker</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">_-&gt; drawingTool</span><span class="s2">.</span><span class="s1">setCurrentColor</span><span class="s2">(</span><span class="s1">menuColorPicker</span><span class="s2">.</span><span class="s1">getValue</span><span class="s2">()));</span>
+      <span class="s6">//other components</span>
+      <span class="s1">menuResistor</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">_-&gt; drawingTool</span><span class="s2">.</span><span class="s1">setCurrentAction</span><span class="s2">(</span><span class="s7">&quot;place-resistor&quot;</span><span class="s2">));</span>
+      <span class="s1">menuBattery</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">_-&gt; drawingTool</span><span class="s2">.</span><span class="s1">setCurrentAction</span><span class="s2">(</span><span class="s7">&quot;place-battery&quot;</span><span class="s2">));</span>
+      <span class="s1">menuSwitch</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">_-&gt; drawingTool</span><span class="s2">.</span><span class="s1">setCurrentAction</span><span class="s2">(</span><span class="s7">&quot;place-switch&quot;</span><span class="s2">));</span>
+      <span class="s1">menuCapacitor</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">_-&gt; drawingTool</span><span class="s2">.</span><span class="s1">setCurrentAction</span><span class="s2">(</span><span class="s7">&quot;place-capacitor&quot;</span><span class="s2">));</span>
+      <span class="s1">menuLightbulb</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">_-&gt; drawingTool</span><span class="s2">.</span><span class="s1">setCurrentAction</span><span class="s2">(</span><span class="s7">&quot;place-lightbulb&quot;</span><span class="s2">));</span>
+      <span class="s1">menuYellow</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">_-&gt; drawingTool</span><span class="s2">.</span><span class="s1">setCurrentColor</span><span class="s2">(</span><span class="s1">Color</span><span class="s2">.</span><span class="s1">YELLOW</span><span class="s2">));</span>
+      <span class="s1">menuRed</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">_-&gt; drawingTool</span><span class="s2">.</span><span class="s1">setCurrentColor</span><span class="s2">(</span><span class="s1">Color</span><span class="s2">.</span><span class="s1">RED</span><span class="s2">));</span>
+      <span class="s1">menuGreen</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">_-&gt; drawingTool</span><span class="s2">.</span><span class="s1">setCurrentColor</span><span class="s2">(</span><span class="s1">Color</span><span class="s2">.</span><span class="s1">GREEN</span><span class="s2">));</span>
+      <span class="s1">menuBlue</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">_-&gt; drawingTool</span><span class="s2">.</span><span class="s1">setCurrentColor</span><span class="s2">(</span><span class="s1">Color</span><span class="s2">.</span><span class="s1">BLUE</span><span class="s2">));</span>
+      <span class="s1">lightbulbColorPicker</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">_-&gt; drawingTool</span><span class="s2">.</span><span class="s1">setCurrentColor</span><span class="s2">(</span><span class="s1">lightbulbColorPicker</span><span class="s2">.</span><span class="s1">getValue</span><span class="s2">()));</span>
+  <span class="s2">}</span>
+
+  <span class="s0">private void </span><span class="s1">showToolBar</span><span class="s2">(</span><span class="s0">boolean </span><span class="s1">show</span><span class="s2">) {</span>
+        <span class="s0">if</span><span class="s2">(</span><span class="s1">show</span><span class="s2">) </span><span class="s1">leftPanelVBox</span><span class="s2">.</span><span class="s1">getChildren</span><span class="s2">().</span><span class="s1">addFirst</span><span class="s2">(</span><span class="s1">toolbarScrollPane</span><span class="s2">);</span>
+        <span class="s0">else </span><span class="s1">leftPanelVBox</span><span class="s2">.</span><span class="s1">getChildren</span><span class="s2">().</span><span class="s1">remove</span><span class="s2">(</span><span class="s1">toolbarScrollPane</span><span class="s2">);</span>
+  <span class="s2">}</span>
+<span class="s2">}</span></pre>
+</body>
+</html>

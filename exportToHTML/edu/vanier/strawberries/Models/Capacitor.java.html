@@ -1,0 +1,94 @@
+<html>
+<head>
+<title>Capacitor.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #7a7e85;}
+.s4 { color: #6aab73;}
+.s5 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Capacitor.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">edu</span><span class="s2">.</span><span class="s1">vanier</span><span class="s2">.</span><span class="s1">strawberries</span><span class="s2">.</span><span class="s1">Models</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">image</span><span class="s2">.</span><span class="s1">Image</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">image</span><span class="s2">.</span><span class="s1">ImageView</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">transform</span><span class="s2">.</span><span class="s1">Rotate</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">net</span><span class="s2">.</span><span class="s1">URL</span><span class="s2">;</span>
+
+<span class="s0">public class </span><span class="s1">Capacitor </span><span class="s0">extends </span><span class="s1">Component </span><span class="s2">{</span>
+    <span class="s0">private double </span><span class="s1">storedEnergy</span><span class="s2">, </span><span class="s1">capacity</span><span class="s2">;</span>
+    <span class="s0">private boolean </span><span class="s1">isStartTerminal</span><span class="s2">;</span>
+    <span class="s0">private boolean </span><span class="s1">isEndTerminal</span><span class="s2">;</span>
+    <span class="s0">private double </span><span class="s1">mouseOffsetX</span><span class="s2">;</span>
+    <span class="s0">private double </span><span class="s1">mouseOffsetY</span><span class="s2">;</span>
+
+    <span class="s0">public </span><span class="s1">Capacitor</span><span class="s2">(</span><span class="s1">Node begin</span><span class="s2">, </span><span class="s1">Node end</span><span class="s2">, </span><span class="s0">double </span><span class="s1">storedEnergy</span><span class="s2">, </span><span class="s0">boolean </span><span class="s1">isStartTerminal</span><span class="s2">, </span><span class="s0">boolean </span><span class="s1">isEndTerminal</span><span class="s2">) {</span>
+        <span class="s0">super</span><span class="s2">(</span><span class="s1">begin</span><span class="s2">, </span><span class="s1">end</span><span class="s2">);</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">storedEnergy </span><span class="s2">= </span><span class="s1">storedEnergy</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">isStartTerminal </span><span class="s2">= </span><span class="s1">isStartTerminal</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">isEndTerminal </span><span class="s2">= </span><span class="s1">isEndTerminal</span><span class="s2">;</span>
+
+        <span class="s3">// Load the image from resources</span>
+        <span class="s1">URL imgUrl </span><span class="s2">= </span><span class="s1">getClass</span><span class="s2">().</span><span class="s1">getResource</span><span class="s2">(</span><span class="s4">&quot;/images/capacitor_diagram.png&quot;</span><span class="s2">); </span><span class="s3">// Make sure this file exists</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">imgUrl </span><span class="s2">== </span><span class="s0">null</span><span class="s2">) {</span>
+            <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s4">&quot;Could not load capacitor image.&quot;</span><span class="s2">);</span>
+        <span class="s2">}</span>
+        <span class="s0">else </span><span class="s2">{</span>
+            <span class="s1">display </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Image</span><span class="s2">(</span><span class="s1">imgUrl</span><span class="s2">.</span><span class="s1">toExternalForm</span><span class="s2">());</span>
+            <span class="s1">enableDragAndRotate</span><span class="s2">();</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">enableDragAndRotate</span><span class="s2">() {</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">setOnMousePressed</span><span class="s2">(</span><span class="s1">e -&gt; </span><span class="s2">{</span>
+            <span class="s1">mouseOffsetX </span><span class="s2">= </span><span class="s1">e</span><span class="s2">.</span><span class="s1">getSceneX</span><span class="s2">() - </span><span class="s0">this</span><span class="s2">.</span><span class="s1">getLayoutX</span><span class="s2">();</span>
+            <span class="s1">mouseOffsetY </span><span class="s2">= </span><span class="s1">e</span><span class="s2">.</span><span class="s1">getSceneY</span><span class="s2">() - </span><span class="s0">this</span><span class="s2">.</span><span class="s1">getLayoutY</span><span class="s2">();</span>
+            <span class="s1">e</span><span class="s2">.</span><span class="s1">consume</span><span class="s2">();</span>
+        <span class="s2">});</span>
+
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">setOnMouseDragged</span><span class="s2">(</span><span class="s1">e -&gt; </span><span class="s2">{</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">e</span><span class="s2">.</span><span class="s1">isSecondaryButtonDown</span><span class="s2">()) {</span>
+                <span class="s0">double </span><span class="s1">centerX </span><span class="s2">= </span><span class="s0">this</span><span class="s2">.</span><span class="s1">getLayoutX</span><span class="s2">() + </span><span class="s0">this</span><span class="s2">.</span><span class="s1">getBoundsInParent</span><span class="s2">().</span><span class="s1">getWidth</span><span class="s2">() / </span><span class="s5">2</span><span class="s2">;</span>
+                <span class="s0">double </span><span class="s1">centerY </span><span class="s2">= </span><span class="s0">this</span><span class="s2">.</span><span class="s1">getLayoutY</span><span class="s2">() + </span><span class="s0">this</span><span class="s2">.</span><span class="s1">getBoundsInParent</span><span class="s2">().</span><span class="s1">getHeight</span><span class="s2">() / </span><span class="s5">2</span><span class="s2">;</span>
+                <span class="s0">double </span><span class="s1">angle </span><span class="s2">= </span><span class="s1">Math</span><span class="s2">.</span><span class="s1">toDegrees</span><span class="s2">(</span><span class="s1">Math</span><span class="s2">.</span><span class="s1">atan2</span><span class="s2">(</span><span class="s1">e</span><span class="s2">.</span><span class="s1">getSceneY</span><span class="s2">() - </span><span class="s1">centerY</span><span class="s2">, </span><span class="s1">e</span><span class="s2">.</span><span class="s1">getSceneX</span><span class="s2">() - </span><span class="s1">centerX</span><span class="s2">));</span>
+                <span class="s0">this</span><span class="s2">.</span><span class="s1">setRotate</span><span class="s2">(</span><span class="s1">angle</span><span class="s2">);</span>
+            <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                <span class="s0">double </span><span class="s1">newX </span><span class="s2">= </span><span class="s1">e</span><span class="s2">.</span><span class="s1">getSceneX</span><span class="s2">() - </span><span class="s1">mouseOffsetX</span><span class="s2">;</span>
+                <span class="s0">double </span><span class="s1">newY </span><span class="s2">= </span><span class="s1">e</span><span class="s2">.</span><span class="s1">getSceneY</span><span class="s2">() - </span><span class="s1">mouseOffsetY</span><span class="s2">;</span>
+                <span class="s0">this</span><span class="s2">.</span><span class="s1">setLayoutX</span><span class="s2">(</span><span class="s1">newX</span><span class="s2">);</span>
+                <span class="s0">this</span><span class="s2">.</span><span class="s1">setLayoutY</span><span class="s2">(</span><span class="s1">newY</span><span class="s2">);</span>
+                <span class="s0">this</span><span class="s2">.</span><span class="s1">begin</span><span class="s2">.</span><span class="s1">setPosition</span><span class="s2">(</span><span class="s1">newX</span><span class="s2">, </span><span class="s1">newY</span><span class="s2">);</span>
+
+                <span class="s0">double </span><span class="s1">deltaX </span><span class="s2">= </span><span class="s1">end</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">() - </span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">();</span>
+                <span class="s0">double </span><span class="s1">deltaY </span><span class="s2">= </span><span class="s1">end</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">() - </span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">();</span>
+                <span class="s0">this</span><span class="s2">.</span><span class="s1">end</span><span class="s2">.</span><span class="s1">setPosition</span><span class="s2">(</span><span class="s1">newX </span><span class="s2">+ </span><span class="s1">deltaX</span><span class="s2">, </span><span class="s1">newY </span><span class="s2">+ </span><span class="s1">deltaY</span><span class="s2">);</span>
+            <span class="s2">}</span>
+            <span class="s1">e</span><span class="s2">.</span><span class="s1">consume</span><span class="s2">();</span>
+        <span class="s2">});</span>
+    <span class="s2">}</span>
+
+    <span class="s3">// TODO: Fix the method above to have a text field pop up to input the information for the component</span>
+
+
+    <span class="s0">public double </span><span class="s1">getStoredEnergy</span><span class="s2">() {</span>
+        <span class="s0">return </span><span class="s1">storedEnergy</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public boolean </span><span class="s1">isFullyCharged</span><span class="s2">() {</span>
+        <span class="s0">return </span><span class="s1">storedEnergy </span><span class="s2">== </span><span class="s1">capacity</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

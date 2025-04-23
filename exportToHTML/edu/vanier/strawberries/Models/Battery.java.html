@@ -1,0 +1,187 @@
+<html>
+<head>
+<title>Battery.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+.s4 { color: #7a7e85;}
+.s5 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Battery.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">edu</span><span class="s2">.</span><span class="s1">vanier</span><span class="s2">.</span><span class="s1">strawberries</span><span class="s2">.</span><span class="s1">Models</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">geometry</span><span class="s2">.</span><span class="s1">Point2D</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">Pane</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">control</span><span class="s2">.</span><span class="s1">Alert</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">image</span><span class="s2">.</span><span class="s1">Image</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">net</span><span class="s2">.</span><span class="s1">URL</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">input</span><span class="s2">.</span><span class="s1">MouseEvent</span><span class="s2">;</span>
+
+<span class="s0">public class </span><span class="s1">Battery </span><span class="s0">extends </span><span class="s1">Component </span><span class="s2">{</span>
+    <span class="s0">private double </span><span class="s1">potential</span><span class="s2">;</span>
+    <span class="s0">private boolean </span><span class="s1">startPolarity</span><span class="s2">;</span>
+    <span class="s0">private boolean </span><span class="s1">endPolarity</span><span class="s2">;</span>
+    <span class="s0">private double </span><span class="s1">mouseOffsetX</span><span class="s2">;</span>
+    <span class="s0">private double </span><span class="s1">mouseOffsetY</span><span class="s2">;</span>
+
+    <span class="s0">public </span><span class="s1">Battery</span><span class="s2">(</span><span class="s1">Node begin</span><span class="s2">, </span><span class="s1">Node end</span><span class="s2">, </span><span class="s0">double </span><span class="s1">potential</span><span class="s2">) {</span>
+        <span class="s0">super</span><span class="s2">(</span><span class="s1">begin</span><span class="s2">, </span><span class="s1">end</span><span class="s2">);</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">potential </span><span class="s2">= </span><span class="s1">potential</span><span class="s2">;</span>
+
+        <span class="s0">try</span><span class="s2">{</span>
+            <span class="s1">URL imgUrl </span><span class="s2">= </span><span class="s1">getClass</span><span class="s2">().</span><span class="s1">getResource</span><span class="s2">(</span><span class="s3">&quot;/images/battery_diagram.png&quot;</span><span class="s2">); </span><span class="s4">// debug for the image</span>
+            <span class="s1">display </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Image</span><span class="s2">(</span><span class="s1">imgUrl</span><span class="s2">.</span><span class="s1">toExternalForm</span><span class="s2">());</span>
+            <span class="s1">enableDragAndRotate</span><span class="s2">();</span>
+        <span class="s2">}</span>
+        <span class="s0">catch</span><span class="s2">(</span><span class="s1">NullPointerException e</span><span class="s2">) {</span>
+            <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s3">&quot;Could not load battery image&quot;</span><span class="s2">);</span>
+            <span class="s1">display </span><span class="s2">= </span><span class="s0">null</span><span class="s2">;</span>
+        <span class="s2">}</span>
+        
+
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">enableDragAndRotate</span><span class="s2">() {</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">setOnMousePressed</span><span class="s2">(</span><span class="s1">e -&gt; </span><span class="s2">{ </span><span class="s4">// stores information as to where the mouse is from the image's corner</span>
+            <span class="s1">mouseOffsetX </span><span class="s2">= </span><span class="s1">e</span><span class="s2">.</span><span class="s1">getSceneX</span><span class="s2">() - </span><span class="s0">this</span><span class="s2">.</span><span class="s1">getLayoutX</span><span class="s2">();</span>
+            <span class="s1">mouseOffsetY </span><span class="s2">= </span><span class="s1">e</span><span class="s2">.</span><span class="s1">getSceneY</span><span class="s2">() - </span><span class="s0">this</span><span class="s2">.</span><span class="s1">getLayoutY</span><span class="s2">();</span>
+            <span class="s1">e</span><span class="s2">.</span><span class="s1">consume</span><span class="s2">();</span>
+        <span class="s2">});</span>
+
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">setOnMouseDragged</span><span class="s2">(</span><span class="s1">e -&gt; </span><span class="s2">{ </span><span class="s4">// calculates angle between components center and the mouse location</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">e</span><span class="s2">.</span><span class="s1">isSecondaryButtonDown</span><span class="s2">()) { </span><span class="s4">// the right mouse button</span>
+                <span class="s0">double </span><span class="s1">centerX </span><span class="s2">= </span><span class="s0">this</span><span class="s2">.</span><span class="s1">getLayoutX</span><span class="s2">() + </span><span class="s0">this</span><span class="s2">.</span><span class="s1">getBoundsInParent</span><span class="s2">().</span><span class="s1">getWidth</span><span class="s2">() / </span><span class="s5">2</span><span class="s2">;</span>
+                <span class="s0">double </span><span class="s1">centerY </span><span class="s2">= </span><span class="s0">this</span><span class="s2">.</span><span class="s1">getLayoutY</span><span class="s2">() + </span><span class="s0">this</span><span class="s2">.</span><span class="s1">getBoundsInParent</span><span class="s2">().</span><span class="s1">getHeight</span><span class="s2">() / </span><span class="s5">2</span><span class="s2">;</span>
+                <span class="s0">double </span><span class="s1">angle </span><span class="s2">= </span><span class="s1">Math</span><span class="s2">.</span><span class="s1">toDegrees</span><span class="s2">(</span><span class="s1">Math</span><span class="s2">.</span><span class="s1">atan2</span><span class="s2">(</span><span class="s1">e</span><span class="s2">.</span><span class="s1">getSceneY</span><span class="s2">() - </span><span class="s1">centerY</span><span class="s2">, </span><span class="s1">e</span><span class="s2">.</span><span class="s1">getSceneX</span><span class="s2">() - </span><span class="s1">centerX</span><span class="s2">));</span>
+                <span class="s0">this</span><span class="s2">.</span><span class="s1">setRotate</span><span class="s2">(</span><span class="s1">angle</span><span class="s2">); </span><span class="s4">// rotates using trig</span>
+            <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                <span class="s0">double </span><span class="s1">newX </span><span class="s2">= </span><span class="s1">e</span><span class="s2">.</span><span class="s1">getSceneX</span><span class="s2">() - </span><span class="s1">mouseOffsetX</span><span class="s2">;</span>
+                <span class="s0">double </span><span class="s1">newY </span><span class="s2">= </span><span class="s1">e</span><span class="s2">.</span><span class="s1">getSceneY</span><span class="s2">() - </span><span class="s1">mouseOffsetY</span><span class="s2">;</span>
+                <span class="s0">this</span><span class="s2">.</span><span class="s1">setLayoutX</span><span class="s2">(</span><span class="s1">newX</span><span class="s2">);</span>
+                <span class="s0">this</span><span class="s2">.</span><span class="s1">setLayoutY</span><span class="s2">(</span><span class="s1">newY</span><span class="s2">);</span>
+                <span class="s4">//  update the logical node positions too</span>
+                <span class="s0">this</span><span class="s2">.</span><span class="s1">begin</span><span class="s2">.</span><span class="s1">setPosition</span><span class="s2">(</span><span class="s1">newX</span><span class="s2">, </span><span class="s1">newY</span><span class="s2">);</span>
+                <span class="s4">// keep end node relative to the original angle/distance</span>
+                <span class="s0">double </span><span class="s1">deltaX </span><span class="s2">= </span><span class="s1">end</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">() - </span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">();</span>
+                <span class="s0">double </span><span class="s1">deltaY </span><span class="s2">= </span><span class="s1">end</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">() - </span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">();</span>
+                <span class="s0">this</span><span class="s2">.</span><span class="s1">end</span><span class="s2">.</span><span class="s1">setPosition</span><span class="s2">(</span><span class="s1">newX </span><span class="s2">+ </span><span class="s1">deltaX</span><span class="s2">, </span><span class="s1">newY </span><span class="s2">+ </span><span class="s1">deltaY</span><span class="s2">);</span>
+
+            <span class="s2">}</span>
+            <span class="s1">e</span><span class="s2">.</span><span class="s1">consume</span><span class="s2">(); </span><span class="s4">// basically makes it so that only the battery moves</span>
+        <span class="s2">});</span>
+    <span class="s2">}</span>
+
+    <span class="s4">// Getter for potential (voltage)</span>
+    <span class="s0">public double </span><span class="s1">getPotential</span><span class="s2">() {</span>
+        <span class="s0">return </span><span class="s1">potential</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s4">// Getter for polarity of the start (positive side)</span>
+    <span class="s0">public boolean </span><span class="s1">getStartPolarity</span><span class="s2">() {</span>
+        <span class="s0">return </span><span class="s1">startPolarity</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s4">// Getter for polarity of the end (negative side)</span>
+    <span class="s0">public boolean </span><span class="s1">getEndPolarity</span><span class="s2">() {</span>
+        <span class="s0">return </span><span class="s1">endPolarity</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s4">// Set the polarity of the start (positive side)</span>
+    <span class="s0">public void </span><span class="s1">setStartPolarity</span><span class="s2">(</span><span class="s0">boolean </span><span class="s1">polarity</span><span class="s2">) {</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">startPolarity </span><span class="s2">= </span><span class="s1">polarity</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s4">// Set the polarity of the end (negative side)</span>
+    <span class="s0">public void </span><span class="s1">setEndPolarity</span><span class="s2">(</span><span class="s0">boolean </span><span class="s1">polarity</span><span class="s2">) {</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">endPolarity </span><span class="s2">= </span><span class="s1">polarity</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s4">// Swap the start and end polarities</span>
+    <span class="s0">public void </span><span class="s1">swapPolarity</span><span class="s2">() {</span>
+        <span class="s0">boolean </span><span class="s1">temp </span><span class="s2">= </span><span class="s1">startPolarity</span><span class="s2">;</span>
+        <span class="s1">startPolarity </span><span class="s2">= </span><span class="s1">endPolarity</span><span class="s2">;</span>
+        <span class="s1">endPolarity </span><span class="s2">= </span><span class="s1">temp</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">snapNearbyNode</span><span class="s2">(</span><span class="s1">Node nodeToCheck</span><span class="s2">) {</span>
+        <span class="s1">Point2D nodePos </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Point2D</span><span class="s2">(</span><span class="s1">nodeToCheck</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">(), </span><span class="s1">nodeToCheck</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">());</span>
+        <span class="s1">Point2D beginPos </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Point2D</span><span class="s2">(</span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">(), </span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">());</span>
+        <span class="s1">Point2D endPos </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Point2D</span><span class="s2">(</span><span class="s1">end</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">(), </span><span class="s1">end</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">());</span>
+
+        <span class="s0">double </span><span class="s1">snapThreshold </span><span class="s2">= </span><span class="s5">30</span><span class="s2">;</span>
+
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">nodePos</span><span class="s2">.</span><span class="s1">distance</span><span class="s2">(</span><span class="s1">beginPos</span><span class="s2">) &lt;= </span><span class="s1">snapThreshold</span><span class="s2">) {</span>
+            <span class="s1">nodeToCheck</span><span class="s2">.</span><span class="s1">setPosition</span><span class="s2">(</span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">(), </span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">());</span>
+        <span class="s2">} </span><span class="s0">else if </span><span class="s2">(</span><span class="s1">nodePos</span><span class="s2">.</span><span class="s1">distance</span><span class="s2">(</span><span class="s1">endPos</span><span class="s2">) &lt;= </span><span class="s1">snapThreshold</span><span class="s2">) {</span>
+            <span class="s1">nodeToCheck</span><span class="s2">.</span><span class="s1">setPosition</span><span class="s2">(</span><span class="s1">end</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">(), </span><span class="s1">end</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">());</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+<span class="s0">public void </span><span class="s1">handleEdit</span><span class="s2">(</span><span class="s1">Pane parentPane</span><span class="s2">)</span>
+ <span class="s2">{</span>
+    <span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">control</span><span class="s2">.</span><span class="s1">TextField inputField </span><span class="s2">= </span><span class="s0">new </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">control</span><span class="s2">.</span><span class="s1">TextField</span><span class="s2">(</span><span class="s1">String</span><span class="s2">.</span><span class="s1">valueOf</span><span class="s2">(</span><span class="s1">potential</span><span class="s2">));</span>
+    <span class="s1">inputField</span><span class="s2">.</span><span class="s1">setPrefWidth</span><span class="s2">(</span><span class="s5">60</span><span class="s2">);</span>
+    <span class="s1">inputField</span><span class="s2">.</span><span class="s1">setStyle</span><span class="s2">(</span><span class="s3">&quot;-fx-font-size: 10px; -fx-background-color: white; -fx-border-color: black;&quot;</span><span class="s2">);</span>
+    <span class="s0">if </span><span class="s2">(</span><span class="s1">parentPane </span><span class="s2">== </span><span class="s0">null</span><span class="s2">) {</span>
+        <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s3">&quot; No parent pane found for battery!&quot;</span><span class="s2">);</span>
+        <span class="s0">return</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s4">// Calculate midpoint based on begin and end nodes</span>
+    <span class="s0">double </span><span class="s1">midX </span><span class="s2">= (</span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">() + </span><span class="s1">end</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">()) / </span><span class="s5">2</span><span class="s2">;</span>
+    <span class="s0">double </span><span class="s1">midY </span><span class="s2">= (</span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">() + </span><span class="s1">end</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">()) / </span><span class="s5">2</span><span class="s2">;</span>
+
+    <span class="s4">// Add the input field at the center of the battery</span>
+    <span class="s1">inputField</span><span class="s2">.</span><span class="s1">setLayoutX</span><span class="s2">(</span><span class="s1">midX </span><span class="s2">+ </span><span class="s5">10</span><span class="s2">);</span>
+    <span class="s1">inputField</span><span class="s2">.</span><span class="s1">setLayoutY</span><span class="s2">(</span><span class="s1">midY </span><span class="s2">- </span><span class="s5">10</span><span class="s2">);</span>
+    <span class="s1">parentPane</span><span class="s2">.</span><span class="s1">getChildren</span><span class="s2">().</span><span class="s1">add</span><span class="s2">(</span><span class="s1">inputField</span><span class="s2">);</span>
+    <span class="s1">inputField</span><span class="s2">.</span><span class="s1">requestFocus</span><span class="s2">();</span>
+
+    <span class="s1">inputField</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">_ -&gt; updateVoltageFromField</span><span class="s2">(</span><span class="s1">inputField</span><span class="s2">, </span><span class="s1">parentPane</span><span class="s2">));</span>
+    <span class="s1">inputField</span><span class="s2">.</span><span class="s1">focusedProperty</span><span class="s2">().</span><span class="s1">addListener</span><span class="s2">((</span><span class="s1">obs</span><span class="s2">, </span><span class="s1">wasFocused</span><span class="s2">, </span><span class="s1">isNowFocused</span><span class="s2">) </span><span class="s1">-&gt; </span><span class="s2">{</span>
+        <span class="s0">if </span><span class="s2">(!</span><span class="s1">isNowFocused</span><span class="s2">) {</span>
+            <span class="s1">updateVoltageFromField</span><span class="s2">(</span><span class="s1">inputField</span><span class="s2">, </span><span class="s1">parentPane</span><span class="s2">);</span>
+        <span class="s2">}</span>
+    <span class="s2">});</span>
+<span class="s2">}</span>
+
+
+
+<span class="s0">private void </span><span class="s1">updateVoltageFromField</span><span class="s2">(</span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">control</span><span class="s2">.</span><span class="s1">TextField inputField</span><span class="s2">, </span><span class="s1">Pane parentPane</span><span class="s2">) {</span>
+    <span class="s0">try </span><span class="s2">{</span>
+        <span class="s0">double </span><span class="s1">newPotential </span><span class="s2">= </span><span class="s1">Double</span><span class="s2">.</span><span class="s1">parseDouble</span><span class="s2">(</span><span class="s1">inputField</span><span class="s2">.</span><span class="s1">getText</span><span class="s2">());</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">newPotential </span><span class="s2">&gt;= </span><span class="s5">0 </span><span class="s2">&amp;&amp; </span><span class="s1">newPotential </span><span class="s2">&lt;= </span><span class="s5">1000</span><span class="s2">) {</span>
+            <span class="s0">this</span><span class="s2">.</span><span class="s1">potential </span><span class="s2">= </span><span class="s1">newPotential</span><span class="s2">;</span>
+            <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s3">&quot;Voltage updated to: &quot; </span><span class="s2">+ </span><span class="s1">potential </span><span class="s2">+ </span><span class="s3">&quot; V&quot;</span><span class="s2">);</span>
+        <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+            <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s3">&quot;Voltage must be between 0–1000 V&quot;</span><span class="s2">);</span>
+        <span class="s2">}</span>
+    <span class="s2">} </span><span class="s0">catch </span><span class="s2">(</span><span class="s1">NumberFormatException ex</span><span class="s2">) {</span>
+        <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s3">&quot;Invalid voltage input.&quot;</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s1">parentPane</span><span class="s2">.</span><span class="s1">getChildren</span><span class="s2">().</span><span class="s1">remove</span><span class="s2">(</span><span class="s1">inputField</span><span class="s2">);</span>
+<span class="s2">}</span>
+
+
+    <span class="s0">private void </span><span class="s1">showError</span><span class="s2">(</span><span class="s1">String msg</span><span class="s2">) {</span>
+        <span class="s1">Alert alert </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Alert</span><span class="s2">(</span><span class="s1">Alert</span><span class="s2">.</span><span class="s1">AlertType</span><span class="s2">.</span><span class="s1">ERROR</span><span class="s2">);</span>
+        <span class="s1">alert</span><span class="s2">.</span><span class="s1">setTitle</span><span class="s2">(</span><span class="s3">&quot;Invalid Input&quot;</span><span class="s2">);</span>
+        <span class="s1">alert</span><span class="s2">.</span><span class="s1">setHeaderText</span><span class="s2">(</span><span class="s0">null</span><span class="s2">);</span>
+        <span class="s1">alert</span><span class="s2">.</span><span class="s1">setContentText</span><span class="s2">(</span><span class="s1">msg</span><span class="s2">);</span>
+        <span class="s1">alert</span><span class="s2">.</span><span class="s1">showAndWait</span><span class="s2">();</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

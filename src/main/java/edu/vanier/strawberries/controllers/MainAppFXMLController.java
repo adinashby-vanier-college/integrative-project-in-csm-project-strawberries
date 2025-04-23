@@ -233,16 +233,21 @@ public class MainAppFXMLController {
         });
         runStopBtn.setText("Run");
         runStopBtn.setOnAction(_ -> {
-            animationRunning = !animationRunning;
+            animationRunning = !animationRunning;  // Toggle the animation state
+
             if (animationRunning) {
-                runStopBtn.setText("Stop");
+                runStopBtn.setText("Stop");  // Change button text to "Stop"
 
+                // Create the CircuitMath instance and assign values to components
                 edu.vanier.math.CircuitMath math = new edu.vanier.math.CircuitMath(drawingArea.circuit);
-                math.assignValuesToComponents();
+                math.assignValuesToComponents();  // Assuming this method assigns current, voltage, resistance values to components.
 
+                // Start the current flow animation
                 drawingArea.animateCurrentFlow(true);
             } else {
-                runStopBtn.setText("Run");
+                runStopBtn.setText("Run");  // Change button text back to "Run"
+
+                // Stop the current flow animation
                 drawingArea.animateCurrentFlow(false);
             }
         });

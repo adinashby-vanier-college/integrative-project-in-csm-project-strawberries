@@ -1,0 +1,183 @@
+<html>
+<head>
+<title>SignOnLogInController.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+.s4 { color: #7a7e85;}
+.s5 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+SignOnLogInController.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">edu</span><span class="s2">.</span><span class="s1">vanier</span><span class="s2">.</span><span class="s1">strawberries</span><span class="s2">.</span><span class="s1">controllers</span><span class="s2">;</span>
+
+
+<span class="s0">import </span><span class="s1">edu</span><span class="s2">.</span><span class="s1">vanier</span><span class="s2">.</span><span class="s1">strawberries</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">MainApp</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">event</span><span class="s2">.</span><span class="s1">Event</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">fxml</span><span class="s2">.</span><span class="s1">FXML</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">control</span><span class="s2">.*;</span>
+
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">io</span><span class="s2">.</span><span class="s1">BufferedReader</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">io</span><span class="s2">.</span><span class="s1">File</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">io</span><span class="s2">.</span><span class="s1">FileReader</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">io</span><span class="s2">.</span><span class="s1">IOException</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">nio</span><span class="s2">.</span><span class="s1">charset</span><span class="s2">.</span><span class="s1">StandardCharsets</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">security</span><span class="s2">.</span><span class="s1">MessageDigest</span><span class="s2">;</span>
+
+<span class="s0">public class </span><span class="s1">SignOnLogInController </span><span class="s2">{</span>
+    <span class="s1">@FXML</span>
+    <span class="s0">private </span><span class="s1">TextField username</span><span class="s2">;</span>
+    <span class="s1">@FXML</span>
+    <span class="s0">private </span><span class="s1">TextField password</span><span class="s2">;</span>
+    <span class="s1">@FXML</span>
+    <span class="s0">private </span><span class="s1">Button signInBtn</span><span class="s2">;</span>
+    <span class="s1">@FXML</span>
+    <span class="s0">private </span><span class="s1">ToggleButton newUserBtn</span><span class="s2">;</span>
+    <span class="s1">@FXML</span>
+    <span class="s0">private </span><span class="s1">Label statusLabel</span><span class="s2">;</span>
+
+    <span class="s0">private static final </span><span class="s1">File USER_INFO </span><span class="s2">= </span><span class="s0">new </span><span class="s1">File</span><span class="s2">(</span><span class="s3">&quot;src/main/resources/users.json&quot;</span><span class="s2">);</span>
+
+    <span class="s1">@FXML</span>
+    <span class="s0">public void </span><span class="s1">initialize</span><span class="s2">() {</span>
+        <span class="s4">//styleButton(signInBtn);</span>
+        <span class="s1">newUserBtn</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s0">this</span><span class="s1">::loadSingUpScene</span><span class="s2">);</span>
+        <span class="s1">signInBtn</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">_-&gt; </span><span class="s2">{</span>
+            <span class="s1">String recentProject </span><span class="s2">= </span><span class="s1">Login</span><span class="s2">();</span>
+            <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s1">recentProject</span><span class="s2">);</span>
+            <span class="s4">// send recentProject to Main Class</span>
+        <span class="s2">});</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public </span><span class="s1">String getRecent</span><span class="s2">() {</span>
+        <span class="s0">return </span><span class="s1">Login</span><span class="s2">();</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private </span><span class="s1">String Login</span><span class="s2">() {</span>
+        <span class="s1">String recentProject </span><span class="s2">= </span><span class="s3">&quot;&quot;</span><span class="s2">;</span>
+        <span class="s1">String username </span><span class="s2">= </span><span class="s0">this</span><span class="s2">.</span><span class="s1">username</span><span class="s2">.</span><span class="s1">getText</span><span class="s2">().</span><span class="s1">trim</span><span class="s2">();</span>
+        <span class="s1">String password </span><span class="s2">= </span><span class="s0">this</span><span class="s2">.</span><span class="s1">password</span><span class="s2">.</span><span class="s1">getText</span><span class="s2">();</span>
+
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">username</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">() || </span><span class="s1">password</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">()) {</span>
+            <span class="s1">statusLabel</span><span class="s2">.</span><span class="s1">setText</span><span class="s2">(</span><span class="s3">&quot;Please enter both username and password.&quot;</span><span class="s2">);</span>
+            <span class="s0">return </span><span class="s3">&quot;&quot;</span><span class="s2">;</span>
+        <span class="s2">}</span>
+
+        <span class="s0">if </span><span class="s2">(!</span><span class="s1">USER_INFO</span><span class="s2">.</span><span class="s1">exists</span><span class="s2">()) {</span>
+            <span class="s1">statusLabel</span><span class="s2">.</span><span class="s1">setText</span><span class="s2">(</span><span class="s3">&quot;No users registered.&quot;</span><span class="s2">);</span>
+            <span class="s0">return </span><span class="s3">&quot;&quot;</span><span class="s2">;</span>
+        <span class="s2">}</span>
+
+        <span class="s0">try </span><span class="s2">{ </span><span class="s4">// main, call methods below</span>
+            <span class="s1">String content </span><span class="s2">= </span><span class="s1">readFile</span><span class="s2">(</span><span class="s1">USER_INFO</span><span class="s2">);</span>
+            <span class="s1">String hashedInputPassword </span><span class="s2">= </span><span class="s1">hashSHA256</span><span class="s2">(</span><span class="s1">password</span><span class="s2">);</span>
+
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">findCheckUser</span><span class="s2">(</span><span class="s1">content</span><span class="s2">, </span><span class="s1">username</span><span class="s2">, </span><span class="s1">hashedInputPassword</span><span class="s2">)) {</span>
+                <span class="s1">statusLabel</span><span class="s2">.</span><span class="s1">setText</span><span class="s2">(</span><span class="s3">&quot;Please enter both username and password.&quot;</span><span class="s2">);</span>
+                <span class="s1">recentProject </span><span class="s2">= </span><span class="s1">findRecent</span><span class="s2">(</span><span class="s1">content</span><span class="s2">, </span><span class="s1">username</span><span class="s2">);</span>
+                <span class="s1">loadMainScene</span><span class="s2">();</span>
+                <span class="s0">return </span><span class="s1">recentProject</span><span class="s2">;</span>
+            <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                <span class="s1">statusLabel</span><span class="s2">.</span><span class="s1">setText</span><span class="s2">(</span><span class="s3">&quot;Incorrect username or password.&quot;</span><span class="s2">);</span>
+            <span class="s2">}</span>
+
+        <span class="s2">} </span><span class="s0">catch </span><span class="s2">(</span><span class="s1">Exception e</span><span class="s2">) {</span>
+            <span class="s1">statusLabel</span><span class="s2">.</span><span class="s1">setText</span><span class="s2">(</span><span class="s3">&quot;Error: &quot; </span><span class="s2">+ </span><span class="s1">e</span><span class="s2">.</span><span class="s1">getMessage</span><span class="s2">());</span>
+            <span class="s1">e</span><span class="s2">.</span><span class="s1">printStackTrace</span><span class="s2">();</span>
+        <span class="s2">}</span>
+        <span class="s0">return </span><span class="s1">recentProject</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private boolean </span><span class="s1">findCheckUser</span><span class="s2">(</span><span class="s1">String content</span><span class="s2">, </span><span class="s1">String username</span><span class="s2">, </span><span class="s1">String hashedPassword</span><span class="s2">) { </span><span class="s4">// check existing user</span>
+        <span class="s0">int </span><span class="s1">index </span><span class="s2">= </span><span class="s5">0</span><span class="s2">;</span>
+        <span class="s0">while </span><span class="s2">((</span><span class="s1">index </span><span class="s2">= </span><span class="s1">content</span><span class="s2">.</span><span class="s1">indexOf</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s0">\&quot;</span><span class="s3">username</span><span class="s0">\&quot;</span><span class="s3">:&quot;</span><span class="s2">, </span><span class="s1">index</span><span class="s2">)) != -</span><span class="s5">1</span><span class="s2">) {</span>
+            <span class="s0">int </span><span class="s1">startUser </span><span class="s2">= </span><span class="s1">content</span><span class="s2">.</span><span class="s1">indexOf</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s0">\&quot;</span><span class="s3">&quot;</span><span class="s2">, </span><span class="s1">index </span><span class="s2">+ </span><span class="s5">11</span><span class="s2">) + </span><span class="s5">1</span><span class="s2">;</span>
+            <span class="s0">int </span><span class="s1">endUser </span><span class="s2">= </span><span class="s1">content</span><span class="s2">.</span><span class="s1">indexOf</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s0">\&quot;</span><span class="s3">&quot;</span><span class="s2">, </span><span class="s1">startUser</span><span class="s2">);</span>
+            <span class="s1">String foundUsername </span><span class="s2">= </span><span class="s1">content</span><span class="s2">.</span><span class="s1">substring</span><span class="s2">(</span><span class="s1">startUser</span><span class="s2">, </span><span class="s1">endUser</span><span class="s2">);</span>
+
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">foundUsername</span><span class="s2">.</span><span class="s1">equals</span><span class="s2">(</span><span class="s1">username</span><span class="s2">)) {</span>
+                <span class="s0">int </span><span class="s1">passIndex </span><span class="s2">= </span><span class="s1">content</span><span class="s2">.</span><span class="s1">indexOf</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s0">\&quot;</span><span class="s3">password</span><span class="s0">\&quot;</span><span class="s3">:&quot;</span><span class="s2">, </span><span class="s1">endUser</span><span class="s2">);</span>
+                <span class="s0">int </span><span class="s1">startPass </span><span class="s2">= </span><span class="s1">content</span><span class="s2">.</span><span class="s1">indexOf</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s0">\&quot;</span><span class="s3">&quot;</span><span class="s2">, </span><span class="s1">passIndex </span><span class="s2">+ </span><span class="s5">11</span><span class="s2">) + </span><span class="s5">1</span><span class="s2">;</span>
+                <span class="s0">int </span><span class="s1">endPass </span><span class="s2">= </span><span class="s1">content</span><span class="s2">.</span><span class="s1">indexOf</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s0">\&quot;</span><span class="s3">&quot;</span><span class="s2">, </span><span class="s1">startPass</span><span class="s2">);</span>
+                <span class="s1">String storedPassword </span><span class="s2">= </span><span class="s1">content</span><span class="s2">.</span><span class="s1">substring</span><span class="s2">(</span><span class="s1">startPass</span><span class="s2">, </span><span class="s1">endPass</span><span class="s2">);</span>
+                <span class="s0">return </span><span class="s1">storedPassword</span><span class="s2">.</span><span class="s1">equals</span><span class="s2">(</span><span class="s1">hashedPassword</span><span class="s2">);</span>
+            <span class="s2">}</span>
+            <span class="s1">index </span><span class="s2">= </span><span class="s1">endUser</span><span class="s2">;</span>
+        <span class="s2">}</span>
+        <span class="s0">return false</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private static </span><span class="s1">String findRecent</span><span class="s2">(</span><span class="s1">String content</span><span class="s2">, </span><span class="s1">String username</span><span class="s2">) { </span><span class="s4">// return recent project</span>
+        <span class="s0">int </span><span class="s1">index </span><span class="s2">= </span><span class="s5">0</span><span class="s2">;</span>
+        <span class="s0">while </span><span class="s2">((</span><span class="s1">index </span><span class="s2">= </span><span class="s1">content</span><span class="s2">.</span><span class="s1">indexOf</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s0">\&quot;</span><span class="s3">username</span><span class="s0">\&quot;</span><span class="s3">:&quot;</span><span class="s2">, </span><span class="s1">index</span><span class="s2">)) != -</span><span class="s5">1</span><span class="s2">) {</span>
+            <span class="s0">int </span><span class="s1">startUser </span><span class="s2">= </span><span class="s1">content</span><span class="s2">.</span><span class="s1">indexOf</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s0">\&quot;</span><span class="s3">&quot;</span><span class="s2">, </span><span class="s1">index </span><span class="s2">+ </span><span class="s5">11</span><span class="s2">) + </span><span class="s5">1</span><span class="s2">;</span>
+            <span class="s0">int </span><span class="s1">endUser </span><span class="s2">= </span><span class="s1">content</span><span class="s2">.</span><span class="s1">indexOf</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s0">\&quot;</span><span class="s3">&quot;</span><span class="s2">, </span><span class="s1">startUser</span><span class="s2">);</span>
+            <span class="s1">String foundUsername </span><span class="s2">= </span><span class="s1">content</span><span class="s2">.</span><span class="s1">substring</span><span class="s2">(</span><span class="s1">startUser</span><span class="s2">, </span><span class="s1">endUser</span><span class="s2">);</span>
+
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">foundUsername</span><span class="s2">.</span><span class="s1">equals</span><span class="s2">(</span><span class="s1">username</span><span class="s2">)) {</span>
+                <span class="s0">int </span><span class="s1">recentIndex </span><span class="s2">= </span><span class="s1">content</span><span class="s2">.</span><span class="s1">indexOf</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s0">\&quot;</span><span class="s3">recent</span><span class="s0">\&quot;</span><span class="s3">:&quot;</span><span class="s2">, </span><span class="s1">endUser</span><span class="s2">);</span>
+                <span class="s0">int </span><span class="s1">startRecent </span><span class="s2">= </span><span class="s1">content</span><span class="s2">.</span><span class="s1">indexOf</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s0">\&quot;</span><span class="s3">&quot;</span><span class="s2">, </span><span class="s1">recentIndex </span><span class="s2">+ </span><span class="s5">9</span><span class="s2">) +</span><span class="s5">1</span><span class="s2">;</span>
+                <span class="s0">int </span><span class="s1">endRecent </span><span class="s2">= </span><span class="s1">content</span><span class="s2">.</span><span class="s1">indexOf</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s0">\&quot;</span><span class="s3">&quot;</span><span class="s2">, </span><span class="s1">startRecent</span><span class="s2">);</span>
+                <span class="s1">String recentProject </span><span class="s2">= </span><span class="s1">content</span><span class="s2">.</span><span class="s1">substring</span><span class="s2">(</span><span class="s1">startRecent</span><span class="s2">, </span><span class="s1">endRecent</span><span class="s2">);</span>
+                <span class="s0">return </span><span class="s1">recentProject</span><span class="s2">;</span>
+            <span class="s2">}</span>
+            <span class="s1">index </span><span class="s2">= </span><span class="s1">endUser</span><span class="s2">;</span>
+        <span class="s2">}</span>
+        <span class="s0">return </span><span class="s3">&quot;&quot;</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public </span><span class="s1">String hashSHA256</span><span class="s2">(</span><span class="s1">String input</span><span class="s2">) </span><span class="s0">throws </span><span class="s1">Exception </span><span class="s2">{ </span><span class="s4">// ecrypt inputted password</span>
+        <span class="s1">MessageDigest digest </span><span class="s2">= </span><span class="s1">MessageDigest</span><span class="s2">.</span><span class="s1">getInstance</span><span class="s2">(</span><span class="s3">&quot;SHA-256&quot;</span><span class="s2">);</span>
+        <span class="s0">byte</span><span class="s2">[] </span><span class="s1">encodedHash </span><span class="s2">= </span><span class="s1">digest</span><span class="s2">.</span><span class="s1">digest</span><span class="s2">(</span><span class="s1">input</span><span class="s2">.</span><span class="s1">getBytes</span><span class="s2">(</span><span class="s1">StandardCharsets</span><span class="s2">.</span><span class="s1">UTF_8</span><span class="s2">));</span>
+        <span class="s1">StringBuilder hexString </span><span class="s2">= </span><span class="s0">new </span><span class="s1">StringBuilder</span><span class="s2">(</span><span class="s5">2 </span><span class="s2">* </span><span class="s1">encodedHash</span><span class="s2">.</span><span class="s1">length</span><span class="s2">);</span>
+        <span class="s0">for </span><span class="s2">(</span><span class="s0">byte </span><span class="s1">b </span><span class="s2">: </span><span class="s1">encodedHash</span><span class="s2">) {</span>
+            <span class="s1">String hex </span><span class="s2">= </span><span class="s1">Integer</span><span class="s2">.</span><span class="s1">toHexString</span><span class="s2">(</span><span class="s5">0xff </span><span class="s2">&amp; </span><span class="s1">b</span><span class="s2">);</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">hex</span><span class="s2">.</span><span class="s1">length</span><span class="s2">() == </span><span class="s5">1</span><span class="s2">) </span><span class="s1">hexString</span><span class="s2">.</span><span class="s1">append</span><span class="s2">(</span><span class="s3">'0'</span><span class="s2">);</span>
+            <span class="s1">hexString</span><span class="s2">.</span><span class="s1">append</span><span class="s2">(</span><span class="s1">hex</span><span class="s2">);</span>
+        <span class="s2">}</span>
+        <span class="s0">return </span><span class="s1">hexString</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">();</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private </span><span class="s1">String readFile</span><span class="s2">(</span><span class="s1">File file</span><span class="s2">) </span><span class="s0">throws </span><span class="s1">IOException </span><span class="s2">{ </span><span class="s4">// json format parser</span>
+        <span class="s1">BufferedReader reader </span><span class="s2">= </span><span class="s0">new </span><span class="s1">BufferedReader</span><span class="s2">(</span><span class="s0">new </span><span class="s1">FileReader</span><span class="s2">(</span><span class="s1">file</span><span class="s2">));</span>
+        <span class="s1">StringBuilder sb </span><span class="s2">= </span><span class="s0">new </span><span class="s1">StringBuilder</span><span class="s2">();</span>
+        <span class="s1">String line</span><span class="s2">;</span>
+        <span class="s0">while </span><span class="s2">((</span><span class="s1">line </span><span class="s2">= </span><span class="s1">reader</span><span class="s2">.</span><span class="s1">readLine</span><span class="s2">()) != </span><span class="s0">null</span><span class="s2">) {</span>
+            <span class="s1">sb</span><span class="s2">.</span><span class="s1">append</span><span class="s2">(</span><span class="s1">line</span><span class="s2">).</span><span class="s1">append</span><span class="s2">(</span><span class="s3">&quot;</span><span class="s0">\n</span><span class="s3">&quot;</span><span class="s2">);</span>
+        <span class="s2">}</span>
+        <span class="s1">reader</span><span class="s2">.</span><span class="s1">close</span><span class="s2">();</span>
+        <span class="s0">return </span><span class="s1">sb</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">();</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">loadSingUpScene</span><span class="s2">(</span><span class="s1">Event e</span><span class="s2">) {</span>
+        <span class="s1">MainApp</span><span class="s2">.</span><span class="s1">switchScene</span><span class="s2">(</span><span class="s1">MainApp</span><span class="s2">.</span><span class="s1">SIGNUP_SCENE</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">loadMainScene</span><span class="s2">() {</span>
+        <span class="s1">MainApp</span><span class="s2">.</span><span class="s1">switchScene</span><span class="s2">(</span><span class="s1">MainApp</span><span class="s2">.</span><span class="s1">MAINAPP_SCENE</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">styleButton</span><span class="s2">(</span><span class="s1">Button btn</span><span class="s2">) {</span>
+        <span class="s1">btn</span><span class="s2">.</span><span class="s1">setStyle</span><span class="s2">(</span><span class="s3">&quot;&quot;&quot; 
+                    -fx-background-color: linear-gradient(to bottom, #f4f4f4, #e8e8e8); 
+                    -fx-text-fill: #222222; 
+                    -fx-background-radius: 6; 
+                    -fx-border-radius: 6; 
+                    -fx-border-color: #cccccc; 
+                    -fx-border-width: 1px; 
+                    -fx-cursor: hand; 
+                    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 1, 0.0, 0, 1); 
+                &quot;&quot;&quot;</span><span class="s2">);</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

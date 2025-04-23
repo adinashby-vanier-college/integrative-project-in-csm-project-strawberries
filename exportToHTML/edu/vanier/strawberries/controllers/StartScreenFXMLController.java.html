@@ -1,0 +1,82 @@
+<html>
+<head>
+<title>StartScreenFXMLController.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #5f826b; font-style: italic;}
+.s4 { color: #67a37c; font-style: italic;}
+.s5 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+StartScreenFXMLController.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">edu</span><span class="s2">.</span><span class="s1">vanier</span><span class="s2">.</span><span class="s1">strawberries</span><span class="s2">.</span><span class="s1">controllers</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">edu</span><span class="s2">.</span><span class="s1">vanier</span><span class="s2">.</span><span class="s1">strawberries</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">MainApp</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">event</span><span class="s2">.</span><span class="s1">Event</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">fxml</span><span class="s2">.</span><span class="s1">FXML</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">control</span><span class="s2">.</span><span class="s1">Button</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">org</span><span class="s2">.</span><span class="s1">slf4j</span><span class="s2">.</span><span class="s1">Logger</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">org</span><span class="s2">.</span><span class="s1">slf4j</span><span class="s2">.</span><span class="s1">LoggerFactory</span><span class="s2">;</span>
+
+<span class="s3">/**</span>
+ <span class="s3">* FXML controller class for the secondary scene.</span>
+ <span class="s3">*</span>
+ <span class="s3">* </span><span class="s4">@author </span><span class="s3">frostybee</span>
+ <span class="s3">*/</span>
+<span class="s0">public class </span><span class="s1">StartScreenFXMLController </span><span class="s2">{</span>
+
+    <span class="s1">@FXML</span>
+    <span class="s1">Button newCircuitBtn </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Button</span><span class="s2">();</span>
+    <span class="s1">@FXML</span>
+    <span class="s1">Button savedCircuitsBtn </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Button</span><span class="s2">();</span>
+    <span class="s1">@FXML</span>
+    <span class="s1">Button logInBtn </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Button</span><span class="s2">();</span>
+
+    <span class="s0">private final static </span><span class="s1">Logger logger </span><span class="s2">= </span><span class="s1">LoggerFactory</span><span class="s2">.</span><span class="s1">getLogger</span><span class="s2">(</span><span class="s1">StartScreenFXMLController</span><span class="s2">.</span><span class="s0">class</span><span class="s2">);</span>
+
+    <span class="s1">@FXML</span>
+    <span class="s0">public void </span><span class="s1">initialize</span><span class="s2">() {</span>
+        <span class="s1">logger</span><span class="s2">.</span><span class="s1">info</span><span class="s2">(</span><span class="s5">&quot;Initializing StartScreenController...&quot;</span><span class="s2">);</span>
+
+        <span class="s1">styleButton</span><span class="s2">(</span><span class="s1">newCircuitBtn</span><span class="s2">);</span>
+        <span class="s1">styleButton</span><span class="s2">(</span><span class="s1">savedCircuitsBtn</span><span class="s2">);</span>
+        <span class="s1">styleButton</span><span class="s2">(</span><span class="s1">logInBtn</span><span class="s2">);</span>
+
+        <span class="s1">newCircuitBtn</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s0">this</span><span class="s1">::loadPrimaryScene</span><span class="s2">);</span>
+        <span class="s1">logInBtn</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s0">this</span><span class="s1">::loadLoginScene</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">loadPrimaryScene</span><span class="s2">(</span><span class="s1">Event e</span><span class="s2">) {</span>
+        <span class="s1">MainApp</span><span class="s2">.</span><span class="s1">switchScene</span><span class="s2">(</span><span class="s1">MainApp</span><span class="s2">.</span><span class="s1">MAINAPP_SCENE</span><span class="s2">);</span>
+        <span class="s1">logger</span><span class="s2">.</span><span class="s1">info</span><span class="s2">(</span><span class="s5">&quot;Loaded the main scene...&quot;</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">loadLoginScene</span><span class="s2">(</span><span class="s1">Event e</span><span class="s2">) {</span>
+        <span class="s1">MainApp</span><span class="s2">.</span><span class="s1">switchScene</span><span class="s2">(</span><span class="s1">MainApp</span><span class="s2">.</span><span class="s1">LOGIN_SCENE</span><span class="s2">);</span>
+        <span class="s1">logger</span><span class="s2">.</span><span class="s1">info</span><span class="s2">(</span><span class="s5">&quot;Loaded the login scene...&quot;</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">styleButton</span><span class="s2">(</span><span class="s1">Button btn</span><span class="s2">) {</span>
+        <span class="s1">btn</span><span class="s2">.</span><span class="s1">setStyle</span><span class="s2">(</span><span class="s5">&quot;&quot;&quot; 
+                    -fx-background-color: linear-gradient(to bottom, #f4f4f4, #e8e8e8); 
+                    -fx-text-fill: #222222; 
+                    -fx-background-radius: 6; 
+                    -fx-border-radius: 6; 
+                    -fx-border-color: #cccccc; 
+                    -fx-border-width: 1px; 
+                    -fx-cursor: hand; 
+                    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 1, 0.0, 0, 1); 
+                &quot;&quot;&quot;</span><span class="s2">);</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

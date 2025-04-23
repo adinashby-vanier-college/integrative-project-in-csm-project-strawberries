@@ -1,0 +1,169 @@
+<html>
+<head>
+<title>Resistor.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #2aacb8;}
+.s4 { color: #6aab73;}
+.s5 { color: #7a7e85;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Resistor.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">edu</span><span class="s2">.</span><span class="s1">vanier</span><span class="s2">.</span><span class="s1">strawberries</span><span class="s2">.</span><span class="s1">Models</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">image</span><span class="s2">.</span><span class="s1">Image</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">image</span><span class="s2">.</span><span class="s1">ImageView</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">control</span><span class="s2">.</span><span class="s1">TextField</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">Pane</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">transform</span><span class="s2">.</span><span class="s1">Rotate</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">net</span><span class="s2">.</span><span class="s1">URL</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">LinkedList</span><span class="s2">;</span>
+
+<span class="s0">public class </span><span class="s1">Resistor </span><span class="s0">extends </span><span class="s1">Component </span><span class="s2">{</span>
+    <span class="s0">private double </span><span class="s1">resistance</span><span class="s2">;</span>
+    <span class="s0">private double </span><span class="s1">current</span><span class="s2">;</span>
+    <span class="s0">private double </span><span class="s1">voltage</span><span class="s2">;</span>
+    <span class="s0">private double </span><span class="s1">mouseOffsetX</span><span class="s2">;</span>
+    <span class="s0">private double </span><span class="s1">mouseOffsetY</span><span class="s2">;</span>
+
+    <span class="s0">public </span><span class="s1">Resistor</span><span class="s2">(</span><span class="s1">Node begin</span><span class="s2">, </span><span class="s1">Node end</span><span class="s2">, </span><span class="s0">double </span><span class="s1">resistance</span><span class="s2">) {</span>
+        <span class="s0">super</span><span class="s2">(</span><span class="s1">begin</span><span class="s2">, </span><span class="s1">end</span><span class="s2">);</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">resistance </span><span class="s2">= </span><span class="s1">resistance</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">current </span><span class="s2">= </span><span class="s3">0</span><span class="s2">;</span>
+
+        <span class="s1">URL imgUrl </span><span class="s2">= </span><span class="s1">getClass</span><span class="s2">().</span><span class="s1">getResource</span><span class="s2">(</span><span class="s4">&quot;/images/resistor_diagram.png&quot;</span><span class="s2">);</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">imgUrl </span><span class="s2">== </span><span class="s0">null</span><span class="s2">) {</span>
+            <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s4">&quot;Could not load resistor image&quot;</span><span class="s2">);</span>
+        <span class="s2">}</span>
+        <span class="s0">else </span><span class="s2">{</span>
+            <span class="s1">display </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Image</span><span class="s2">(</span><span class="s1">imgUrl</span><span class="s2">.</span><span class="s1">toExternalForm</span><span class="s2">());</span>
+            <span class="s1">enableDragAndRotate</span><span class="s2">();</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">enableDragAndRotate</span><span class="s2">() {</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">setOnMousePressed</span><span class="s2">(</span><span class="s1">e -&gt; </span><span class="s2">{</span>
+            <span class="s1">mouseOffsetX </span><span class="s2">= </span><span class="s1">e</span><span class="s2">.</span><span class="s1">getSceneX</span><span class="s2">() - </span><span class="s0">this</span><span class="s2">.</span><span class="s1">getLayoutX</span><span class="s2">();</span>
+            <span class="s1">mouseOffsetY </span><span class="s2">= </span><span class="s1">e</span><span class="s2">.</span><span class="s1">getSceneY</span><span class="s2">() - </span><span class="s0">this</span><span class="s2">.</span><span class="s1">getLayoutY</span><span class="s2">();</span>
+            <span class="s1">e</span><span class="s2">.</span><span class="s1">consume</span><span class="s2">();</span>
+        <span class="s2">});</span>
+
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">setOnMouseDragged</span><span class="s2">(</span><span class="s1">e -&gt; </span><span class="s2">{</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">e</span><span class="s2">.</span><span class="s1">isSecondaryButtonDown</span><span class="s2">()) {</span>
+                <span class="s0">double </span><span class="s1">centerX </span><span class="s2">= </span><span class="s0">this</span><span class="s2">.</span><span class="s1">getLayoutX</span><span class="s2">() + </span><span class="s0">this</span><span class="s2">.</span><span class="s1">getBoundsInParent</span><span class="s2">().</span><span class="s1">getWidth</span><span class="s2">() / </span><span class="s3">2</span><span class="s2">;</span>
+                <span class="s0">double </span><span class="s1">centerY </span><span class="s2">= </span><span class="s0">this</span><span class="s2">.</span><span class="s1">getLayoutY</span><span class="s2">() + </span><span class="s0">this</span><span class="s2">.</span><span class="s1">getBoundsInParent</span><span class="s2">().</span><span class="s1">getHeight</span><span class="s2">() / </span><span class="s3">2</span><span class="s2">;</span>
+                <span class="s0">double </span><span class="s1">angle </span><span class="s2">= </span><span class="s1">Math</span><span class="s2">.</span><span class="s1">toDegrees</span><span class="s2">(</span><span class="s1">Math</span><span class="s2">.</span><span class="s1">atan2</span><span class="s2">(</span><span class="s1">e</span><span class="s2">.</span><span class="s1">getSceneY</span><span class="s2">() - </span><span class="s1">centerY</span><span class="s2">, </span><span class="s1">e</span><span class="s2">.</span><span class="s1">getSceneX</span><span class="s2">() - </span><span class="s1">centerX</span><span class="s2">));</span>
+                <span class="s0">this</span><span class="s2">.</span><span class="s1">setRotate</span><span class="s2">(</span><span class="s1">angle</span><span class="s2">);</span>
+            <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                <span class="s0">double </span><span class="s1">newX </span><span class="s2">= </span><span class="s1">e</span><span class="s2">.</span><span class="s1">getSceneX</span><span class="s2">() - </span><span class="s1">mouseOffsetX</span><span class="s2">;</span>
+                <span class="s0">double </span><span class="s1">newY </span><span class="s2">= </span><span class="s1">e</span><span class="s2">.</span><span class="s1">getSceneY</span><span class="s2">() - </span><span class="s1">mouseOffsetY</span><span class="s2">;</span>
+                <span class="s0">this</span><span class="s2">.</span><span class="s1">setLayoutX</span><span class="s2">(</span><span class="s1">newX</span><span class="s2">);</span>
+                <span class="s0">this</span><span class="s2">.</span><span class="s1">setLayoutY</span><span class="s2">(</span><span class="s1">newY</span><span class="s2">);</span>
+                <span class="s0">this</span><span class="s2">.</span><span class="s1">begin</span><span class="s2">.</span><span class="s1">setPosition</span><span class="s2">(</span><span class="s1">newX</span><span class="s2">, </span><span class="s1">newY</span><span class="s2">);</span>
+
+                <span class="s0">double </span><span class="s1">deltaX </span><span class="s2">= </span><span class="s1">end</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">() - </span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">();</span>
+                <span class="s0">double </span><span class="s1">deltaY </span><span class="s2">= </span><span class="s1">end</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">() - </span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">();</span>
+                <span class="s0">this</span><span class="s2">.</span><span class="s1">end</span><span class="s2">.</span><span class="s1">setPosition</span><span class="s2">(</span><span class="s1">newX </span><span class="s2">+ </span><span class="s1">deltaX</span><span class="s2">, </span><span class="s1">newY </span><span class="s2">+ </span><span class="s1">deltaY</span><span class="s2">);</span>
+            <span class="s2">}</span>
+            <span class="s1">e</span><span class="s2">.</span><span class="s1">consume</span><span class="s2">();</span>
+        <span class="s2">});</span>
+
+        <span class="s5">// Double-click to edit resistance</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">setOnMouseClicked</span><span class="s2">(</span><span class="s1">e -&gt; </span><span class="s2">{</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">e</span><span class="s2">.</span><span class="s1">getClickCount</span><span class="s2">() == </span><span class="s3">2 </span><span class="s2">&amp;&amp; </span><span class="s1">e</span><span class="s2">.</span><span class="s1">isPrimaryButtonDown</span><span class="s2">()) {</span>
+                <span class="s1">TextField inputField </span><span class="s2">= </span><span class="s0">new </span><span class="s1">TextField</span><span class="s2">();</span>
+                <span class="s1">inputField</span><span class="s2">.</span><span class="s1">setLayoutX</span><span class="s2">(</span><span class="s0">this</span><span class="s2">.</span><span class="s1">getLayoutX</span><span class="s2">());</span>
+                <span class="s1">inputField</span><span class="s2">.</span><span class="s1">setLayoutY</span><span class="s2">(</span><span class="s0">this</span><span class="s2">.</span><span class="s1">getLayoutY</span><span class="s2">() - </span><span class="s3">25</span><span class="s2">); </span><span class="s5">// slightly above the component</span>
+
+                <span class="s1">Pane parentPane </span><span class="s2">= (</span><span class="s1">Pane</span><span class="s2">) </span><span class="s0">this</span><span class="s2">.</span><span class="s1">getParent</span><span class="s2">();</span>
+                <span class="s1">parentPane</span><span class="s2">.</span><span class="s1">getChildren</span><span class="s2">().</span><span class="s1">add</span><span class="s2">(</span><span class="s1">inputField</span><span class="s2">);</span>
+                <span class="s1">inputField</span><span class="s2">.</span><span class="s1">requestFocus</span><span class="s2">();</span>
+
+                <span class="s1">inputField</span><span class="s2">.</span><span class="s1">setOnAction</span><span class="s2">(</span><span class="s1">event -&gt; updateResistanceFromField</span><span class="s2">(</span><span class="s1">inputField</span><span class="s2">, </span><span class="s1">parentPane</span><span class="s2">));</span>
+                <span class="s1">inputField</span><span class="s2">.</span><span class="s1">setOnKeyPressed</span><span class="s2">(</span><span class="s1">event -&gt; </span><span class="s2">{</span>
+                    <span class="s0">switch </span><span class="s2">(</span><span class="s1">event</span><span class="s2">.</span><span class="s1">getCode</span><span class="s2">()) {</span>
+                        <span class="s0">case </span><span class="s1">ENTER -&gt; updateResistanceFromField</span><span class="s2">(</span><span class="s1">inputField</span><span class="s2">, </span><span class="s1">parentPane</span><span class="s2">);</span>
+                        <span class="s0">case </span><span class="s1">ESCAPE -&gt; parentPane</span><span class="s2">.</span><span class="s1">getChildren</span><span class="s2">().</span><span class="s1">remove</span><span class="s2">(</span><span class="s1">inputField</span><span class="s2">);</span>
+                    <span class="s2">}</span>
+                <span class="s2">});</span>
+            <span class="s2">}</span>
+        <span class="s2">});</span>
+    <span class="s2">}</span>
+
+    
+    <span class="s0">public boolean </span><span class="s1">isConnected</span><span class="s2">(</span><span class="s1">Circuit circuit</span><span class="s2">) {</span>
+    <span class="s0">int </span><span class="s1">resistorIndex </span><span class="s2">= </span><span class="s1">circuit</span><span class="s2">.</span><span class="s1">getIndex</span><span class="s2">(</span><span class="s0">this</span><span class="s2">);</span>
+
+    <span class="s0">for </span><span class="s2">(</span><span class="s1">LinkedList</span><span class="s2">&lt;</span><span class="s1">Component</span><span class="s2">&gt; </span><span class="s1">list </span><span class="s2">: </span><span class="s1">circuit</span><span class="s2">.</span><span class="s1">arrayList</span><span class="s2">) {</span>
+        <span class="s0">for </span><span class="s2">(</span><span class="s1">Component component </span><span class="s2">: </span><span class="s1">list</span><span class="s2">) {</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">component </span><span class="s2">== </span><span class="s0">this</span><span class="s2">) </span><span class="s0">continue</span><span class="s2">; </span><span class="s5">// skip self</span>
+            <span class="s0">int </span><span class="s1">otherIndex </span><span class="s2">= </span><span class="s1">circuit</span><span class="s2">.</span><span class="s1">getIndex</span><span class="s2">(</span><span class="s1">component</span><span class="s2">);</span>
+
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">circuit</span><span class="s2">.</span><span class="s1">checkEdge</span><span class="s2">(</span><span class="s1">resistorIndex</span><span class="s2">, </span><span class="s1">otherIndex</span><span class="s2">)) {</span>
+                <span class="s0">return true</span><span class="s2">; </span><span class="s5">// Found connection</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">return false</span><span class="s2">; </span><span class="s5">// Not connected</span>
+<span class="s2">}</span>
+    <span class="s5">// TODO: Fix the method above to have a text field pop up to input the information for the component</span>
+
+
+    <span class="s0">public double </span><span class="s1">getResistance</span><span class="s2">() {</span>
+        <span class="s0">return </span><span class="s1">resistance</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">setResistance</span><span class="s2">(</span><span class="s0">double </span><span class="s1">resistance</span><span class="s2">) {</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">resistance </span><span class="s2">= </span><span class="s1">resistance</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public double </span><span class="s1">getCurrent</span><span class="s2">() {</span>
+        <span class="s0">return </span><span class="s1">current</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">setCurrent</span><span class="s2">(</span><span class="s0">double </span><span class="s1">current</span><span class="s2">) {</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">current </span><span class="s2">= </span><span class="s1">current</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public double </span><span class="s1">getVoltage</span><span class="s2">() {</span>
+        <span class="s0">return </span><span class="s1">voltage</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">setVoltage</span><span class="s2">(</span><span class="s0">double </span><span class="s1">voltage</span><span class="s2">) {</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">voltage </span><span class="s2">= </span><span class="s1">voltage</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">calculateCurrent</span><span class="s2">(</span><span class="s0">double </span><span class="s1">voltage</span><span class="s2">) {</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">voltage </span><span class="s2">= </span><span class="s1">voltage</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">current </span><span class="s2">= (</span><span class="s1">resistance </span><span class="s2">!= </span><span class="s3">0</span><span class="s2">) ? </span><span class="s1">voltage </span><span class="s2">/ </span><span class="s1">resistance </span><span class="s2">: </span><span class="s3">0</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">updateResistanceFromField</span><span class="s2">(</span><span class="s1">TextField inputField</span><span class="s2">, </span><span class="s1">Pane parentPane</span><span class="s2">) {</span>
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s0">double </span><span class="s1">newResistance </span><span class="s2">= </span><span class="s1">Double</span><span class="s2">.</span><span class="s1">parseDouble</span><span class="s2">(</span><span class="s1">inputField</span><span class="s2">.</span><span class="s1">getText</span><span class="s2">());</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">newResistance </span><span class="s2">&gt;= </span><span class="s3">0 </span><span class="s2">&amp;&amp; </span><span class="s1">newResistance </span><span class="s2">&lt;= </span><span class="s3">10000</span><span class="s2">) {</span>
+                <span class="s0">this</span><span class="s2">.</span><span class="s1">resistance </span><span class="s2">= </span><span class="s1">newResistance</span><span class="s2">;</span>
+                <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s4">&quot;Resistance updated to: &quot; </span><span class="s2">+ </span><span class="s1">resistance </span><span class="s2">+ </span><span class="s4">&quot; Ω&quot;</span><span class="s2">);</span>
+            <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s4">&quot;Resistance must be between 0–10000 Ω&quot;</span><span class="s2">);</span>
+            <span class="s2">}</span>
+        <span class="s2">} </span><span class="s0">catch </span><span class="s2">(</span><span class="s1">NumberFormatException ex</span><span class="s2">) {</span>
+            <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s4">&quot;Invalid resistance input.&quot;</span><span class="s2">);</span>
+        <span class="s2">}</span>
+
+        <span class="s1">parentPane</span><span class="s2">.</span><span class="s1">getChildren</span><span class="s2">().</span><span class="s1">remove</span><span class="s2">(</span><span class="s1">inputField</span><span class="s2">);</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

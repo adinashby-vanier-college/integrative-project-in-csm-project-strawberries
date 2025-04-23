@@ -1,0 +1,203 @@
+<html>
+<head>
+<title>Wire.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #7a7e85;}
+.s4 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Wire.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">edu</span><span class="s2">.</span><span class="s1">vanier</span><span class="s2">.</span><span class="s1">strawberries</span><span class="s2">.</span><span class="s1">Models</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">animation</span><span class="s2">.</span><span class="s1">PathTransition</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">control</span><span class="s2">.</span><span class="s1">Label</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">input</span><span class="s2">.</span><span class="s1">MouseEvent</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">Pane</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">paint</span><span class="s2">.</span><span class="s1">Color</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">shape</span><span class="s2">.</span><span class="s1">Circle</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">shape</span><span class="s2">.</span><span class="s1">Line</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">concurrent</span><span class="s2">.</span><span class="s1">atomic</span><span class="s2">.</span><span class="s1">AtomicReference</span><span class="s2">;</span>
+
+<span class="s0">public class </span><span class="s1">Wire </span><span class="s0">extends </span><span class="s1">Component </span><span class="s2">{</span>
+    <span class="s0">private </span><span class="s1">Color color</span><span class="s2">;</span>
+    <span class="s0">private double </span><span class="s1">current</span><span class="s2">;</span>
+    <span class="s0">private double </span><span class="s1">voltage</span><span class="s2">;</span>
+    <span class="s0">private double </span><span class="s1">resistance</span><span class="s2">;</span>
+<span class="s3">//    private final AtomicReference&lt;String&gt; toMove;</span>
+    <span class="s0">private </span><span class="s1">PathTransition transition</span><span class="s2">;</span>
+    <span class="s0">private </span><span class="s1">Circle animatedDot</span><span class="s2">;</span>
+
+    <span class="s3">// Used to track the info label</span>
+    <span class="s0">private </span><span class="s1">Label infoLabel</span><span class="s2">;</span>
+
+    <span class="s0">public </span><span class="s1">Wire</span><span class="s2">(</span><span class="s1">Node begin</span><span class="s2">, </span><span class="s1">Node end</span><span class="s2">, </span><span class="s1">Color color</span><span class="s2">, </span><span class="s0">double </span><span class="s1">current</span><span class="s2">, </span><span class="s0">double </span><span class="s1">voltage</span><span class="s2">) {</span>
+        <span class="s0">super</span><span class="s2">(</span><span class="s1">begin</span><span class="s2">, </span><span class="s1">end</span><span class="s2">);</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">color </span><span class="s2">= </span><span class="s1">color</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">current </span><span class="s2">= </span><span class="s1">current</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">voltage </span><span class="s2">= </span><span class="s1">voltage</span><span class="s2">;</span>
+<span class="s3">//        toMove = new AtomicReference&lt;&gt;(null);</span>
+
+<span class="s3">//        begin.getMarker().addEventHandler(MouseEvent.MOUSE_PRESSED, _ -&gt; toMove.set(&quot;begin&quot;));</span>
+<span class="s3">//        end.getMarker().addEventHandler(MouseEvent.MOUSE_PRESSED, _ -&gt; toMove.set(&quot;end&quot;));</span>
+    <span class="s2">}</span>
+
+<span class="s3">//    @Override</span>
+<span class="s3">//    public void draw() {</span>
+<span class="s3">//        getChildren().clear();</span>
+<span class="s3">//</span>
+<span class="s3">//        line.setStartX(begin.getX());</span>
+<span class="s3">//        line.setStartY(begin.getY());</span>
+<span class="s3">//        line.setEndX(end.getX());</span>
+<span class="s3">//        line.setEndY(end.getY());</span>
+<span class="s3">//        line.setFill(color);</span>
+<span class="s3">//        line.setStrokeWidth(4);</span>
+<span class="s3">//        getChildren().add(line);</span>
+<span class="s3">//</span>
+<span class="s3">//        double minX = Math.min(begin.getX(), end.getX());</span>
+<span class="s3">//        double maxX = Math.max(begin.getX(), end.getX());</span>
+<span class="s3">//        double minY = Math.min(begin.getY(), end.getY());</span>
+<span class="s3">//        double maxY = Math.max(begin.getY(), end.getY());</span>
+<span class="s3">//</span>
+<span class="s3">//        if (selected) {</span>
+<span class="s3">//            getChildren().addAll(begin.getMarker(), end.getMarker());</span>
+<span class="s3">//            if (toMove.get() == null) toMove.set(&quot;full&quot;);</span>
+<span class="s3">//</span>
+<span class="s3">//            begin.getMarker().setTranslateX(((minX == begin.getX()) ? -Math.abs(maxX - minX) / 2 : Math.abs(maxX - minX) / 2));</span>
+<span class="s3">//            begin.getMarker().setTranslateY(((minY == begin.getY()) ? -Math.abs(maxY - minY) / 2 : Math.abs(maxY - minY) / 2));</span>
+<span class="s3">//            end.getMarker().setTranslateX(((minX == end.getX()) ? -Math.abs(maxX - minX) / 2 : Math.abs(maxX - minX) / 2));</span>
+<span class="s3">//            end.getMarker().setTranslateY(((minY == end.getY()) ? -Math.abs(maxY - minY) / 2 : Math.abs(maxY - minY) / 2));</span>
+<span class="s3">//        }</span>
+<span class="s3">//</span>
+<span class="s3">//        //set layout x and y</span>
+<span class="s3">//        setLayoutX(minX);</span>
+<span class="s3">//        setLayoutY(minY);</span>
+<span class="s3">//    }</span>
+
+<span class="s3">//    @Override</span>
+<span class="s3">//    public void handleEdit(MouseEvent event) {</span>
+<span class="s3">//        markAsSelected(true);</span>
+<span class="s3">//        draw();</span>
+<span class="s3">//</span>
+<span class="s3">//        Pane parentPane = (Pane) this.getParent();</span>
+<span class="s3">//        if (parentPane == null) return;</span>
+<span class="s3">//</span>
+<span class="s3">//        // Remove label if it already exists (toggle)</span>
+<span class="s3">//        if (infoLabel != null &amp;&amp; parentPane.getChildren().contains(infoLabel)) {</span>
+<span class="s3">//            parentPane.getChildren().remove(infoLabel);</span>
+<span class="s3">//            infoLabel = null;</span>
+<span class="s3">//            return;</span>
+<span class="s3">//        }</span>
+<span class="s3">//</span>
+<span class="s3">//        // Create and style the label</span>
+<span class="s3">//        infoLabel = new Label(&quot;V: &quot; + getVoltage() + &quot; V\nI: &quot; + getCurrent() + &quot; A&quot;);</span>
+<span class="s3">//        infoLabel.setStyle(&quot;-fx-padding: 4px; -fx-font-size: 10px;&quot;);</span>
+<span class="s3">//        infoLabel.getStyleClass().add(&quot;info-label&quot;);</span>
+<span class="s3">//        // Position it near the wire's midpoint</span>
+<span class="s3">//        double midX = (begin.getX() + end.getX()) / 2;</span>
+<span class="s3">//        double midY = (begin.getY() + end.getY()) / 2;</span>
+<span class="s3">//        infoLabel.setLayoutX(midX + 10);</span>
+<span class="s3">//        infoLabel.setLayoutY(midY - 10);</span>
+<span class="s3">//</span>
+<span class="s3">//        parentPane.getChildren().add(infoLabel);</span>
+<span class="s3">//</span>
+<span class="s3">//        // Move the label with the wire if it's showing</span>
+<span class="s3">//        if (infoLabel != null) {</span>
+<span class="s3">//            double newMidX = (begin.getX() + end.getX()) / 2;</span>
+<span class="s3">//            double newMidY = (begin.getY() + end.getY()) / 2;</span>
+<span class="s3">//            infoLabel.setLayoutX(newMidX + 10);</span>
+<span class="s3">//            infoLabel.setLayoutY(newMidY - 10);</span>
+<span class="s3">//        }</span>
+<span class="s3">//        this.draw();</span>
+<span class="s3">//    }</span>
+<span class="s3">//</span>
+<span class="s3">//    @Override</span>
+<span class="s3">//    public void handleDrag(MouseEvent event) {</span>
+<span class="s3">//        System.out.println(toMove.get()); // There is a problem with BEGIN</span>
+<span class="s3">//        switch (toMove.get()) {</span>
+<span class="s3">//            case &quot;begin&quot; -&gt; {</span>
+<span class="s3">//                begin.setPosition(event.getSceneX(), event.getSceneY());</span>
+<span class="s3">//            }</span>
+<span class="s3">//            case &quot;end&quot; -&gt; {</span>
+<span class="s3">//                end.setPosition(event.getSceneX(), event.getSceneY());</span>
+<span class="s3">//            }</span>
+<span class="s3">//            case &quot;full&quot; -&gt; {</span>
+<span class="s3">//                //get displacement</span>
+<span class="s3">//                double deltaX = event.getX()-begin.getX();</span>
+<span class="s3">//                double deltaY = event.getY()-begin.getY();</span>
+<span class="s3">//                begin.setPosition(begin.getX()+deltaX, begin.getY()+deltaY);</span>
+<span class="s3">//                end.setPosition(end.getX()+deltaX, end.getY()+deltaY);</span>
+<span class="s3">//            }</span>
+<span class="s3">//            default -&gt; markAsSelected(false);</span>
+<span class="s3">//        }</span>
+<span class="s3">//        }</span>
+
+    <span class="s0">public </span><span class="s1">PathTransition getTransition</span><span class="s2">() {</span>
+        <span class="s0">return </span><span class="s1">transition</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">setTransition</span><span class="s2">(</span><span class="s1">PathTransition transition</span><span class="s2">) {</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">transition </span><span class="s2">= </span><span class="s1">transition</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public </span><span class="s1">Circle getAnimatedDot</span><span class="s2">() {</span>
+        <span class="s0">return </span><span class="s1">animatedDot</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">setAnimatedDot</span><span class="s2">(</span><span class="s1">Circle animatedDot</span><span class="s2">) {</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">animatedDot </span><span class="s2">= </span><span class="s1">animatedDot</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+
+    <span class="s0">public </span><span class="s1">Color getColor</span><span class="s2">() {</span>
+        <span class="s0">return </span><span class="s1">color</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">setColor</span><span class="s2">(</span><span class="s1">Color color</span><span class="s2">) {</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">color </span><span class="s2">= </span><span class="s1">color</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public boolean </span><span class="s1">hasCurrent</span><span class="s2">() {</span>
+        <span class="s0">return </span><span class="s1">current </span><span class="s2">&gt; </span><span class="s4">0</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public double </span><span class="s1">getCurrent</span><span class="s2">() {</span>
+        <span class="s0">return </span><span class="s1">current</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public double </span><span class="s1">getVoltage</span><span class="s2">() {</span>
+        <span class="s0">return </span><span class="s1">voltage</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">setVoltage</span><span class="s2">(</span><span class="s0">double </span><span class="s1">voltage</span><span class="s2">) {</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">voltage </span><span class="s2">= </span><span class="s1">voltage</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">setResistance</span><span class="s2">(</span><span class="s0">double </span><span class="s1">resistance</span><span class="s2">) {</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">resistance </span><span class="s2">= </span><span class="s1">resistance</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">setCurrent</span><span class="s2">(</span><span class="s0">double </span><span class="s1">current</span><span class="s2">) {</span>
+    <span class="s0">this</span><span class="s2">.</span><span class="s1">current </span><span class="s2">= </span><span class="s1">current</span><span class="s2">;</span>
+<span class="s2">}</span>
+
+
+    <span class="s0">public void </span><span class="s1">calculateCurrent</span><span class="s2">() {</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">resistance </span><span class="s2">!= </span><span class="s4">0</span><span class="s2">) {</span>
+            <span class="s0">this</span><span class="s2">.</span><span class="s1">current </span><span class="s2">= </span><span class="s1">voltage </span><span class="s2">/ </span><span class="s1">resistance</span><span class="s2">;</span>
+        <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+            <span class="s0">this</span><span class="s2">.</span><span class="s1">current </span><span class="s2">= </span><span class="s4">0</span><span class="s2">;</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

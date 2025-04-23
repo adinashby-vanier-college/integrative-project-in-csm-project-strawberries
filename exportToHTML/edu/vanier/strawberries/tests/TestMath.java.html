@@ -1,0 +1,66 @@
+<html>
+<head>
+<title>TestMath.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #7a7e85;}
+.s4 { color: #2aacb8;}
+.s5 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+TestMath.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">edu</span><span class="s2">.</span><span class="s1">vanier</span><span class="s2">.</span><span class="s1">strawberries</span><span class="s2">.</span><span class="s1">tests</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">edu</span><span class="s2">.</span><span class="s1">vanier</span><span class="s2">.</span><span class="s1">math</span><span class="s2">.</span><span class="s1">CircuitMath</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">edu</span><span class="s2">.</span><span class="s1">vanier</span><span class="s2">.</span><span class="s1">strawberries</span><span class="s2">.</span><span class="s1">Models</span><span class="s2">.</span><span class="s1">Battery</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">edu</span><span class="s2">.</span><span class="s1">vanier</span><span class="s2">.</span><span class="s1">strawberries</span><span class="s2">.</span><span class="s1">Models</span><span class="s2">.</span><span class="s1">Circuit</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">edu</span><span class="s2">.</span><span class="s1">vanier</span><span class="s2">.</span><span class="s1">strawberries</span><span class="s2">.</span><span class="s1">Models</span><span class="s2">.</span><span class="s1">Node</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">edu</span><span class="s2">.</span><span class="s1">vanier</span><span class="s2">.</span><span class="s1">strawberries</span><span class="s2">.</span><span class="s1">Models</span><span class="s2">.</span><span class="s1">Resistor</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">application</span><span class="s2">.</span><span class="s1">Application</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">stage</span><span class="s2">.</span><span class="s1">Stage</span><span class="s2">;</span>
+
+<span class="s0">public class </span><span class="s1">TestMath </span><span class="s0">extends </span><span class="s1">Application </span><span class="s2">{</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">start</span><span class="s2">(</span><span class="s1">Stage primaryStage</span><span class="s2">) {</span>
+        <span class="s3">// Build test circuit</span>
+        <span class="s1">Circuit circuit </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Circuit</span><span class="s2">();</span>
+
+        <span class="s1">Resistor r1 </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Resistor</span><span class="s2">(</span><span class="s0">new </span><span class="s1">Node</span><span class="s2">(</span><span class="s4">0</span><span class="s2">, </span><span class="s4">0</span><span class="s2">), </span><span class="s0">new </span><span class="s1">Node</span><span class="s2">(</span><span class="s4">50</span><span class="s2">, </span><span class="s4">0</span><span class="s2">), </span><span class="s4">100</span><span class="s2">);</span>
+        <span class="s1">Resistor r2 </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Resistor</span><span class="s2">(</span><span class="s0">new </span><span class="s1">Node</span><span class="s2">(</span><span class="s4">60</span><span class="s2">, </span><span class="s4">0</span><span class="s2">), </span><span class="s0">new </span><span class="s1">Node</span><span class="s2">(</span><span class="s4">110</span><span class="s2">, </span><span class="s4">0</span><span class="s2">), </span><span class="s4">200</span><span class="s2">);</span>
+        <span class="s1">Battery battery </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Battery</span><span class="s2">(</span><span class="s0">new </span><span class="s1">Node</span><span class="s2">(-</span><span class="s4">50</span><span class="s2">, </span><span class="s4">0</span><span class="s2">), </span><span class="s0">new </span><span class="s1">Node</span><span class="s2">(</span><span class="s4">0</span><span class="s2">, </span><span class="s4">0</span><span class="s2">), </span><span class="s4">12</span><span class="s2">);</span>
+
+        <span class="s1">circuit</span><span class="s2">.</span><span class="s1">addComponent</span><span class="s2">(</span><span class="s1">battery</span><span class="s2">);</span>
+        <span class="s1">circuit</span><span class="s2">.</span><span class="s1">addComponent</span><span class="s2">(</span><span class="s1">r1</span><span class="s2">);</span>
+        <span class="s1">circuit</span><span class="s2">.</span><span class="s1">addComponent</span><span class="s2">(</span><span class="s1">r2</span><span class="s2">);</span>
+
+        <span class="s1">circuit</span><span class="s2">.</span><span class="s1">addEdge</span><span class="s2">(</span><span class="s4">0</span><span class="s2">, </span><span class="s4">1</span><span class="s2">);</span>
+        <span class="s1">circuit</span><span class="s2">.</span><span class="s1">addEdge</span><span class="s2">(</span><span class="s4">1</span><span class="s2">, </span><span class="s4">2</span><span class="s2">);</span>
+
+        <span class="s1">circuit</span><span class="s2">.</span><span class="s1">print</span><span class="s2">();</span>
+
+        <span class="s1">CircuitMath math </span><span class="s2">= </span><span class="s0">new </span><span class="s1">CircuitMath</span><span class="s2">(</span><span class="s1">circuit</span><span class="s2">);</span>
+
+        <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s5">&quot;Total Resistance: &quot; </span><span class="s2">+ </span><span class="s1">math</span><span class="s2">.</span><span class="s1">getTotalResistance</span><span class="s2">() + </span><span class="s5">&quot; ohms&quot;</span><span class="s2">);</span>
+        <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s5">&quot;Total Voltage: &quot; </span><span class="s2">+ </span><span class="s1">math</span><span class="s2">.</span><span class="s1">getTotalVoltage</span><span class="s2">() + </span><span class="s5">&quot; V&quot;</span><span class="s2">);</span>
+        <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s5">&quot;Total Current: &quot; </span><span class="s2">+ </span><span class="s1">math</span><span class="s2">.</span><span class="s1">getTotalCurrent</span><span class="s2">() + </span><span class="s5">&quot; A&quot;</span><span class="s2">);</span>
+
+        <span class="s3">// Exit after test</span>
+        <span class="s1">System</span><span class="s2">.</span><span class="s1">exit</span><span class="s2">(</span><span class="s4">0</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public static void </span><span class="s1">main</span><span class="s2">(</span><span class="s1">String</span><span class="s2">[] </span><span class="s1">args</span><span class="s2">) {</span>
+        <span class="s1">launch</span><span class="s2">(</span><span class="s1">args</span><span class="s2">); </span><span class="s3">// &lt;-- This properly initializes JavaFX</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<html>
+<head>
+<title>DrawingTool.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+.s4 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+DrawingTool.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">edu</span><span class="s2">.</span><span class="s1">vanier</span><span class="s2">.</span><span class="s1">strawberries</span><span class="s2">.</span><span class="s1">Models</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">edu</span><span class="s2">.</span><span class="s1">vanier</span><span class="s2">.</span><span class="s1">strawberries</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">MainApp</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">Cursor</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">ImageCursor</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">image</span><span class="s2">.</span><span class="s1">Image</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">paint</span><span class="s2">.</span><span class="s1">Color</span><span class="s2">;</span>
+
+<span class="s0">public class </span><span class="s1">DrawingTool </span><span class="s2">{</span>
+
+    <span class="s0">public </span><span class="s1">Color defaultWireColor</span><span class="s2">, </span><span class="s1">defaultLightbulbColor</span><span class="s2">;</span>
+    <span class="s0">private </span><span class="s1">Color currentColor</span><span class="s2">;</span>
+    <span class="s0">private </span><span class="s1">String currentAction</span><span class="s2">;</span>
+    <span class="s0">private boolean </span><span class="s1">pencilDown</span><span class="s2">;</span>
+
+    <span class="s0">public </span><span class="s1">DrawingTool</span><span class="s2">() {</span>
+        <span class="s1">currentAction </span><span class="s2">= </span><span class="s3">&quot;&quot;</span><span class="s2">;</span>
+        <span class="s1">defaultWireColor </span><span class="s2">= </span><span class="s1">Color</span><span class="s2">.</span><span class="s1">BLACK</span><span class="s2">;</span>
+        <span class="s1">defaultLightbulbColor </span><span class="s2">= </span><span class="s1">Color</span><span class="s2">.</span><span class="s1">YELLOW</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">setCurrentAction</span><span class="s2">(</span><span class="s1">String currentAction</span><span class="s2">) {</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">currentAction </span><span class="s2">= </span><span class="s1">currentAction</span><span class="s2">;</span>
+
+        <span class="s1">Cursor updatedCursor </span><span class="s2">= </span><span class="s1">Cursor</span><span class="s2">.</span><span class="s1">DEFAULT</span><span class="s2">;</span>
+        <span class="s0">if</span><span class="s2">(</span><span class="s1">currentAction</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s3">&quot;-&quot;</span><span class="s2">)) {</span>
+            <span class="s1">String component_placed </span><span class="s2">= </span><span class="s1">currentAction</span><span class="s2">.</span><span class="s1">substring</span><span class="s2">(</span><span class="s1">currentAction</span><span class="s2">.</span><span class="s1">indexOf</span><span class="s2">(</span><span class="s3">'-'</span><span class="s2">)+</span><span class="s4">1</span><span class="s2">);</span>
+            <span class="s0">switch </span><span class="s2">(</span><span class="s1">component_placed</span><span class="s2">) {</span>
+                <span class="s0">case </span><span class="s3">&quot;wire&quot; </span><span class="s1">-&gt; </span><span class="s2">{</span>
+                    <span class="s1">Image pencil </span><span class="s2">=  </span><span class="s0">new </span><span class="s1">Image</span><span class="s2">(</span><span class="s1">String</span><span class="s2">.</span><span class="s1">valueOf</span><span class="s2">(</span><span class="s1">getClass</span><span class="s2">().</span><span class="s1">getResource</span><span class="s2">(</span><span class="s3">&quot;/images/pencil.png&quot;</span><span class="s2">)));</span>
+                    <span class="s1">updatedCursor </span><span class="s2">= </span><span class="s0">new </span><span class="s1">ImageCursor</span><span class="s2">(</span><span class="s1">pencil</span><span class="s2">);</span>
+                <span class="s2">}</span>
+                <span class="s0">case </span><span class="s3">&quot;battery&quot;</span><span class="s2">,</span><span class="s3">&quot;capacitor&quot;</span><span class="s2">,</span><span class="s3">&quot;fuse&quot;</span><span class="s2">,</span><span class="s3">&quot;lightbulb&quot;</span><span class="s2">,</span><span class="s3">&quot;open_switch&quot;</span><span class="s2">,</span><span class="s3">&quot;resistor&quot; </span><span class="s1">-&gt; </span><span class="s2">{</span>
+                    <span class="s1">Image img </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Image</span><span class="s2">(</span><span class="s1">String</span><span class="s2">.</span><span class="s1">valueOf</span><span class="s2">(</span><span class="s1">getClass</span><span class="s2">().</span><span class="s1">getResource</span><span class="s2">(</span><span class="s3">&quot;/images/&quot;</span><span class="s2">+</span><span class="s1">component_placed</span><span class="s2">+</span><span class="s3">&quot;_diagram.png&quot;</span><span class="s2">)));</span>
+                    <span class="s1">updatedCursor </span><span class="s2">= </span><span class="s0">new </span><span class="s1">ImageCursor</span><span class="s2">(</span><span class="s1">img</span><span class="s2">, -</span><span class="s1">img</span><span class="s2">.</span><span class="s1">getWidth</span><span class="s2">(),</span><span class="s1">img</span><span class="s2">.</span><span class="s1">getHeight</span><span class="s2">()/</span><span class="s4">2</span><span class="s2">);</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+        <span class="s1">MainApp</span><span class="s2">.</span><span class="s1">mainAppFXMLController</span><span class="s2">.</span><span class="s1">setCursor</span><span class="s2">(</span><span class="s1">updatedCursor</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public </span><span class="s1">String getCurrentAction</span><span class="s2">() {</span>
+        <span class="s0">return </span><span class="s1">currentAction</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">setPencilDown</span><span class="s2">(</span><span class="s0">boolean </span><span class="s1">down</span><span class="s2">) {</span>
+        <span class="s1">pencilDown </span><span class="s2">= </span><span class="s1">down</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public boolean </span><span class="s1">isPencilDown</span><span class="s2">() {</span>
+        <span class="s0">return </span><span class="s1">pencilDown</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">setCurrentColor</span><span class="s2">(</span><span class="s1">Color color</span><span class="s2">) {</span>
+        <span class="s1">currentColor </span><span class="s2">= </span><span class="s1">color</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public </span><span class="s1">Color getCurrentColor</span><span class="s2">() {</span>
+        <span class="s0">return </span><span class="s1">currentColor</span><span class="s2">;</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

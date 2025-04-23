@@ -1,0 +1,207 @@
+<html>
+<head>
+<title>DrawingArea.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #2aacb8;}
+.s4 { color: #6aab73;}
+.s5 { color: #7a7e85;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+DrawingArea.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">edu</span><span class="s2">.</span><span class="s1">vanier</span><span class="s2">.</span><span class="s1">strawberries</span><span class="s2">.</span><span class="s1">Models</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">edu</span><span class="s2">.</span><span class="s1">vanier</span><span class="s2">.</span><span class="s1">strawberries</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">MainApp</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">canvas</span><span class="s2">.</span><span class="s1">Canvas</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">canvas</span><span class="s2">.</span><span class="s1">GraphicsContext</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">image</span><span class="s2">.</span><span class="s1">Image</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">input</span><span class="s2">.</span><span class="s1">KeyEvent</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">Pane</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">paint</span><span class="s2">.</span><span class="s1">Color</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">animation</span><span class="s2">.</span><span class="s1">PathTransition</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">shape</span><span class="s2">.</span><span class="s1">Line</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">text</span><span class="s2">.</span><span class="s1">Text</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">transform</span><span class="s2">.</span><span class="s1">Affine</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">transform</span><span class="s2">.</span><span class="s1">Rotate</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">transform</span><span class="s2">.</span><span class="s1">Transform</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">Duration</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">shape</span><span class="s2">.</span><span class="s1">Circle</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">javax</span><span class="s2">.</span><span class="s1">sound</span><span class="s2">.</span><span class="s1">midi</span><span class="s2">.</span><span class="s1">Transmitter</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">ArrayList</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">LinkedList</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">List</span><span class="s2">;</span>
+
+<span class="s0">public class </span><span class="s1">DrawingArea </span><span class="s2">{</span>
+    <span class="s0">public </span><span class="s1">DrawingTool drawingTool </span><span class="s2">= </span><span class="s0">new </span><span class="s1">DrawingTool</span><span class="s2">();</span>
+    <span class="s0">private </span><span class="s1">Component selection</span><span class="s2">;</span>
+    <span class="s0">public </span><span class="s1">Circuit circuit</span><span class="s2">;</span>
+    <span class="s0">public </span><span class="s1">Canvas canvas</span><span class="s2">;</span>
+    <span class="s0">public </span><span class="s1">GraphicsContext gc</span><span class="s2">;</span>
+    <span class="s0">private double </span><span class="s1">zoom</span><span class="s2">;</span>
+    <span class="s0">private double </span><span class="s1">squareSize</span><span class="s2">;</span>
+    <span class="s0">private boolean </span><span class="s1">showGrid</span><span class="s2">;</span>
+
+    <span class="s0">private final </span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">PathTransition</span><span class="s2">&gt; </span><span class="s1">activeTransitions </span><span class="s2">= </span><span class="s0">new </span><span class="s1">ArrayList</span><span class="s2">&lt;&gt;();</span>
+
+    <span class="s0">public </span><span class="s1">DrawingArea</span><span class="s2">(</span><span class="s1">Canvas canvas</span><span class="s2">) {</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">canvas </span><span class="s2">= </span><span class="s1">canvas</span><span class="s2">;</span>
+        <span class="s1">gc </span><span class="s2">= </span><span class="s1">canvas</span><span class="s2">.</span><span class="s1">getGraphicsContext2D</span><span class="s2">();</span>
+        <span class="s1">setZoom</span><span class="s2">(</span><span class="s3">1</span><span class="s2">);</span>
+        <span class="s1">drawingTool</span><span class="s2">.</span><span class="s1">setCurrentAction</span><span class="s2">(</span><span class="s4">&quot;&quot;</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">drawContent</span><span class="s2">() {</span>
+        <span class="s1">gc</span><span class="s2">.</span><span class="s1">clearRect</span><span class="s2">(</span><span class="s3">0</span><span class="s2">,</span><span class="s3">0</span><span class="s2">,</span><span class="s1">canvas</span><span class="s2">.</span><span class="s1">getWidth</span><span class="s2">(),</span><span class="s1">canvas</span><span class="s2">.</span><span class="s1">getHeight</span><span class="s2">());</span>
+
+        <span class="s5">// Draw the grid</span>
+        <span class="s0">if</span><span class="s2">(</span><span class="s1">showGrid</span><span class="s2">) {</span>
+            <span class="s1">gc</span><span class="s2">.</span><span class="s1">setStroke</span><span class="s2">(</span><span class="s1">Color</span><span class="s2">.</span><span class="s1">LIGHTGREY</span><span class="s2">);</span>
+            <span class="s1">gc</span><span class="s2">.</span><span class="s1">setLineWidth</span><span class="s2">(</span><span class="s3">1</span><span class="s2">);</span>
+            <span class="s0">for </span><span class="s2">(</span><span class="s0">int </span><span class="s1">i </span><span class="s2">= </span><span class="s3">0</span><span class="s2">; </span><span class="s1">i </span><span class="s2">&lt; </span><span class="s1">canvas</span><span class="s2">.</span><span class="s1">getWidth</span><span class="s2">(); </span><span class="s1">i </span><span class="s2">+= (</span><span class="s0">int</span><span class="s2">) (</span><span class="s1">squareSize </span><span class="s2">* </span><span class="s1">zoom</span><span class="s2">)) {</span>
+                <span class="s0">for </span><span class="s2">(</span><span class="s0">int </span><span class="s1">j </span><span class="s2">= </span><span class="s3">0</span><span class="s2">; </span><span class="s1">j </span><span class="s2">&lt; </span><span class="s1">canvas</span><span class="s2">.</span><span class="s1">getHeight</span><span class="s2">(); </span><span class="s1">j </span><span class="s2">+= (</span><span class="s0">int</span><span class="s2">) (</span><span class="s1">squareSize </span><span class="s2">* </span><span class="s1">zoom</span><span class="s2">)) {</span>
+                    <span class="s1">gc</span><span class="s2">.</span><span class="s1">strokeRect</span><span class="s2">(</span><span class="s1">i</span><span class="s2">, </span><span class="s1">j</span><span class="s2">, </span><span class="s1">squareSize </span><span class="s2">* </span><span class="s1">zoom</span><span class="s2">, </span><span class="s1">squareSize </span><span class="s2">* </span><span class="s1">zoom</span><span class="s2">);</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s5">// Draw the Components</span>
+        <span class="s0">for</span><span class="s2">(</span><span class="s1">Component component </span><span class="s2">: </span><span class="s1">circuit</span><span class="s2">.</span><span class="s1">toArrayList</span><span class="s2">()) {</span>
+            <span class="s0">assert </span><span class="s1">component </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">;</span>
+            <span class="s0">if</span><span class="s2">(</span><span class="s1">component </span><span class="s0">instanceof </span><span class="s1">Wire wire</span><span class="s2">) {</span>
+                <span class="s1">gc</span><span class="s2">.</span><span class="s1">setLineWidth</span><span class="s2">(</span><span class="s3">3</span><span class="s2">);</span>
+                <span class="s1">gc</span><span class="s2">.</span><span class="s1">setStroke</span><span class="s2">(</span><span class="s1">wire</span><span class="s2">.</span><span class="s1">getColor</span><span class="s2">());</span>
+                <span class="s1">gc</span><span class="s2">.</span><span class="s1">strokeLine</span><span class="s2">(</span><span class="s1">component</span><span class="s2">.</span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">(),</span><span class="s1">component</span><span class="s2">.</span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">(),</span><span class="s1">component</span><span class="s2">.</span><span class="s1">end</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">(),</span><span class="s1">component</span><span class="s2">.</span><span class="s1">end</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">());</span>
+
+                <span class="s1">gc</span><span class="s2">.</span><span class="s1">setFill</span><span class="s2">(</span><span class="s1">Color</span><span class="s2">.</span><span class="s1">RED</span><span class="s2">);</span>
+                <span class="s1">gc</span><span class="s2">.</span><span class="s1">fillOval</span><span class="s2">(</span><span class="s1">wire</span><span class="s2">.</span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">()-</span><span class="s3">6</span><span class="s2">,</span><span class="s1">wire</span><span class="s2">.</span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">()-</span><span class="s3">6</span><span class="s2">,</span><span class="s3">12</span><span class="s2">,</span><span class="s3">12</span><span class="s2">);</span>
+                <span class="s1">gc</span><span class="s2">.</span><span class="s1">setFill</span><span class="s2">(</span><span class="s1">Color</span><span class="s2">.</span><span class="s1">BLUE</span><span class="s2">);</span>
+                <span class="s1">gc</span><span class="s2">.</span><span class="s1">fillOval</span><span class="s2">(</span><span class="s1">wire</span><span class="s2">.</span><span class="s1">end</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">()-</span><span class="s3">6</span><span class="s2">,</span><span class="s1">wire</span><span class="s2">.</span><span class="s1">end</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">()-</span><span class="s3">6</span><span class="s2">,</span><span class="s3">12</span><span class="s2">,</span><span class="s3">12</span><span class="s2">);</span>
+
+                <span class="s0">if</span><span class="s2">(</span><span class="s1">wire</span><span class="s2">.</span><span class="s1">selected</span><span class="s2">) {</span>
+                    <span class="s1">gc</span><span class="s2">.</span><span class="s1">setFill</span><span class="s2">(</span><span class="s1">Color</span><span class="s2">.</span><span class="s1">BLACK</span><span class="s2">);</span>
+                    <span class="s1">gc</span><span class="s2">.</span><span class="s1">fillOval</span><span class="s2">(</span><span class="s1">wire</span><span class="s2">.</span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">()-</span><span class="s3">4</span><span class="s2">,</span><span class="s1">wire</span><span class="s2">.</span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">()-</span><span class="s3">4</span><span class="s2">,</span><span class="s3">8</span><span class="s2">,</span><span class="s3">8</span><span class="s2">);</span>
+                    <span class="s1">gc</span><span class="s2">.</span><span class="s1">fillOval</span><span class="s2">(</span><span class="s1">wire</span><span class="s2">.</span><span class="s1">end</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">()-</span><span class="s3">4</span><span class="s2">,</span><span class="s1">wire</span><span class="s2">.</span><span class="s1">end</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">()-</span><span class="s3">4</span><span class="s2">,</span><span class="s3">8</span><span class="s2">,</span><span class="s3">8</span><span class="s2">);</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+            <span class="s0">else </span><span class="s2">{</span>
+                <span class="s1">Image img </span><span class="s2">= </span><span class="s1">component</span><span class="s2">.</span><span class="s1">display</span><span class="s2">;</span>
+                <span class="s1">Rotate rotateTransform </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Rotate</span><span class="s2">(</span><span class="s1">component</span><span class="s2">.</span><span class="s1">getAngle</span><span class="s2">(),</span><span class="s1">component</span><span class="s2">.</span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">(),</span><span class="s1">component</span><span class="s2">.</span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">());</span>
+                <span class="s1">gc</span><span class="s2">.</span><span class="s1">save</span><span class="s2">();</span>
+                <span class="s1">gc</span><span class="s2">.</span><span class="s1">setTransform</span><span class="s2">(</span><span class="s0">new </span><span class="s1">Affine</span><span class="s2">(</span><span class="s1">rotateTransform</span><span class="s2">));</span>
+                <span class="s1">gc</span><span class="s2">.</span><span class="s1">drawImage</span><span class="s2">(</span><span class="s1">img</span><span class="s2">,</span><span class="s1">component</span><span class="s2">.</span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">(),</span><span class="s1">component</span><span class="s2">.</span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">()-(</span><span class="s1">img</span><span class="s2">.</span><span class="s1">getHeight</span><span class="s2">())/</span><span class="s3">2</span><span class="s2">,</span><span class="s1">img</span><span class="s2">.</span><span class="s1">getWidth</span><span class="s2">()*</span><span class="s1">zoom</span><span class="s2">,</span><span class="s1">img</span><span class="s2">.</span><span class="s1">getHeight</span><span class="s2">()*</span><span class="s1">zoom</span><span class="s2">);</span>
+
+                <span class="s0">if</span><span class="s2">(</span><span class="s1">component</span><span class="s2">.</span><span class="s1">isEdit</span><span class="s2">()) {</span>
+                    <span class="s5">// Show editing display</span>
+                    <span class="s1">gc</span><span class="s2">.</span><span class="s1">setStroke</span><span class="s2">(</span><span class="s1">Color</span><span class="s2">.</span><span class="s1">BLUE</span><span class="s2">);</span>
+                    <span class="s1">gc</span><span class="s2">.</span><span class="s1">setLineWidth</span><span class="s2">(</span><span class="s3">1.2</span><span class="s2">);</span>
+                    <span class="s1">gc</span><span class="s2">.</span><span class="s1">strokeRect</span><span class="s2">(</span><span class="s1">component</span><span class="s2">.</span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">(),</span><span class="s1">component</span><span class="s2">.</span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">()-(</span><span class="s1">img</span><span class="s2">.</span><span class="s1">getHeight</span><span class="s2">())/</span><span class="s3">2</span><span class="s2">,</span><span class="s1">img</span><span class="s2">.</span><span class="s1">getWidth</span><span class="s2">()*</span><span class="s1">zoom</span><span class="s2">,</span><span class="s1">img</span><span class="s2">.</span><span class="s1">getHeight</span><span class="s2">()*</span><span class="s1">zoom</span><span class="s2">);</span>
+                <span class="s2">}</span>
+                <span class="s1">gc</span><span class="s2">.</span><span class="s1">restore</span><span class="s2">();</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public double </span><span class="s1">snap</span><span class="s2">(</span><span class="s0">double </span><span class="s1">pos</span><span class="s2">) {</span>
+        <span class="s0">double </span><span class="s1">remainder </span><span class="s2">= </span><span class="s1">pos </span><span class="s2">% (</span><span class="s1">squareSize</span><span class="s2">);</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">remainder </span><span class="s2">== </span><span class="s3">0</span><span class="s2">)</span>
+            <span class="s0">return </span><span class="s1">pos</span><span class="s2">;</span>
+        <span class="s0">else if </span><span class="s2">(</span><span class="s1">remainder </span><span class="s2">&lt;= (</span><span class="s0">double</span><span class="s2">) </span><span class="s1">squareSize </span><span class="s2">/ </span><span class="s3">2</span><span class="s2">)</span>
+            <span class="s0">return </span><span class="s1">pos </span><span class="s2">- </span><span class="s1">remainder</span><span class="s2">;</span>
+        <span class="s0">else</span>
+            <span class="s0">return </span><span class="s1">pos </span><span class="s2">+ (</span><span class="s1">squareSize </span><span class="s2">- </span><span class="s1">remainder</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">animateCurrentFlow</span><span class="s2">(</span><span class="s0">boolean </span><span class="s1">start</span><span class="s2">) {</span>
+        <span class="s1">stopElectronAnimation</span><span class="s2">(); </span><span class="s5">// Stop previous animations before starting a new one</span>
+
+        <span class="s5">// Ensure the canvas is inside a Pane (important for animations)</span>
+        <span class="s0">if </span><span class="s2">(!(</span><span class="s1">canvas</span><span class="s2">.</span><span class="s1">getParent</span><span class="s2">() </span><span class="s0">instanceof </span><span class="s1">Pane parent</span><span class="s2">)) {</span>
+            <span class="s1">System</span><span class="s2">.</span><span class="s1">err</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s4">&quot;Parent is not a Pane. Cannot animate current.&quot;</span><span class="s2">);</span>
+            <span class="s0">return</span><span class="s2">;</span>
+        <span class="s2">}</span>
+
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">start</span><span class="s2">) {</span>
+            <span class="s5">// Animation: Draw multiple animated dots along the wire</span>
+            <span class="s0">for </span><span class="s2">(</span><span class="s1">LinkedList</span><span class="s2">&lt;</span><span class="s1">Component</span><span class="s2">&gt; </span><span class="s1">list </span><span class="s2">: </span><span class="s1">circuit</span><span class="s2">.</span><span class="s1">arrayList</span><span class="s2">) {</span>
+                <span class="s0">for </span><span class="s2">(</span><span class="s1">Component c </span><span class="s2">: </span><span class="s1">list</span><span class="s2">) {</span>
+                    <span class="s0">if </span><span class="s2">(</span><span class="s1">c </span><span class="s0">instanceof </span><span class="s1">Wire wire</span><span class="s2">) {</span>
+                        <span class="s5">// Check if wire has valid coordinates</span>
+                        <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s4">&quot;Animating Wire: &quot; </span><span class="s2">+ </span><span class="s1">wire</span><span class="s2">.</span><span class="s1">begin </span><span class="s2">+ </span><span class="s4">&quot; to &quot; </span><span class="s2">+ </span><span class="s1">wire</span><span class="s2">.</span><span class="s1">end</span><span class="s2">);</span>
+
+                        <span class="s5">// Draw animated electrons along the wire</span>
+                        <span class="s0">int </span><span class="s1">dotCount </span><span class="s2">= </span><span class="s3">5</span><span class="s2">;</span>
+                        <span class="s0">double </span><span class="s1">durationMillis </span><span class="s2">= </span><span class="s3">2000</span><span class="s2">; </span><span class="s5">// Duration for full animation</span>
+
+                        <span class="s1">Line path </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Line</span><span class="s2">(</span>
+                                <span class="s1">wire</span><span class="s2">.</span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">(), </span><span class="s1">wire</span><span class="s2">.</span><span class="s1">begin</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">(),</span>
+                                <span class="s1">wire</span><span class="s2">.</span><span class="s1">end</span><span class="s2">.</span><span class="s1">getX</span><span class="s2">(), </span><span class="s1">wire</span><span class="s2">.</span><span class="s1">end</span><span class="s2">.</span><span class="s1">getY</span><span class="s2">()</span>
+                        <span class="s2">);</span>
+
+                        <span class="s0">for </span><span class="s2">(</span><span class="s0">int </span><span class="s1">i </span><span class="s2">= </span><span class="s3">0</span><span class="s2">; </span><span class="s1">i </span><span class="s2">&lt; </span><span class="s1">dotCount</span><span class="s2">; </span><span class="s1">i</span><span class="s2">++) {</span>
+                            <span class="s1">Circle dot </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Circle</span><span class="s2">(</span><span class="s3">4</span><span class="s2">, </span><span class="s1">Color</span><span class="s2">.</span><span class="s1">RED</span><span class="s2">);</span>
+                            <span class="s1">parent</span><span class="s2">.</span><span class="s1">getChildren</span><span class="s2">().</span><span class="s1">add</span><span class="s2">(</span><span class="s1">dot</span><span class="s2">);  </span><span class="s5">// Add to the parent container</span>
+
+                            <span class="s1">PathTransition transition </span><span class="s2">= </span><span class="s0">new </span><span class="s1">PathTransition</span><span class="s2">();</span>
+                            <span class="s1">transition</span><span class="s2">.</span><span class="s1">setNode</span><span class="s2">(</span><span class="s1">dot</span><span class="s2">);</span>
+                            <span class="s1">transition</span><span class="s2">.</span><span class="s1">setPath</span><span class="s2">(</span><span class="s1">path</span><span class="s2">);</span>
+                            <span class="s1">transition</span><span class="s2">.</span><span class="s1">setDuration</span><span class="s2">(</span><span class="s1">Duration</span><span class="s2">.</span><span class="s1">millis</span><span class="s2">(</span><span class="s1">durationMillis</span><span class="s2">));</span>
+                            <span class="s1">transition</span><span class="s2">.</span><span class="s1">setDelay</span><span class="s2">(</span><span class="s1">Duration</span><span class="s2">.</span><span class="s1">millis</span><span class="s2">(</span><span class="s1">i </span><span class="s2">* (</span><span class="s1">durationMillis </span><span class="s2">/ </span><span class="s1">dotCount</span><span class="s2">)));</span>
+                            <span class="s1">transition</span><span class="s2">.</span><span class="s1">setCycleCount</span><span class="s2">(</span><span class="s1">PathTransition</span><span class="s2">.</span><span class="s1">INDEFINITE</span><span class="s2">);</span>
+                            <span class="s1">transition</span><span class="s2">.</span><span class="s1">setAutoReverse</span><span class="s2">(</span><span class="s0">false</span><span class="s2">);</span>
+                            <span class="s1">transition</span><span class="s2">.</span><span class="s1">play</span><span class="s2">();</span>
+
+                            <span class="s1">activeTransitions</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">transition</span><span class="s2">);</span>
+                        <span class="s2">}</span>
+                    <span class="s2">}</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">stopElectronAnimation</span><span class="s2">() {</span>
+        <span class="s0">if </span><span class="s2">(!(</span><span class="s1">canvas</span><span class="s2">.</span><span class="s1">getParent</span><span class="s2">() </span><span class="s0">instanceof </span><span class="s1">Pane parent</span><span class="s2">)) </span><span class="s0">return</span><span class="s2">;</span>
+
+        <span class="s0">for </span><span class="s2">(</span><span class="s1">PathTransition transition </span><span class="s2">: </span><span class="s1">activeTransitions</span><span class="s2">) {</span>
+            <span class="s1">transition</span><span class="s2">.</span><span class="s1">stop</span><span class="s2">();</span>
+            <span class="s1">parent</span><span class="s2">.</span><span class="s1">getChildren</span><span class="s2">().</span><span class="s1">remove</span><span class="s2">(</span><span class="s1">transition</span><span class="s2">.</span><span class="s1">getNode</span><span class="s2">()); </span><span class="s5">// remove the moving dot</span>
+        <span class="s2">}</span>
+        <span class="s1">activeTransitions</span><span class="s2">.</span><span class="s1">clear</span><span class="s2">(); </span><span class="s5">// Clear the active transitions</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">setZoom</span><span class="s2">(</span><span class="s0">double </span><span class="s1">newZoom</span><span class="s2">) {</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">zoom </span><span class="s2">= </span><span class="s1">newZoom</span><span class="s2">;</span>
+        <span class="s1">squareSize </span><span class="s2">= </span><span class="s3">20 </span><span class="s2">* </span><span class="s1">newZoom</span><span class="s2">; </span><span class="s5">// Adjust square size based on zoom</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">zoomOut</span><span class="s2">() {</span>
+        <span class="s0">if</span><span class="s2">(</span><span class="s1">zoom </span><span class="s2">&gt; </span><span class="s3">0.1</span><span class="s2">) </span><span class="s1">setZoom</span><span class="s2">(</span><span class="s1">zoom </span><span class="s2">- </span><span class="s3">0.1</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">zoomIn</span><span class="s2">() {</span>
+        <span class="s0">if</span><span class="s2">(</span><span class="s1">zoom </span><span class="s2">&lt; </span><span class="s3">2</span><span class="s2">) </span><span class="s1">setZoom</span><span class="s2">(</span><span class="s1">zoom </span><span class="s2">+ </span><span class="s3">0.1</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public double </span><span class="s1">getZoom</span><span class="s2">() {</span>
+        <span class="s0">return </span><span class="s1">zoom</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">toggleGrid</span><span class="s2">() {</span>
+        <span class="s1">showGrid </span><span class="s2">= !</span><span class="s1">showGrid</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">setCircuit</span><span class="s2">(</span><span class="s1">Circuit circuit</span><span class="s2">) {</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">circuit </span><span class="s2">= </span><span class="s1">circuit</span><span class="s2">;</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>
