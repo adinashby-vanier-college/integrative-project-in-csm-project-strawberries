@@ -32,7 +32,7 @@ public class Wire extends Component {
 //        end.getMarker().addEventHandler(MouseEvent.MOUSE_PRESSED, _ -> toMove.set("end"));
     }
 
-//    @Override
+//   @Override
 //    public void draw() {
 //        getChildren().clear();
 //

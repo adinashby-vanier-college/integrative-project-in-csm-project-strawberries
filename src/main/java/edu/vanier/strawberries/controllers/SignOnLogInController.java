@@ -1,6 +1,7 @@
 package edu.vanier.strawberries.controllers;
 
 
+import edu.vanier.strawberries.Models.Component;
 import edu.vanier.strawberries.ui.MainApp;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -12,6 +13,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.util.LinkedList;
 
 public class SignOnLogInController {
     @FXML
@@ -113,6 +115,37 @@ public class SignOnLogInController {
             index = endUser;
         }
         return "";
+    }
+
+    public void importGraph(String content, String username) {
+        String recent = findRecent(content, username);
+
+        if (recent.isEmpty()) {
+            System.out.println("No recent project found for user: " + username);
+            return;
+        }
+
+        // CLEAR current graph
+
+        String[] lines = recent.split(", "); // split by each graph line
+        for (String line : lines) {
+            String[] parts = line.split(" -> ");
+            LinkedList<Component> currentList = new LinkedList<>();
+
+            for (String part : parts) {
+                int openParen = part.indexOf('(');
+                if (openParen == -1) continue;
+
+                String name = part.substring(0, openParen);
+                System.out.println(name);
+                // construct component "name";
+                // add component to currentList
+            }
+
+            //arrayList.add(currentList); add currentlist to canvas
+        }
+
+        System.out.println("Graph imported successfully from recent field.");
     }
 
     public String hashSHA256(String input) throws Exception { // ecrypt inputted password
