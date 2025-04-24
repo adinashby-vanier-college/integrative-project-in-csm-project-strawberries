@@ -3,7 +3,6 @@ package edu.vanier.strawberries.Models;
 import javafx.scene.image.Image;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
-
 import java.net.URL;
 import java.util.LinkedList;
 import static javafx.scene.input.KeyCode.ENTER;
