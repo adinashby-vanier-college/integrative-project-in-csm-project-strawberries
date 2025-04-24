@@ -139,7 +139,7 @@ public class SignOnLogInController {
 
                 String name = part.substring(0, openParen);
                 System.out.println(name);
-                // construct component "name";
+                //circuit.addComponent();
                 // add component to currentList
             }
 
