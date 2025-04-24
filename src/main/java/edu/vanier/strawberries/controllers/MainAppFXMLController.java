@@ -271,6 +271,7 @@ public class MainAppFXMLController {
 
     private void mousePressed(MouseEvent e) {
         mouseDownLocation = new Point2D(e.getX(),e.getY());
+        toMove = new Node[2];
         if(!Objects.equals(drawingTool.getCurrentAction(),"")) {
             drawingTool.setPencilDown(true);
             Node eventLocation = new Node(drawingArea.snap(e.getX()), drawingArea.snap(e.getY()));
@@ -300,7 +301,6 @@ public class MainAppFXMLController {
             if (!Objects.equals(drawingTool.getCurrentAction(), "select")) {
                 circuit.addComponent(selection);
                 if(!(selection instanceof Wire)) {
-                    System.out.println("testing something");
                     selection.end.setPosition(selection.begin.getX()+selection.display.getWidth(),selection.begin.getY());
                 }
             }

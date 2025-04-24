@@ -38,6 +38,7 @@ public class DrawingArea {
         this.canvas = canvas;
         gc = canvas.getGraphicsContext2D();
         setZoom(1);
+        showGrid = true;
         drawingTool.setCurrentAction("");
     }
 
