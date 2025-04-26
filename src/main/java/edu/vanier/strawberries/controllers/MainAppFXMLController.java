@@ -48,7 +48,6 @@ public class MainAppFXMLController {
     public Circuit circuit;
     private double posX,posY;
     private Node[] toMove = new Node[2];
-    Node pivot; //TEST
     private Point2D mouseDownLocation,initialBegin,initialEnd;
 
     //Import FXML variables
@@ -271,7 +270,6 @@ public class MainAppFXMLController {
 
     private void mousePressed(MouseEvent e) {
         mouseDownLocation = new Point2D(e.getX(),e.getY());
-        toMove = new Node[2];
         if(!Objects.equals(drawingTool.getCurrentAction(),"")) {
             drawingTool.setPencilDown(true);
             Node eventLocation = new Node(drawingArea.snap(e.getX()), drawingArea.snap(e.getY()));
@@ -291,8 +289,8 @@ public class MainAppFXMLController {
                         battery.handleEdit(leftPanel);
                     }
                     if(selection instanceof Wire wire) {
-                        initialBegin = new Point2D(wire.begin.getX(),wire.begin.getY());
-                        initialEnd = new Point2D(wire.end.getX(),wire.end.getY());
+                        initialBegin = wire.begin.getPosition();
+                        initialEnd = wire.end.getPosition();
                     }
                 }
                 default -> {}
@@ -309,22 +307,20 @@ public class MainAppFXMLController {
         if(editing != null) {
             if(editing instanceof Wire wire) {
                 //find which node to move
-                Point2D begin = new Point2D(wire.begin.getX(), wire.begin.getY()),
-                        end = new Point2D(wire.end.getX(), wire.end.getY());
 
                 //1. Calculate the dist from the point to either node
-                double d1 = begin.distance(e.getX(), e.getY());
-                double d2 = end.distance(e.getX(), e.getY());
+                double d1 = wire.begin.getPosition().distance(e.getX(), e.getY());
+                double d2 = wire.end.getPosition().distance(e.getX(), e.getY());
                 double buffer = 0.5; // Accounts for uncertainty due to cursor size
 
                 if (d1 + buffer <= 25) {
+                    wire.begin.unlock();
                     toMove[0] = wire.begin;
-                    pivot = wire.end;
-                    System.out.println("moving begin");
+                    wire.end.lock();
                 } else if (d2 + buffer <= 25) {
+                    wire.end.unlock();
                     toMove[0] = wire.end;
-                    pivot = wire.begin;
-                    System.out.println("moving end");
+                    wire.begin.lock();
                 } else {
                     toMove[0] = wire.begin;
                     toMove[1] = wire.end;
@@ -360,42 +356,44 @@ public class MainAppFXMLController {
     }
 
     private void mouseDragged(MouseEvent e) {
-        double displacementX = mouseDownLocation.getX() - e.getX();
-        double displacementY = mouseDownLocation.getY() - e.getY();
+        double correctedX = e.getX(), correctedY = e.getY();
+        if(e.getX() > canvas.getWidth()) correctedX = canvas.getWidth();
+        if(e.getX() < 0) correctedX = 0;
+        if(e.getY() > canvas.getHeight()-toolbarScrollPane.getHeight()) correctedY = canvas.getHeight() - toolbarScrollPane.getHeight() - 5;
+        if(e.getY() < toolbarScrollPane.getHeight()) correctedY = 0;
+
+        double displacementX = mouseDownLocation.getX() - correctedX;
+        double displacementY = mouseDownLocation.getY() - correctedY;
 
         if (drawingTool.isPencilDown() && selection != null) {
-            double nearestX = drawingArea.snap(e.getX());
-            double nearestY = drawingArea.snap(e.getY());
+            double nearestX = drawingArea.snap(correctedX);
+            double nearestY = drawingArea.snap(correctedY);
             selection.moveNode(selection.end, nearestX, nearestY);
         }
 
         //TODO testing
         if(editing != null) {
             if(editing instanceof Wire wire) {
-                if(toMove[0]!=null && toMove[1]!=null) {
+                if(toMove[1]!=null) {
                     //move both (keep length)
                     wire.begin.setPosition(drawingArea.snap(initialBegin.getX()-displacementX),drawingArea.snap(initialBegin.getY()-displacementY));
                     wire.end.setPosition(drawingArea.snap(initialEnd.getX()-displacementX), drawingArea.snap(initialEnd.getY()-displacementY));
                 }
                 else {
-                    for (Node node : toMove) {
-                        if (node != null && node != pivot) {
-                            if(node == editing.begin) System.out.println("begin"); else System.out.println("END");
-                            node.setPosition(drawingArea.snap(e.getX()), drawingArea.snap(e.getY()));
-                        }
-                    }
+                    Node node = toMove[0];
+                    node.setPosition(drawingArea.snap(correctedX), drawingArea.snap(correctedY));
                 }
             }
             else {
                 Node node = toMove[0];
-                node.setPosition(drawingArea.snap(e.getX()-editing.display.getWidth()/2),drawingArea.snap(e.getY()-editing.display.getHeight()/2));
+                node.setPosition(drawingArea.snap(correctedX-editing.display.getWidth()/2),drawingArea.snap(correctedY-editing.display.getHeight()/2));
             }
         }
     }
 
     private boolean checkLineCollision(Point2D source, Wire wire) {
-        Point2D begin = new Point2D(wire.begin.getX(),wire.begin.getY()),
-                end = new Point2D(wire.end.getX(),wire.end.getY());
+        Point2D begin = wire.begin.getPosition(),
+                end = wire.end.getPosition();
 
         //1. Calculate the dist from the point to either node
         double d1 = source.distance(begin);
@@ -410,8 +408,7 @@ public class MainAppFXMLController {
 
 
     private void mouseReleased(MouseEvent e) {
-        toMove = null;
-        pivot = null;
+        toMove = new Node[2];
         if (selection != null) {
             if (drawingTool.isPencilDown()) {
                 drawingTool.setPencilDown(false);
@@ -437,7 +434,7 @@ public class MainAppFXMLController {
 
     private void attemptConnection(Component toCheck, Node node) {
         int srcIndex = circuit.getIndex(toCheck);
-        Point2D checkPoint = new Point2D(node.getX(), node.getY());
+        Point2D checkPoint = node.getPosition();
         ArrayList<Node> connectedNodes = new ArrayList<>();
         connectedNodes.add(node);
 
@@ -445,8 +442,8 @@ public class MainAppFXMLController {
             for (Component connectedComponent : currentList) {
                 int dstIndex = circuit.getIndex(connectedComponent);
 
-                Point2D componentBegin = new Point2D(connectedComponent.begin.getX(), connectedComponent.begin.getY());
-                Point2D componentEnd = new Point2D(connectedComponent.end.getX(), connectedComponent.end.getY());
+                Point2D componentBegin = connectedComponent.begin.getPosition();
+                Point2D componentEnd = connectedComponent.end.getPosition();
 
                 if (componentBegin.distance(checkPoint) == 0) {
                     connectedNodes.add(connectedComponent.begin);
@@ -489,7 +486,7 @@ public class MainAppFXMLController {
             if (c instanceof Battery b) {
                 series.getData().add(new XYChart.Data<>(i, b.getPotential()));
             }
-            i =+ 1;
+            i++;
         }
 
         lineChart.getData().add(series);

@@ -1,48 +1,55 @@
 package edu.vanier.strawberries.Models;
 
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
+import javafx.geometry.Point2D;
 
 public class Node {
     // COORDINATES
-    private double x, y;
-    private final Circle marker;
-    private boolean visible;
+    Point2D position;
+    private boolean locked;
 
     public Node(double x, double y) {
-        this.x = x;
-        this.y = y;
-        marker = new Circle(4, Color.WHITE);
+        position = new Point2D(x,y);
     }
 
     public void setPosition(double newX, double newY) {
-        this.x = newX;
-        this.y = newY;
+        if(!locked) {
+            position = new Point2D(newX,newY);
+        }
+    }
+
+    public Point2D getPosition() {
+        return position;
     }
 
     public double getX() {
-        return x;
+        return position.getX();
     }
 
     public double getY() {
-        return y;
+        return position.getY();
     }
 
-    public Circle getMarker() {
-        return marker;
+    /**
+     * Locks the node at its current position to avoid accidental movement.
+     */
+    public void lock() {
+        locked = true;
     }
 
-    public void setMarkerVisible(boolean show) {
-        visible = show;
+    /**
+     * Unlock the node and allow it to change position again.
+     */
+    public void unlock() {
+        locked = false;
     }
 
     public static Node copyOf(Node node) {
-        return new Node(node.x,node.y);
+        return new Node(node.getX(), node.getY());
     }
 
     @Override
     public String toString() {
-        return "(" + x + ", " + y + ")";
+        return "(" + getX() + ", " + getY() + ")";
     }
 }
 
