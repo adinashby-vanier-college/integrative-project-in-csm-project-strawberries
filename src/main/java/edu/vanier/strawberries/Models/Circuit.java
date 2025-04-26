@@ -31,9 +31,11 @@ public class Circuit {
     }
 
     public void addEdge(int src, int dst) {
-        LinkedList<Component> currentList = arrayList.get(src);
-        Component dest = arrayList.get(dst).getFirst();
-        currentList.add(dest);
+        System.out.println("adding edge between "+src+" and "+dst);
+        LinkedList<Component> srcList = arrayList.get(src), dstList = arrayList.get(dst);
+        Component dest = arrayList.get(dst).getFirst(), source = arrayList.get(src).getFirst();
+        srcList.add(dest);
+        dstList.add(source);
     }
 
     public boolean checkEdge(int src, int dst) {

@@ -5,10 +5,11 @@ import javafx.geometry.Point2D;
 public class Node {
     // COORDINATES
     Point2D position;
-    private boolean locked;
+    private boolean locked,connected;
 
     public Node(double x, double y) {
         position = new Point2D(x,y);
+        connected = false;
     }
 
     public void setPosition(double newX, double newY) {
@@ -41,6 +42,14 @@ public class Node {
      */
     public void unlock() {
         locked = false;
+    }
+
+    public void setConnected(boolean connected) {
+        this.connected = connected;
+    }
+
+    public boolean isConnected() {
+        return connected;
     }
 
     public static Node copyOf(Node node) {

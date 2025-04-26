@@ -413,7 +413,9 @@ public class MainAppFXMLController {
             if (drawingTool.isPencilDown()) {
                 drawingTool.setPencilDown(false);
                 if(selection.getLength()<=0) circuit.deleteComponent(selection);
-                else attemptConnection(selection, selection.end);
+                else {
+                    attemptConnection(selection, selection.begin);
+                }
             }
             if(canvas.getCursor().equals(Cursor.CLOSED_HAND)) setCursor(Cursor.OPEN_HAND);
         }
@@ -435,8 +437,7 @@ public class MainAppFXMLController {
     private void attemptConnection(Component toCheck, Node node) {
         int srcIndex = circuit.getIndex(toCheck);
         Point2D checkPoint = node.getPosition();
-        ArrayList<Node> connectedNodes = new ArrayList<>();
-        connectedNodes.add(node);
+        ArrayList<Integer> connectedComponents = new ArrayList<>();
 
         for (LinkedList<Component> currentList : circuit.arrayList) {
             for (Component connectedComponent : currentList) {
@@ -445,18 +446,18 @@ public class MainAppFXMLController {
                 Point2D componentBegin = connectedComponent.begin.getPosition();
                 Point2D componentEnd = connectedComponent.end.getPosition();
 
-                if (componentBegin.distance(checkPoint) == 0) {
-                    connectedNodes.add(connectedComponent.begin);
-                }
-                if (componentEnd.distance(checkPoint) == 0) {
-                    connectedNodes.add(connectedComponent.end);
-                }
-
-                for (int i = 1; i < connectedNodes.size(); i++) {
-                    if (!circuit.checkEdge(srcIndex, dstIndex)) circuit.addEdge(srcIndex, dstIndex);
+                if ((componentBegin.distance(checkPoint) <= 1) || (componentEnd.distance(checkPoint) <= 1)) {
+                    connectedComponents.add(dstIndex);
+                    if(!node.isConnected()) node.setConnected(true);
                 }
             }
         }
+        for (int compIndex : connectedComponents) {
+            if (!circuit.checkEdge(srcIndex, compIndex)) {
+                circuit.addEdge(srcIndex, compIndex);
+            }
+        }
+        if(node == toCheck.begin) attemptConnection(toCheck, toCheck.end);
     }
 
     private static LineChart<Number, Number> getChart(DrawingArea drawingArea) {
