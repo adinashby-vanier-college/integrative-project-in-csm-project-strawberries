@@ -176,6 +176,8 @@ public class MainAppFXMLController {
         clearBtn.setOnAction(_-> {
             drawingArea.circuit.print();
             drawingArea.circuit.clear();
+            drawingArea.animateCurrentFlow(false);
+            runStopBtn.setText("Run");
             drawingArea.canvas.getGraphicsContext2D().clearRect(0,0,canvas.getWidth(), canvas.getHeight());
         });
         defaultWireColorPicker.setValue(Color.BLACK);
