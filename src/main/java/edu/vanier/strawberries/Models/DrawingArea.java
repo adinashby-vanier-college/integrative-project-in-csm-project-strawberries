@@ -9,15 +9,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.animation.PathTransition;
-import javafx.scene.shape.Line;
-import javafx.scene.text.Text;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Rotate;
-import javafx.scene.transform.Transform;
-import javafx.util.Duration;
-import javafx.scene.shape.Circle;
-
-import javax.sound.midi.Transmitter;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -71,16 +64,15 @@ public class DrawingArea {
                 gc.setLineWidth(3);
                 gc.setStroke(wire.getColor());
                 gc.strokeLine(component.begin.getX(),component.begin.getY(),component.end.getX(),component.end.getY());
-
-                gc.setFill(Color.RED);
-                gc.fillOval(wire.begin.getX()-6,wire.begin.getY()-6,12,12);
-                gc.setFill(Color.BLUE);
-                gc.fillOval(wire.end.getX()-6,wire.end.getY()-6,12,12);
+                Node[] nodes = {wire.begin,wire.end};
+                for(Node node : nodes) {
+                    if(node.isConnected()) gc.fillOval(node.getX()-4,node.getY()-4,8,8);
+                }
 
                 if(wire.selected) {
                     gc.setFill(Color.BLACK);
-                    gc.fillOval(wire.begin.getX()-4,wire.begin.getY()-4,8,8);
-                    gc.fillOval(wire.end.getX()-4,wire.end.getY()-4,8,8);
+                    gc.fillOval(wire.begin.getX()-5,wire.begin.getY()-5,10,10);
+                    gc.fillOval(wire.end.getX()-5,wire.end.getY()-5,10,10);
                 }
             }
             else {
