@@ -21,7 +21,6 @@ public class Switch extends Component {
         }
         else {
             display = new Image(imgUrl.toExternalForm());
-            enableDragAndRotate();
         }
     }
 
@@ -34,7 +33,6 @@ public class Switch extends Component {
                 System.out.println("Could not load open switch image");
             } else {
                 display = new Image(imgUrl.toExternalForm());
-                enableDragAndRotate();
             }
         } else {
             URL imgUrl = getClass().getResource("/images/open_switch_diagram.png");
@@ -43,7 +41,6 @@ public class Switch extends Component {
             }
             else {
                 display = new Image(imgUrl.toExternalForm());
-                enableDragAndRotate();
             }
         }
     }

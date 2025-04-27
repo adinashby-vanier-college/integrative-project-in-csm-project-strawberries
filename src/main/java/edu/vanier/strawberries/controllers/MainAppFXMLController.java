@@ -129,6 +129,15 @@ public class MainAppFXMLController {
         // electrons get animated
         drawingArea.updateAnimation();
 
+        // Component specific states
+        for(LinkedList<Component> list : circuit.arrayList) {
+            for(Component component : list) {
+                if(component instanceof Lightbulb lightbulb) {
+                    if(lightbulb.getVoltage() >= lightbulb.getMinVoltage()) lightbulb.turnOn(true);
+                }
+            }
+        }
+
         // Draw everything
         drawingArea.drawContent();
     }
@@ -282,7 +291,7 @@ public class MainAppFXMLController {
                 case "place-wire" -> select(new Wire(eventLocation, tempEnd, ((drawingTool.getCurrentColor()==null) ? drawingTool.defaultWireColor : drawingTool.getCurrentColor()), 0, 0));
                 case "place-battery" -> select(new Battery(eventLocation, tempEnd, 12));
                 case "place-capacitor" -> select(new Capacitor(eventLocation, tempEnd, 0, true, false));
-                case "place-fuse" -> select(new Fuse(eventLocation, tempEnd));
+                case "place-fuse" -> select(new Fuse(eventLocation, tempEnd,20));
                 case "place-lightbulb" -> select(new Lightbulb(eventLocation, tempEnd,(drawingTool.getCurrentColor()==null) ? drawingTool.defaultLightbulbColor : drawingTool.getCurrentColor(),0));
                 case "place-resistor" -> select(new Resistor(eventLocation, tempEnd, 10));
                 case "place-switch" -> select(new Switch(eventLocation, tempEnd, false));
@@ -339,20 +348,19 @@ public class MainAppFXMLController {
 
     private boolean checkComponentCollision(Point2D source, Component component) {
         boolean vertical = (component.getAngle()==90 || component.getAngle()==270);
-        double minX,minY,maxX,maxY;
+
+        double maxX,maxY;
+        Point2D minimums = component.getMinimums();
         if(vertical) {
-            minX = Math.min(component.begin.getX(),component.end.getX()) - (component.display.getHeight()/2);
-            maxX = component.begin.getX() + (component.display.getHeight()/2);
-            minY = Math.min(component.begin.getY(),component.end.getY());
-            maxY = minY + component.display.getWidth();
-        } else {
-             minX = Math.min(component.begin.getX(),component.end.getX());
-             minY = (component.begin.getY()-component.display.getHeight()/2);
-             maxX = minX + component.display.getWidth();
-             maxY = minY + component.display.getHeight();
+            maxX = minimums.getX() + (component.display.getHeight() / 2);
+            maxY = minimums.getY() + component.display.getWidth();
+        }
+        else {
+            maxX = minimums.getX() + component.display.getWidth();
+            maxY = minimums.getY() + component.display.getHeight();
         }
 
-        return ((source.getX() <= maxX && source.getX() >= minX) && (source.getY() <= maxY && source.getY() >= minY));
+        return ((source.getX() <= maxX && source.getX() >= minimums.getX()) && (source.getY() <= maxY && source.getY() >= minimums.getY()));
     }
 
     private void quit() {
@@ -445,22 +453,21 @@ public class MainAppFXMLController {
 
         for (LinkedList<Component> currentList : circuit.arrayList) {
             for (Component connectedComponent : currentList) {
-                int dstIndex = circuit.getIndex(connectedComponent);
+                if(connectedComponent != toCheck) {
+                    int dstIndex = circuit.getIndex(connectedComponent);
 
-                Point2D componentBegin = connectedComponent.begin.getPosition();
-                Point2D componentEnd = connectedComponent.end.getPosition();
+                    Point2D componentBegin = connectedComponent.begin.getPosition();
+                    Point2D componentEnd = connectedComponent.end.getPosition();
 
-                if ((componentBegin.distance(checkPoint) <= 1) || (componentEnd.distance(checkPoint) <= 1)) {
-                    connectedComponents.add(dstIndex);
-                    if(!node.isConnected()) node.setConnected(true);
+                    if ((componentBegin.distance(checkPoint) <= 1) || (componentEnd.distance(checkPoint) <= 1)) {
+                        System.out.println(dstIndex + " is connected");
+                        if(!connectedComponents.contains(dstIndex)) connectedComponents.add(dstIndex);
+                        if(!node.isConnected()) node.setConnected(true);
+                    }
                 }
             }
         }
-        for (int compIndex : connectedComponents) {
-            if (!circuit.checkEdge(srcIndex, compIndex)) {
-                circuit.addEdge(srcIndex, compIndex);
-            }
-        }
+        for (int compIndex : connectedComponents) circuit.addEdge(srcIndex, compIndex);
         if(node == toCheck.begin) attemptConnection(toCheck, toCheck.end);
     }
 

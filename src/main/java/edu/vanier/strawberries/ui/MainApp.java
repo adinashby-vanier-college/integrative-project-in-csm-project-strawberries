@@ -16,10 +16,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This is a JavaFX project template to be used for creating GUI applications.
- *
  * The JavaFX GUI framework (version: 22.0.2) is linked to this project in the
  * build.gradle file.
- * @link: https://openjfx.io/javadoc/22/
+ * @link: <a href="https://openjfx.io/javadoc/22/">https://openjfx.io/javadoc/22/</a>
  * @see: /Build Scripts/build.gradle
  * @author frostybee.
  */
@@ -48,6 +47,7 @@ public class MainApp extends Application {
     @Override
     public void stop() {
         //TODO: Here, we need to perform teardown operations such as stopping running animation, etc.
+        timer.stop();
     }
 
     @Override
@@ -98,40 +98,45 @@ public class MainApp extends Application {
      */
     public static void switchScene(String fxmlFileName) {
         try {
-            if (fxmlFileName.equals(START_SCENE)) {
-                // No need to register the start scene as it was already done in the start method.
-                sceneController.activateScene(fxmlFileName);
-                currentController = "startController";
-            } else if (fxmlFileName.equals(MAINAPP_SCENE)) {
-                if (!sceneController.sceneExists(fxmlFileName)) {
-                    // Instantiate the corresponding FXML controller if the
-                    // specified scene is being loaded for the first time.
-                    mainAppFXMLController = new MainAppFXMLController();
-                    Parent root = FxUIHelper.loadFXML(fxmlFileName, mainAppFXMLController);
-                    sceneController.addScene(MAINAPP_SCENE, root);
+            switch (fxmlFileName) {
+                case START_SCENE -> {
+                    // No need to register the start scene as it was already done in the start method.
+                    sceneController.activateScene(fxmlFileName);
+                    currentController = "startController";
                 }
-                // The scene has been previously added, we activate it.
-                sceneController.activateScene(fxmlFileName);
-                currentController = "mainController";
-                stage.setHeight(550);
-                stage.setWidth(860);
-                timer.start();
-            } else if (fxmlFileName.equals(LOGIN_SCENE)) {
-                if (!sceneController.sceneExists(fxmlFileName)) {
-                    SignOnLogInController loginController = new SignOnLogInController();
-                    Parent root = FxUIHelper.loadFXML(fxmlFileName, loginController);
-                    sceneController.addScene(LOGIN_SCENE, root);
+                case MAINAPP_SCENE -> {
+                    if (!sceneController.sceneExists(fxmlFileName)) {
+                        // Instantiate the corresponding FXML controller if the
+                        // specified scene is being loaded for the first time.
+                        mainAppFXMLController = new MainAppFXMLController();
+                        Parent root = FxUIHelper.loadFXML(fxmlFileName, mainAppFXMLController);
+                        sceneController.addScene(MAINAPP_SCENE, root);
+                    }
+                    // The scene has been previously added, we activate it.
+                    sceneController.activateScene(fxmlFileName);
+                    currentController = "mainController";
+                    stage.setHeight(550);
+                    stage.setWidth(860);
+                    timer.start();
                 }
-                sceneController.activateScene(fxmlFileName);
-                currentController = "loginController";
-            } else if (fxmlFileName.equals(SIGNUP_SCENE)) {
-                if (!sceneController.sceneExists(fxmlFileName)) {
-                    SignUpController signupController = new SignUpController();
-                    Parent root = FxUIHelper.loadFXML(fxmlFileName, signupController);
-                    sceneController.addScene(SIGNUP_SCENE, root);
+                case LOGIN_SCENE -> {
+                    if (!sceneController.sceneExists(fxmlFileName)) {
+                        SignOnLogInController loginController = new SignOnLogInController();
+                        Parent root = FxUIHelper.loadFXML(fxmlFileName, loginController);
+                        sceneController.addScene(LOGIN_SCENE, root);
+                    }
+                    sceneController.activateScene(fxmlFileName);
+                    currentController = "loginController";
                 }
-                sceneController.activateScene(fxmlFileName);
-                currentController = "signupController";
+                case SIGNUP_SCENE -> {
+                    if (!sceneController.sceneExists(fxmlFileName)) {
+                        SignUpController signupController = new SignUpController();
+                        Parent root = FxUIHelper.loadFXML(fxmlFileName, signupController);
+                        sceneController.addScene(SIGNUP_SCENE, root);
+                    }
+                    sceneController.activateScene(fxmlFileName);
+                    currentController = "signupController";
+                }
             }
             //You can register or activate additional scenes here, based on the logic used to add the secondary scene (as shown above).
         } catch (IOException ex) {

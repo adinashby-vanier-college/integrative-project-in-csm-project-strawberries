@@ -17,6 +17,9 @@ public abstract class Component extends StackPane {
     public Image display;
     public boolean selected, edit;
     private double angle;
+    protected double resistance;
+    protected double current;
+    protected double voltage;
 
     public Component(Node begin, Node end) {
         this.begin = begin;
@@ -34,23 +37,6 @@ public abstract class Component extends StackPane {
     public void moveNode(Node movingNode, double newX, double newY) {
         movingNode.setPosition(newX,newY);
     }
-
-    /**
-     * Moving an entire element in the screen, using the Node {@link #begin}
-     * @param newX the new X position of the element
-     * @param newY the new Y position of the element
-     */
-    public void moveComponent(double newX, double newY) {
-        //get the x and y sizes
-        //update node begin to new coordinates
-        //update node end to new coordinates + x and y sizes calculated (maintain same angle)
-    }
-
-    public void setBegin(double x, double y) {
-        this.begin.setPosition(x,y);
-    }
-
-    public void erase() {display=null;}
 
     public void markAsSelected(boolean isSelected) {
         selected = isSelected;
@@ -78,6 +64,7 @@ public abstract class Component extends StackPane {
      * @param direction "left" or "right", not case-sensitive
      */
     public void rotate(String direction) {
+        double newX,newY; // To update END node position after rotation
         switch(direction.toUpperCase()) {
             case "LEFT" -> {
                 angle -= 90;
@@ -89,11 +76,74 @@ public abstract class Component extends StackPane {
             }
             default -> {}
         }
+
+        System.out.println(angle);
+        System.out.println("X: "+begin.getX()+" + w*"+Math.round(Math.cos(Math.toRadians(angle))));
+        System.out.println("Y: "+begin.getY()+" + w*"+Math.round(Math.sin(Math.toRadians(angle))));
+
+        newX = begin.getX() + (display.getWidth() * Math.round(Math.cos(Math.toRadians(angle))));
+        newY = begin.getY() + (display.getWidth() * Math.round(Math.sin(Math.toRadians(angle))));
+        end.setPosition(newX,newY);
+
+        System.out.println("new end: "+end);
     }
 
-    // ABSTRACT methods for each component type
+    public double getResistance() {
+        return resistance;
+    }
 
-    public void enableDragAndRotate() {
+    public void setResistance(double resistance) {
+        this.resistance = resistance;
+    }
+
+    public double getCurrent() {
+        return current;
+    }
+
+    public void setCurrent(double current) {
+        this.current = current;
+    }
+
+    public double getVoltage() {
+        return voltage;
+    }
+
+    public void setVoltage(double voltage) {
+        this.voltage = voltage;
+    }
+
+    public void calculateCurrent(double voltage) {
+        this.voltage = voltage;
+        this.current = (resistance != 0) ? voltage / resistance : 0;
+    }
+
+    public Point2D getMinimums() {
+        boolean vertical = (angle==90 || angle==270);
+        double minX,minY,maxX,maxY;
+        if(vertical) {
+            minX = Math.min(begin.getX(),end.getX()) - (display.getHeight()/2);
+            minY = Math.min(begin.getY(),end.getY());
+        } else {
+            minX = Math.min(begin.getX(),end.getX());
+            minY = (begin.getY()-display.getHeight()/2);
+        }
+        return new Point2D(minX,minY);
+    }
+
+    public Point2D getCenter() {
+        Point2D minimum = getMinimums();
+        double x,y;
+
+        if(angle == 90) {
+            x = minimum.getX() + display.getHeight()/2;
+            y = minimum.getY() + display.getWidth()/2;
+        }
+        else {
+            x = minimum.getX() + display.getWidth()/2;
+            y = minimum.getY() + display.getHeight()/2;
+        }
+
+        return new Point2D(x,y);
     }
 }
 

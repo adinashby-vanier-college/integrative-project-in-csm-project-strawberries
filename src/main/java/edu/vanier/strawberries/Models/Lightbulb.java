@@ -6,10 +6,13 @@ import javafx.scene.paint.Color;
 import java.net.URL;
 
 public class Lightbulb extends Component {
-    boolean on;
+    private boolean on;
+    private double minVoltage;
+    private Color color;
 
     public Lightbulb(Node begin, Node end, Color color, double resistance) {
         super(begin, end);
+        this.color = color;
 
         URL imgURL;
         try {
@@ -19,6 +22,17 @@ public class Lightbulb extends Component {
         catch(Exception e) {
             System.out.println("Unable to find image reference.");
         }
+
+        on = true;
+    }
+
+    public double getMinVoltage() {
+        return minVoltage;
+    }
+
+    public double getLightIntensity() {
+        if(voltage >= minVoltage) return voltage/2*minVoltage;
+        else return 0;
     }
 
     public void turnOn(boolean on) {
@@ -27,6 +41,10 @@ public class Lightbulb extends Component {
 
     public boolean isOn() {
         return on;
+    }
+
+    public Color getColor() {
+        return color;
     }
 
 }

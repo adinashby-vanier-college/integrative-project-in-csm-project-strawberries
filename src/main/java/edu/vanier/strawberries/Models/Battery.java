@@ -4,9 +4,8 @@ import javafx.geometry.Point2D;
 import javafx.scene.layout.Pane;
 import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
-
 import java.net.URL;
-import javafx.scene.input.MouseEvent;
+import java.util.Objects;
 
 public class Battery extends Component {
     private double potential;
@@ -23,7 +22,7 @@ public Battery(Node begin, Node end, double potential, boolean skipUI) {
     if (!skipUI) {
         try {
             URL imgUrl = getClass().getResource("/images/battery_diagram.png");
-            display = new Image(imgUrl.toExternalForm());
+            display = new Image(Objects.requireNonNull(imgUrl).toExternalForm());
             enableDragAndRotate();
         } catch (NullPointerException e) {
             System.out.println("Could not load battery image");
@@ -39,7 +38,7 @@ public Battery(Node begin, Node end, double potential, boolean skipUI) {
 
         try{
             URL imgUrl = getClass().getResource("/images/battery_diagram.png"); // debug for the image
-            display = new Image(imgUrl.toExternalForm());
+            display = new Image(Objects.requireNonNull(imgUrl).toExternalForm());
             enableDragAndRotate();
         }
         catch(NullPointerException e) {
