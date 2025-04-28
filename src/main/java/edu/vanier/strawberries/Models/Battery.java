@@ -38,15 +38,22 @@ public Battery(Node begin, Node end, double potential, boolean skipUI) {
 
         try{
             URL imgUrl = getClass().getResource("/images/battery_diagram.png"); // debug for the image
-            display = new Image(Objects.requireNonNull(imgUrl).toExternalForm());
+            DIAGRAM_DISPLAY = new Image(Objects.requireNonNull(imgUrl).toExternalForm());
             enableDragAndRotate();
         }
         catch(NullPointerException e) {
             System.out.println("Could not load battery image");
-            display = null;
+            DIAGRAM_DISPLAY = null;
         }
-        
-
+        try{
+            URL imgUrl2 = getClass().getResource("/images/battery_real.png"); // debug for the image
+            IMAGE_DISPLAY = new Image(Objects.requireNonNull(imgUrl2).toExternalForm());
+            enableDragAndRotate();
+        }
+        catch(NullPointerException e) {
+            System.out.println("Could not load battery image");
+            IMAGE_DISPLAY = null;
+        }
     }
 
     public void enableDragAndRotate() {

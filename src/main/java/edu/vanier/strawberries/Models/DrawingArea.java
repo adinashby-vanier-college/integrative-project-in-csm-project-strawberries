@@ -200,4 +200,11 @@ public class DrawingArea {
             }
         }
     }
+
+    public void switchView(boolean isDiagram) {
+        for (Component component : circuit.toArrayList()) {
+            System.out.println(component.display);
+            component.switchDisplay(isDiagram);
+        }
+    }
 }

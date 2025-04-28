@@ -15,9 +15,17 @@ public class Lightbulb extends Component {
         this.color = color;
 
         URL imgURL;
+        URL imgURL2;
         try {
             imgURL = getClass().getResource("/images/lightbulb_diagram.png");
-            this.display = new Image(String.valueOf(imgURL));
+            this.DIAGRAM_DISPLAY = new Image(String.valueOf(imgURL));
+        }
+        catch(Exception e) {
+            System.out.println("Unable to find image reference.");
+        }
+        try {
+            imgURL2 = getClass().getResource("/images/lightbulb_real.png");
+            this.IMAGE_DISPLAY = new Image(String.valueOf(imgURL2));
         }
         catch(Exception e) {
             System.out.println("Unable to find image reference.");

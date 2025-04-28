@@ -28,6 +28,14 @@ public abstract class Component extends StackPane {
         getChildren().add(new ImageView(display));
     }
 
+    public void switchDisplay(boolean isDiagram) {
+        if (isDiagram) {
+            display = DIAGRAM_DISPLAY;
+        } else {
+            display = IMAGE_DISPLAY;
+        }
+    }
+
     /**
      * Moving ONE Node (the other one is a pivot)
      * @param movingNode the node being moved

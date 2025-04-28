@@ -35,11 +35,19 @@ public class Resistor extends Component {
 
         try {
             URL imgUrl = getClass().getResource("/images/resistor_diagram.png");
-            display = new Image(Objects.requireNonNull(imgUrl).toExternalForm());
+            DIAGRAM_DISPLAY = new Image(Objects.requireNonNull(imgUrl).toExternalForm());
             enableDragAndRotate();
         } catch (NullPointerException e) {
             System.out.println("Could not load resistor image");
-            display = null;
+            DIAGRAM_DISPLAY = null;
+        }
+        try {
+            URL imgUrl = getClass().getResource("/images/resistor_real.png");
+            IMAGE_DISPLAY = new Image(Objects.requireNonNull(imgUrl).toExternalForm());
+            enableDragAndRotate();
+        } catch (NullPointerException e) {
+            System.out.println("Could not load resistor image");
+            IMAGE_DISPLAY = null;
         }
     }
 

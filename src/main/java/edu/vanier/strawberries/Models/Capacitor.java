@@ -23,7 +23,16 @@ public class Capacitor extends Component {
             System.out.println("Could not load capacitor image.");
         }
         else {
-            display = new Image(imgUrl.toExternalForm());
+            DIAGRAM_DISPLAY = new Image(imgUrl.toExternalForm());
+            enableDragAndRotate();
+        }
+        // Load the image from resources
+        URL imgUrl2 = getClass().getResource("/images/capacitor_real.png"); // Make sure this file exists
+        if (imgUrl2 == null) {
+            System.out.println("Could not load capacitor image.");
+        }
+        else {
+            IMAGE_DISPLAY = new Image(imgUrl2.toExternalForm());
             enableDragAndRotate();
         }
     }

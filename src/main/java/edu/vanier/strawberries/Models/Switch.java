@@ -29,18 +29,22 @@ public class Switch extends Component {
         // updates image to show closed/open state
         if (isClosed) {
             URL imgUrl = getClass().getResource("/images/closed_switch_diagram.png");
-            if (imgUrl == null) {
+            URL imgUrl2 = getClass().getResource("/images/switch_closed_real.png");
+            if ((imgUrl == null)||(imgUrl2 == null)) {
                 System.out.println("Could not load open switch image");
             } else {
-                display = new Image(imgUrl.toExternalForm());
+                DIAGRAM_DISPLAY = new Image(imgUrl.toExternalForm());
+                IMAGE_DISPLAY = new Image(imgUrl2.toExternalForm());
             }
         } else {
             URL imgUrl = getClass().getResource("/images/open_switch_diagram.png");
-            if (imgUrl == null) {
+            URL imgUrl2 = getClass().getResource("/images/switch_open_real.png");
+            if ((imgUrl == null) || (imgUrl2 == null)) {
                 System.out.println("Could not load open switch image");
             }
             else {
-                display = new Image(imgUrl.toExternalForm());
+                DIAGRAM_DISPLAY = new Image(imgUrl.toExternalForm());
+                IMAGE_DISPLAY = new Image(imgUrl2.toExternalForm());
             }
         }
     }

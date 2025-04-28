@@ -181,6 +181,15 @@ public class MainAppFXMLController {
         addBatteryBtn.setOnAction(_->drawingTool.setCurrentAction("place-battery"));
         addCapacitorBtn.setOnAction(_->drawingTool.setCurrentAction("place-capacitor"));
         addSwitchBtn.setOnAction(_->drawingTool.setCurrentAction("place-switch"));
+
+        // view
+        drawingArea.switchView(true);
+        MenuItem diagramItem = viewMenuBtn.getItems().get(0);
+        MenuItem realisticItem = viewMenuBtn.getItems().get(1);
+        diagramItem.setOnAction(e -> drawingArea.switchView(true));
+        realisticItem.setOnAction(e -> drawingArea.switchView(false));
+        viewMenuBtn.setOnAction(e -> drawingArea.switchView(true));
+
         clearBtn.setOnAction(_-> {
             drawingArea.circuit.print();
             drawingArea.circuit.clear();
@@ -275,10 +284,6 @@ public class MainAppFXMLController {
             if (selection != null) setCursor(Cursor.OPEN_HAND);
             else setCursor(Cursor.DEFAULT);
         }
-    }
-
-    public void switchView() {
-        // TODO: switch view :3
     }
 
     private void mousePressed(MouseEvent e) {
