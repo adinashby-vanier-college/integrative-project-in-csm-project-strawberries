@@ -1,7 +1,7 @@
 package edu.vanier.strawberries.Models;
 
-import javafx.scene.image.Image;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import java.net.URL;
 import java.util.LinkedList;
@@ -11,7 +11,6 @@ public class Resistor extends Component {
     private double mouseOffsetX;
     private double mouseOffsetY;
 
-    
     public Resistor(Node begin, Node end, double resistance, boolean skipUI) {
         super(begin, end);
         this.resistance = resistance;
@@ -29,18 +28,18 @@ public class Resistor extends Component {
         }
     }
 
- 
     public Resistor(Node begin, Node end, double resistance) {
         super(begin, end);
         this.resistance = resistance;
         this.current = 0;
 
-        URL imgUrl = getClass().getResource("/images/resistor_diagram.png");
-        if (imgUrl == null) {
-            System.out.println("Could not load resistor image");
-        } else {
-            display = new Image(imgUrl.toExternalForm());
+        try {
+            URL imgUrl = getClass().getResource("/images/resistor_diagram.png");
+            display = new Image(Objects.requireNonNull(imgUrl).toExternalForm());
             enableDragAndRotate();
+        } catch (NullPointerException e) {
+            System.out.println("Could not load resistor image");
+            display = null;
         }
     }
 
@@ -48,7 +47,6 @@ public class Resistor extends Component {
         this.setOnMousePressed(e -> {
             mouseOffsetX = e.getSceneX() - this.getLayoutX();
             mouseOffsetY = e.getSceneY() - this.getLayoutY();
-            e.consume();
         });
 
         this.setOnMouseDragged(e -> {
@@ -70,41 +68,80 @@ public class Resistor extends Component {
             e.consume();
         });
 
-        this.setOnMouseClicked(e -> {
-            if (e.getClickCount() == 2 && e.isPrimaryButtonDown()) {
-                TextField inputField = new TextField();
-                inputField.setLayoutX(this.getLayoutX());
-                inputField.setLayoutY(this.getLayoutY() - 25);
-                Pane parentPane = (Pane) this.getParent();
-                parentPane.getChildren().add(inputField);
-                inputField.requestFocus();
-
-                inputField.setOnAction(_-> updateResistanceFromField(inputField, parentPane));
-                inputField.setOnKeyPressed(event -> {
-                    switch (event.getCode()) {
-                        case ENTER -> updateResistanceFromField(inputField, parentPane);
-                        case ESCAPE -> parentPane.getChildren().remove(inputField);
-                    }
-                });
-            }
-        });
+       
     }
 
-    private void updateResistanceFromField(TextField inputField, Pane parentPane) {
-        try {
-            double newResistance = Double.parseDouble(inputField.getText());
-            if (newResistance >= 0 && newResistance <= 10000) {
-                this.resistance = newResistance;
-                System.out.println("Resistance updated to: " + resistance + " Ω");
-            } else {
-                System.out.println("Resistance must be between 0–10000 Ω");
-            }
-        } catch (NumberFormatException ex) {
-            System.out.println("Invalid resistance input.");
+public void handleEdit(Pane parentPane) {
+    if (parentPane == null) {
+        System.out.println("No parent pane found for resistor!");
+        return;
+    }
+
+    double midX = (begin.getX() + end.getX()) / 2;
+    double midY = (begin.getY() + end.getY()) / 2;
+
+    // ❗ Use TextArea, not TextField
+    javafx.scene.control.TextArea infoArea = new javafx.scene.control.TextArea();
+    infoArea.setEditable(false);
+    infoArea.setPrefWidth(180);
+    infoArea.setPrefHeight(80);
+    infoArea.setStyle("-fx-font-size: 10px; -fx-background-color: white; -fx-border-color: black;");
+    infoArea.setText(
+            String.format(
+                "Current: %.3f A\nVoltage: %.3f V\nResistance: %.3f Ω",
+                current, current * resistance, resistance
+            )
+    );
+
+    infoArea.setLayoutX(midX + 10);
+    infoArea.setLayoutY(midY - 30);
+
+    parentPane.getChildren().add(infoArea);
+    infoArea.requestFocus();
+
+    infoArea.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+        if (!isNowFocused) {
+            parentPane.getChildren().remove(infoArea);
         }
+    });
 
-        parentPane.getChildren().remove(inputField);
-    }
+    // 🎯 Double-click the box to change resistance
+    infoArea.setOnMouseClicked(e -> {
+        if (e.getClickCount() == 2) { // Double-click
+            TextField editField = new TextField();
+            editField.setPrefWidth(80);
+            editField.setLayoutX(midX + 10);
+            editField.setLayoutY(midY + 60);
+            parentPane.getChildren().add(editField);
+            editField.requestFocus();
+
+            editField.setOnAction(_ -> {
+                try {
+                    double newResistance = Double.parseDouble(editField.getText());
+                    if (newResistance >= 0 && newResistance <= 10000) {
+                        this.resistance = newResistance;
+                        System.out.println("Resistance updated to: " + resistance + " Ω");
+                    } else {
+                        System.out.println("Resistance must be between 0–10000 Ω");
+                    }
+                } catch (NumberFormatException ex) {
+                    System.out.println("Invalid resistance input.");
+                }
+                parentPane.getChildren().remove(editField);
+                parentPane.getChildren().remove(infoArea);
+            });
+
+            editField.focusedProperty().addListener((obs2, wasFocused2, isNowFocused2) -> {
+                if (!isNowFocused2) {
+                    parentPane.getChildren().remove(editField);
+                    parentPane.getChildren().remove(infoArea);
+                }
+            });
+        }
+    });
+}
+
+
 
     public boolean isConnected(Circuit circuit) {
         int resistorIndex = circuit.getIndex(this);

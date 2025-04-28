@@ -298,9 +298,13 @@ public class MainAppFXMLController {
                 case "select" -> {
                     if(selection != null) setCursor(Cursor.CLOSED_HAND);
                     edit(selection);
-                    if (selection instanceof Battery battery) {
-                        battery.handleEdit(leftPanel);
-                    }
+                   if (selection instanceof Battery battery) {
+    battery.handleEdit(leftPanel);
+}
+else if (selection instanceof Resistor resistor) {
+    resistor.handleEdit(leftPanel);
+}
+
                     if(selection instanceof Wire wire) {
                         initialBegin = wire.begin.getPosition();
                         initialEnd = wire.end.getPosition();
