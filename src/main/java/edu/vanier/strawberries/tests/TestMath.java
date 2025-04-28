@@ -39,6 +39,6 @@ public class TestMath extends Application {
     }
 
     public static void main(String[] args) {
-        launch(args); // <-- This properly initializes JavaFX
+        launch(args); 
     }
 }
