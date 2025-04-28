@@ -76,6 +76,7 @@ public abstract class Component extends StackPane {
         switch(direction.toUpperCase()) {
             case "LEFT" -> {
                 angle -= 90;
+                if(angle == -90) angle = 270;
                 if(angle==-360) angle = 0;
             }
             case "RIGHT" -> {
@@ -85,15 +86,9 @@ public abstract class Component extends StackPane {
             default -> {}
         }
 
-        System.out.println(angle);
-        System.out.println("X: "+begin.getX()+" + w*"+Math.round(Math.cos(Math.toRadians(angle))));
-        System.out.println("Y: "+begin.getY()+" + w*"+Math.round(Math.sin(Math.toRadians(angle))));
-
         newX = begin.getX() + (display.getWidth() * Math.round(Math.cos(Math.toRadians(angle))));
         newY = begin.getY() + (display.getWidth() * Math.round(Math.sin(Math.toRadians(angle))));
         end.setPosition(newX,newY);
-
-        System.out.println("new end: "+end);
     }
 
     public double getResistance() {
@@ -142,7 +137,7 @@ public abstract class Component extends StackPane {
         Point2D minimum = getMinimums();
         double x,y;
 
-        if(angle == 90) {
+        if(angle == 90 || angle == 270) {
             x = minimum.getX() + display.getHeight()/2;
             y = minimum.getY() + display.getWidth()/2;
         }

@@ -289,6 +289,8 @@ public class MainAppFXMLController {
     private void mousePressed(MouseEvent e) {
         mouseDownLocation = new Point2D(e.getX(),e.getY());
         if(!Objects.equals(drawingTool.getCurrentAction(),"")) {
+            if(selection!=null && !Objects.equals(drawingTool.getCurrentAction(), "select")) unselect(selection);
+            if(editing!=null) edit(null);
             drawingTool.setPencilDown(true);
             Node eventLocation = new Node(drawingArea.snap(e.getX()), drawingArea.snap(e.getY()));
             Node tempEnd = Node.copyOf(eventLocation);
@@ -304,12 +306,11 @@ public class MainAppFXMLController {
                     if(selection != null) setCursor(Cursor.CLOSED_HAND);
                     edit(selection);
                    if (selection instanceof Battery battery) {
-    battery.handleEdit(leftPanel);
-}
-else if (selection instanceof Resistor resistor) {
-    resistor.handleEdit(leftPanel);
-}
-
+                        battery.handleEdit(leftPanel);
+                    }
+                    else if (selection instanceof Resistor resistor) {
+                        resistor.handleEdit(leftPanel);
+                    }
                     if(selection instanceof Wire wire) {
                         initialBegin = wire.begin.getPosition();
                         initialEnd = wire.end.getPosition();

@@ -81,10 +81,8 @@ public class DrawingArea {
                 gc.setTransform(new Affine(rotateTransform));
                 gc.drawImage(img,component.begin.getX(),component.begin.getY()-(img.getHeight())/2,img.getWidth()*zoom,img.getHeight()*zoom);
 
-                gc.fillOval(component.end.getX()-5, component.end.getY()-5,10,10);
-
                 if(component.isEdit()) {
-                    // Show editing display
+                    // SHOW IF THE COMPONENT IS BEING EDITED
                     gc.setStroke(Color.BLUE);
                     gc.setLineWidth(1.2);
                     gc.strokeRect(component.begin.getX(),component.begin.getY()-(img.getHeight())/2,img.getWidth()*zoom,img.getHeight()*zoom);
@@ -94,7 +92,7 @@ public class DrawingArea {
                 if(component instanceof Lightbulb lightbulb && lightbulb.isOn()) {
                     //TODO set opacity based on lightbulb's current voltage
                     //TODO not working for rotation
-                    gc.setFill(lightbulb.getColor().deriveColor(0,1,1, lightbulb.getLightIntensity()));
+                    gc.setFill(lightbulb.getColor().deriveColor(0,1,1, 0.5));
                     gc.fillOval(lightbulb.getCenter().getX()-20,lightbulb.getCenter().getY()-20,40,40);
                 }
             }
