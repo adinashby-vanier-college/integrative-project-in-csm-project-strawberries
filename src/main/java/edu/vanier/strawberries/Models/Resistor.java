@@ -5,13 +5,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import java.net.URL;
 import java.util.LinkedList;
-import static javafx.scene.input.KeyCode.ENTER;
-import static javafx.scene.input.KeyCode.ESCAPE;
+import java.util.Objects;
 
 public class Resistor extends Component {
-    private double resistance;
-    private double current;
-    private double voltage;
     private double mouseOffsetX;
     private double mouseOffsetY;
 
@@ -24,7 +20,7 @@ public class Resistor extends Component {
         if (!skipUI) {
             try {
                 URL imgUrl = getClass().getResource("/images/resistor_diagram.png");
-                display = new Image(imgUrl.toExternalForm());
+                display = new Image(Objects.requireNonNull(imgUrl).toExternalForm());
                 enableDragAndRotate();
             } catch (NullPointerException e) {
                 System.out.println("Could not load resistor image");
@@ -83,7 +79,7 @@ public class Resistor extends Component {
                 parentPane.getChildren().add(inputField);
                 inputField.requestFocus();
 
-                inputField.setOnAction(event -> updateResistanceFromField(inputField, parentPane));
+                inputField.setOnAction(_-> updateResistanceFromField(inputField, parentPane));
                 inputField.setOnKeyPressed(event -> {
                     switch (event.getCode()) {
                         case ENTER -> updateResistanceFromField(inputField, parentPane);
@@ -122,34 +118,5 @@ public class Resistor extends Component {
             }
         }
         return false;
-    }
-
-    public double getResistance() {
-        return resistance;
-    }
-
-    public void setResistance(double resistance) {
-        this.resistance = resistance;
-    }
-
-    public double getCurrent() {
-        return current;
-    }
-
-    public void setCurrent(double current) {
-        this.current = current;
-    }
-
-    public double getVoltage() {
-        return voltage;
-    }
-
-    public void setVoltage(double voltage) {
-        this.voltage = voltage;
-    }
-
-    public void calculateCurrent(double voltage) {
-        this.voltage = voltage;
-        this.current = (resistance != 0) ? voltage / resistance : 0;
     }
 }

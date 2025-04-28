@@ -21,13 +21,28 @@ public class Switch extends Component {
         }
         else {
             display = new Image(imgUrl.toExternalForm());
-            enableDragAndRotate();
         }
     }
 
     public void toggle() {
         isClosed = !isClosed;
-        // TODO: update image to show closed/open state
+        // updates image to show closed/open state
+        if (isClosed) {
+            URL imgUrl = getClass().getResource("/images/closed_switch_diagram.png");
+            if (imgUrl == null) {
+                System.out.println("Could not load open switch image");
+            } else {
+                display = new Image(imgUrl.toExternalForm());
+            }
+        } else {
+            URL imgUrl = getClass().getResource("/images/open_switch_diagram.png");
+            if (imgUrl == null) {
+                System.out.println("Could not load open switch image");
+            }
+            else {
+                display = new Image(imgUrl.toExternalForm());
+            }
+        }
     }
 
     public void setOpen(boolean open) {

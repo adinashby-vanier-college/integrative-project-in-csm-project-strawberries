@@ -125,9 +125,10 @@ public class SignOnLogInController {
             return;
         }
 
-        // CLEAR current graph
+        edu.vanier.strawberries.Models.Circuit circuit = new edu.vanier.strawberries.Models.Circuit();
+        circuit.clear();
 
-        String[] lines = recent.split(", "); // split by each graph line
+        String[] lines = recent.split(", "); // split by each line
         for (String line : lines) {
             String[] parts = line.split(" -> ");
             LinkedList<Component> currentList = new LinkedList<>();
@@ -138,7 +139,7 @@ public class SignOnLogInController {
 
                 String name = part.substring(0, openParen);
                 System.out.println(name);
-                // construct component "name";
+                //circuit.addComponent();
                 // add component to currentList
             }
 

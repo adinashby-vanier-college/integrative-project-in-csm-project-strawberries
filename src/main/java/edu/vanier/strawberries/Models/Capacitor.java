@@ -1,8 +1,6 @@
 package edu.vanier.strawberries.Models;
 
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.transform.Rotate;
 
 import java.net.URL;
 
