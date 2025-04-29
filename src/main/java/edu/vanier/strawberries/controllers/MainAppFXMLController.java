@@ -96,10 +96,10 @@ public class MainAppFXMLController {
         logger.info("Initializing MainAppController...");
 
         animationRunning = false;
+        circuit = new Circuit();
         initUI();
         setUpKeyListeners();
         applyTheme("light-mode.css");
-        circuit = new Circuit();
 
         // SET UP EVENT LISTENERS
         canvas.addEventHandler(MouseEvent.MOUSE_MOVED, this::mouseMoved);
