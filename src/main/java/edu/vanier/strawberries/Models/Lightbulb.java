@@ -10,8 +10,8 @@ public class Lightbulb extends Component {
     private double minVoltage;
     private Color color;
 
-    public Lightbulb(Node begin, Node end, Color color, double resistance) {
-        super(begin, end);
+    public Lightbulb(Node begin, Node end, Color color, double resistance, boolean diagramView) {
+        super(begin, end, diagramView);
         this.color = color;
 
         URL imgURL;
@@ -32,6 +32,7 @@ public class Lightbulb extends Component {
         }
 
         on = true;
+        display = diagramView ? DIAGRAM_DISPLAY : IMAGE_DISPLAY;
     }
 
     public double getMinVoltage() {

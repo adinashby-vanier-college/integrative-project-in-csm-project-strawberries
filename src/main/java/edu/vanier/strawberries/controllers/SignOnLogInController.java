@@ -125,7 +125,7 @@ public class SignOnLogInController {
             return;
         }
 
-        edu.vanier.strawberries.Models.Circuit circuit = new edu.vanier.strawberries.Models.Circuit();
+        edu.vanier.strawberries.Models.Circuit circuit = new edu.vanier.strawberries.Models.Circuit(true);
         circuit.clear();
 
         String[] lines = recent.split(", "); // split by each line

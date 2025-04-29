@@ -13,11 +13,11 @@ public class TestMath extends Application {
     @Override
     public void start(Stage primaryStage) {
         // Build test circuit
-        Circuit circuit = new Circuit();
+        Circuit circuit = new Circuit(false);
 
-        Resistor r1 = new Resistor(new Node(0, 0), new Node(50, 0), 100);
-        Resistor r2 = new Resistor(new Node(60, 0), new Node(110, 0), 200);
-        Battery battery = new Battery(new Node(-50, 0), new Node(0, 0), 12);
+        Resistor r1 = new Resistor(new Node(0, 0), new Node(50, 0), 100, false);
+        Resistor r2 = new Resistor(new Node(60, 0), new Node(110, 0), 200, false);
+        Battery battery = new Battery(new Node(-50, 0), new Node(0, 0), 12, false);
 
         circuit.addComponent(battery);
         circuit.addComponent(r1);

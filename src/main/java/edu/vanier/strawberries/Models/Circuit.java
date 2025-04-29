@@ -9,10 +9,12 @@ import java.util.LinkedList;
 public class Circuit {
     boolean closed;
     public ArrayList<LinkedList<Component>> arrayList;
+    private boolean diagramView;
 
-    public Circuit() {
+    public Circuit(boolean diagramView) {
         closed = false;
         arrayList = new ArrayList<>();
+        this.diagramView = diagramView;
     }
 
     public void addComponent(Component component) {

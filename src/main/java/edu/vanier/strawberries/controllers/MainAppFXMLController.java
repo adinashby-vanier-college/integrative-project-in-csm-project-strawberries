@@ -49,6 +49,7 @@ public class MainAppFXMLController {
     private double posX,posY;
     private Node[] toMove = new Node[2];
     private Point2D mouseDownLocation,initialBegin,initialEnd;
+    public boolean diagramView;
 
     //Import FXML variables
     @FXML
@@ -96,7 +97,8 @@ public class MainAppFXMLController {
         logger.info("Initializing MainAppController...");
 
         animationRunning = false;
-        circuit = new Circuit();
+        diagramView = true;
+        circuit = new Circuit(true);
         initUI();
         setUpKeyListeners();
         applyTheme("light-mode.css");
@@ -295,12 +297,12 @@ public class MainAppFXMLController {
             Node tempEnd = Node.copyOf(eventLocation);
             switch (drawingTool.getCurrentAction()) {
                 case "place-wire" -> select(new Wire(eventLocation, tempEnd, ((drawingTool.getCurrentColor()==null) ? drawingTool.defaultWireColor : drawingTool.getCurrentColor()), 0, 0));
-                case "place-battery" -> select(new Battery(eventLocation, tempEnd, 12));
-                case "place-capacitor" -> select(new Capacitor(eventLocation, tempEnd, 0, true, false));
-                case "place-fuse" -> select(new Fuse(eventLocation, tempEnd,20));
-                case "place-lightbulb" -> select(new Lightbulb(eventLocation, tempEnd,(drawingTool.getCurrentColor()==null) ? drawingTool.defaultLightbulbColor : drawingTool.getCurrentColor(),0));
-                case "place-resistor" -> select(new Resistor(eventLocation, tempEnd, 10));
-                case "place-switch" -> select(new Switch(eventLocation, tempEnd, false));
+                case "place-battery" -> select(new Battery(eventLocation, tempEnd, 12, diagramView));
+                case "place-capacitor" -> select(new Capacitor(eventLocation, tempEnd, 0, diagramView));
+                case "place-fuse" -> select(new Fuse(eventLocation, tempEnd,20, diagramView));
+                case "place-lightbulb" -> select(new Lightbulb(eventLocation, tempEnd,(drawingTool.getCurrentColor()==null) ? drawingTool.defaultLightbulbColor : drawingTool.getCurrentColor(),0, diagramView));
+                case "place-resistor" -> select(new Resistor(eventLocation, tempEnd, 10, diagramView));
+                case "place-switch" -> select(new Switch(eventLocation, tempEnd, false,diagramView));
                 case "select" -> {
                     if(selection != null) setCursor(Cursor.CLOSED_HAND);
                     edit(selection);

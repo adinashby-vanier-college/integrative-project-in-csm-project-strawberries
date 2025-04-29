@@ -12,7 +12,7 @@ public class Wire extends Component {
     private Label infoLabel;
 
     public Wire(Node begin, Node end, Color color, double current, double voltage) {
-        super(begin, end);
+        super(begin, end, false);
         this.color = color;
     }
 
