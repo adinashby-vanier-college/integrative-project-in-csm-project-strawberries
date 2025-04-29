@@ -310,7 +310,7 @@ public class MainAppFXMLController {
                         battery.handleEdit(leftPanel);
                    }
                    else if (selection instanceof Resistor resistor) {
-                       resistor.handleEdit(leftPanel);
+
                    }
                    if(selection instanceof Wire wire) {
                        initialBegin = wire.begin.getPosition();
@@ -436,15 +436,14 @@ public class MainAppFXMLController {
     private void mouseReleased(MouseEvent e) {
         toMove = new Node[2];
         if (selection != null) {
+            attemptConnection(selection, selection.begin);
             if (drawingTool.isPencilDown()) {
                 drawingTool.setPencilDown(false);
                 if(selection.getLength()<=0) circuit.deleteComponent(selection);
-                else {
-                    attemptConnection(selection, selection.begin);
-                }
             }
             if(canvas.getCursor().equals(Cursor.CLOSED_HAND)) setCursor(Cursor.OPEN_HAND);
         }
+        else if(editing != null) attemptConnection(editing, editing.begin);
     }
 
     public void select(Component component) {
@@ -463,8 +462,9 @@ public class MainAppFXMLController {
     private void attemptConnection(Component toCheck, Node node) {
         int srcIndex = circuit.getIndex(toCheck);
         Point2D checkPoint = node.getPosition();
-        ArrayList<Integer> connectedComponents = new ArrayList<>();
+        ArrayList<Integer> connectedComponents = new ArrayList<>(), disconnectedComponents = new ArrayList<>();
 
+        // CHECK FOR CONNECTION
         for (LinkedList<Component> currentList : circuit.arrayList) {
             for (Component connectedComponent : currentList) {
                 if(connectedComponent != toCheck) {
@@ -474,7 +474,6 @@ public class MainAppFXMLController {
                     Point2D componentEnd = connectedComponent.end.getPosition();
 
                     if ((componentBegin.distance(checkPoint) <= 1) || (componentEnd.distance(checkPoint) <= 1)) {
-                        System.out.println(dstIndex + " is connected");
                         if(!connectedComponents.contains(dstIndex)) connectedComponents.add(dstIndex);
                         if(!node.isConnected()) node.setConnected(true);
                     }
@@ -482,6 +481,20 @@ public class MainAppFXMLController {
             }
         }
         for (int compIndex : connectedComponents) circuit.addEdge(srcIndex, compIndex);
+
+        // CHECK FOR DISCONNECTION
+        Point2D checkBegin = toCheck.begin.getPosition(),
+                checkEnd = toCheck.end.getPosition();
+        for(Component connected : circuit.arrayList.get(srcIndex)) {
+            if(connected != toCheck) {
+                Point2D compBegin = connected.begin.getPosition(),
+                        compEnd = connected.end.getPosition();
+                if ((checkBegin.distance(compBegin) > 1 && checkBegin.distance(compEnd) > 1) && (checkEnd.distance(compBegin) > 1 && checkEnd.distance(compEnd) > 1)) {
+                    circuit.removeEdge(srcIndex, circuit.getIndex(connected));
+                }
+            }
+        }
+
         if(node == toCheck.begin) attemptConnection(toCheck, toCheck.end);
     }
 
