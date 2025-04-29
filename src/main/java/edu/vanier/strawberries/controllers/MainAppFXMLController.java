@@ -24,12 +24,19 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import java.nio.file.Path;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -605,7 +612,7 @@ public class MainAppFXMLController {
       menuOpen.setOnAction(_->{});
       menuOpenRecent.setOnAction(_->{});
       menuSave.setOnAction(_->{});
-      menuSaveAs.setOnAction(_->{});
+      menuSaveAs.setOnAction(_->exportToTxt());
       menuQuit.setOnAction(_->quit());
 
   // SETTINGS & VIEW MENU
@@ -618,7 +625,7 @@ public class MainAppFXMLController {
       menuZoomIn.setOnAction(zoomInBtn.getOnAction());
       menuZoomOut.setOnAction(zoomOutBtn.getOnAction());
       menuToggleGrid.setOnAction(_->drawingArea.toggleGrid());
-      exportBtn.setOnAction(_->drawingArea.exportCircuit());
+      exportBtn.setOnAction(_->exportToJson());
       //String recentProject = MainApp.signOnLogInController.getRecent();
       //menuOpenRecent.setOnAction(_->openRecent(recentProject));
 
@@ -644,5 +651,15 @@ public class MainAppFXMLController {
   private void showToolBar(boolean show) {
         if(show) leftPanelVBox.getChildren().addFirst(toolbarScrollPane);
         else leftPanelVBox.getChildren().remove(toolbarScrollPane);
+  }
+
+  private void exportToJson() {
+        String info = drawingArea.exportCircuit(circuitNameField.getText()); // get drawingArea to put in json
+      // add txt to json
+  }
+
+  private void exportToTxt() {
+        String info = drawingArea.exportCircuit(circuitNameField.getText()); // get drawingArea to put in txt
+      // open file chooser dialog and bufferedwrite to txt file
   }
 }

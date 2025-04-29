@@ -1,11 +1,10 @@
 package edu.vanier.strawberries.Models;
 
-import edu.vanier.strawberries.ui.MainApp;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.animation.PathTransition;
@@ -134,8 +133,12 @@ public class DrawingArea {
         }
     }
 
-    public void exportCircuit() {
-        String output = ""; // final output
+    public String exportCircuit(String circuitName) {
+        String output = "";
+        if (circuitName != null) {
+            output = circuitName + ".txt\n";
+        }
+        output = "unnamedCircuit.txt\n";
         // go through each component and add to final output
         for(Component component : circuit.toArrayList()) {
             assert component != null;
@@ -157,6 +160,7 @@ public class DrawingArea {
         }
         String result = builder.toString();
         System.out.println(result);
+        return result;
     }
 
 
