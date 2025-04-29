@@ -317,8 +317,9 @@ public class MainAppFXMLController {
                         battery.handleEdit(leftPanel);
                    }
                    else if (selection instanceof Resistor resistor) {
+                        resistor.handleEdit(leftPanel);
+                        }
 
-                   }
                    if(selection instanceof Wire wire) {
                        initialBegin = wire.begin.getPosition();
                        initialEnd = wire.end.getPosition();
