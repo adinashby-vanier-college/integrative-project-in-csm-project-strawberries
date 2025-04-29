@@ -13,6 +13,7 @@ public class Lightbulb extends Component {
     public Lightbulb(Node begin, Node end, Color color, double resistance, boolean diagramView) {
         super(begin, end, diagramView);
         this.color = color;
+        minVoltage = 10;
 
         URL imgURL;
         URL imgURL2;
@@ -30,8 +31,6 @@ public class Lightbulb extends Component {
         catch(Exception e) {
             System.out.println("Unable to find image reference.");
         }
-
-        on = true;
         display = diagramView ? DIAGRAM_DISPLAY : IMAGE_DISPLAY;
     }
 

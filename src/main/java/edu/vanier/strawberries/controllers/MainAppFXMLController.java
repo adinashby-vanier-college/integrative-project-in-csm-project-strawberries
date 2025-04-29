@@ -1,5 +1,6 @@
 package edu.vanier.strawberries.controllers;
 
+import edu.vanier.math.CircuitMath;
 import edu.vanier.strawberries.Models.*;
 import edu.vanier.strawberries.Models.DrawingArea;
 import edu.vanier.strawberries.ui.MainApp;
@@ -57,6 +58,7 @@ public class MainAppFXMLController {
     private Node[] toMove = new Node[2];
     private Point2D mouseDownLocation,initialBegin,initialEnd;
     public boolean diagramView;
+    private String currentTheme;
 
     //Import FXML variables
     @FXML
@@ -88,7 +90,7 @@ public class MainAppFXMLController {
     @FXML
     MenuBar menuBar;
     @FXML
-    Text mouseText;
+    Text circuitStateText;
     @FXML
     MenuItem menuNew, menuOpen, menuOpenRecent, menuSave, menuSaveAs, menuQuit, menuShowToolbar, menuHideToolbar, menuThemes,
             menuFitToScreen, menuZoomIn, menuZoomOut, menuToggleGrid, menuSelect, menuWire, menuRedWire, menuBlackWire,
@@ -141,11 +143,19 @@ public class MainAppFXMLController {
         // Component specific states
         for(LinkedList<Component> list : circuit.arrayList) {
             for(Component component : list) {
+                CircuitMath.setVoltageAcross(component);
                 if(component instanceof Lightbulb lightbulb) {
+                    System.out.println("lightbulb voltage: "+lightbulb.getVoltage());
                     if(lightbulb.getVoltage() >= lightbulb.getMinVoltage()) lightbulb.turnOn(true);
                 }
             }
         }
+
+        //Update circuit message
+        if(circuit.arrayList.isEmpty()) circuitStateText.setText("Empty circuit. A blank canvas!");
+        else if(circuit.isClosed()) circuitStateText.setText("Closed circuit!");
+        else circuitStateText.setText("Open circuit... No current :(");
+
         // Draw everything
         drawingArea.drawContent();
     }
@@ -452,6 +462,8 @@ public class MainAppFXMLController {
             if(canvas.getCursor().equals(Cursor.CLOSED_HAND)) setCursor(Cursor.OPEN_HAND);
         }
         else if(editing != null) attemptConnection(editing, editing.begin);
+
+        circuit.checkForCycle();
     }
 
     public void select(Component component) {
@@ -580,6 +592,11 @@ public class MainAppFXMLController {
     private void applyTheme(String cssFile) {
         window.getStylesheets().clear();
         window.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/" + cssFile)).toExternalForm());
+        currentTheme = cssFile.substring(0,cssFile.length()-4);
+    }
+
+    public String getTheme() {
+        return currentTheme;
     }
 
     private void openRecent(String project) {

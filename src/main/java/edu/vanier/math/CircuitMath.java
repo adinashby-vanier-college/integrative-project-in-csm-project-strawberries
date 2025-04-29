@@ -83,6 +83,11 @@ public class CircuitMath {
         return current * resistor.getResistance();
     }
 
+    public static void setVoltageAcross(Component component) {
+        if(component.getResistance() > 0 && component.getCurrent() > 0) {
+            component.setVoltage(component.getResistance()*component.getCurrent());
+        }
+    }
  
     public void assignValuesToComponents() {
         double totalCurrent = getTotalCurrent();

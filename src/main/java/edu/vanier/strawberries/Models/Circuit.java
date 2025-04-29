@@ -1,7 +1,9 @@
 package edu.vanier.strawberries.Models;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * The Circuit is based on a Graph data structure
@@ -59,6 +61,63 @@ public class Circuit {
         return false;
     }
 
+    public void checkForCycle() {
+        boolean temp = false;
+        ArrayList<Component> visited = new ArrayList<>();
+        ArrayList<Component> beingVisited = new ArrayList<>();
+
+        beingVisited.add(arrayList.getFirst().getFirst());
+//        System.out.println("before checking: "+arrayList.getFirst().getFirst());
+        if(visit(beingVisited, visited)==1) closed = true;
+        else closed = false;
+    }
+
+    private int visit(ArrayList<Component> beingVisited, ArrayList<Component> visited) {
+        /**
+         * When visiting a node:
+         * 1. Remove from beingVisited and add to visited
+         * 2. Check if children belong in either list
+         *      if NO: Add children to beingVisited
+         *      if YES: visited = ignore, beingVisited = CYCLE
+         * 3. Visit children and repeat
+         */
+
+        Component comp;
+        try {
+            comp = beingVisited.getFirst();
+//            System.out.println("component to visit: "+comp);
+        }
+        catch(Exception e) {
+//            System.out.println("empty array");
+//            System.out.println("array 1: "+beingVisited + "\tarray 2: "+visited);
+            System.out.println("NO CYCLE FOUND.");
+            System.out.println("-------------------------------------------------------");
+            return 0;
+        }
+
+        if(comp != null) {
+            beingVisited.remove(comp);
+            visited.add(comp);
+
+            ArrayList<Component> childrenToVisit = new ArrayList<>();
+            for(Component child : arrayList.get(getIndex(comp))) {
+                if(child != comp && child != null && !beingVisited.contains(child) && !visited.contains(child)) childrenToVisit.add(child);
+                else if (beingVisited.contains(child)) {
+//                    System.out.println("Child already being visited: " + child);
+                    System.out.println("CYCLE FOUND !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                    return 1;
+                }
+            }
+            beingVisited.addAll(childrenToVisit);
+//            System.out.println("beingVisited after adding children: "+ beingVisited);
+            return visit(beingVisited,visited);
+        }
+        return -1; // A problem occurred
+    }
+
+    public boolean isClosed() {
+        return closed;
+    }
 
     public void clear() {
         arrayList.clear();

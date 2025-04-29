@@ -1,6 +1,8 @@
 package edu.vanier.strawberries.Models;
 
+import edu.vanier.strawberries.ui.MainApp;
 import javafx.geometry.Point2D;
+import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.TextField;
@@ -38,7 +40,11 @@ public class DrawingArea {
 
         // Draw the grid
         if(showGrid) {
-            gc.setStroke(Color.LIGHTGREY);
+            switch(MainApp.mainAppFXMLController.getTheme()) {
+                case "light-mode" -> gc.setStroke(Color.LIGHTGREY);
+                case "dark-mode" -> gc.setStroke(Color.BLACK);
+                case "strawberries-theme" -> gc.setStroke(Color.PINK);
+            }
             gc.setLineWidth(1);
             for (int i = 0; i < canvas.getWidth(); i += (int) (squareSize * zoom)) {
                 for (int j = 0; j < canvas.getHeight(); j += (int) (squareSize * zoom)) {
@@ -64,7 +70,10 @@ public class DrawingArea {
                 gc.strokeLine(component.begin.getX(),component.begin.getY(),component.end.getX(),component.end.getY());
                 Node[] nodes = {wire.begin,wire.end};
                 for(Node node : nodes) {
-                    if(node.isConnected()) gc.fillOval(node.getX()-4,node.getY()-4,8,8);
+                    if(node.isConnected()) {
+                        gc.setFill(wire.getColor());
+                        gc.fillOval(node.getX()-4,node.getY()-4,8,8);
+                    }
                 }
                 if(wire.selected) {
                     gc.setFill(Color.BLACK);
@@ -106,6 +115,7 @@ public class DrawingArea {
         else
             return pos + (squareSize - remainder);
     }
+
     //make a list to store the electrons to that r going to get animated
     private final List<Electron> animatedElectrons = new ArrayList<>();
     private boolean animateCurrent = false;
@@ -120,7 +130,8 @@ public class DrawingArea {
         }
 
         public void update() {
-            progress += 0.01; // Adjust speed here
+            progress += 0.01; // Adjust speed here --> COMMENT: Shouldn't this be the current?
+//            progress += wire.current
             if (progress > 1.0) {
                 progress = 0; // Loop the electron back to start
             }
@@ -163,7 +174,6 @@ public class DrawingArea {
         return result;
     }
 
-
     public void animateCurrentFlow(boolean start) {
         animateCurrent = start;
         animatedElectrons.clear();  // Reset electrons when toggled
@@ -184,6 +194,7 @@ public class DrawingArea {
             }
         }
     }
+
     public void stopElectronAnimation() {
         if (!(canvas.getParent() instanceof Pane parent)) return;
 
