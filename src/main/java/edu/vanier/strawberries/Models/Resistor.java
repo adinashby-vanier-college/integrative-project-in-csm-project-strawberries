@@ -11,8 +11,8 @@ public class Resistor extends Component {
     private double mouseOffsetX;
     private double mouseOffsetY;
 
-    public Resistor(Node begin, Node end, double resistance, boolean skipUI) {
-        super(begin, end);
+    public Resistor(Node begin, Node end, double resistance, boolean skipUI, boolean diagramView) {
+        super(begin, end, diagramView);
         this.resistance = resistance;
         this.current = 0;
 
@@ -27,11 +27,11 @@ public class Resistor extends Component {
             }
         }
 
-        display = DIAGRAM_DISPLAY;
+        display = diagramView ? DIAGRAM_DISPLAY : IMAGE_DISPLAY;
     }
 
-    public Resistor(Node begin, Node end, double resistance) {
-        super(begin, end);
+    public Resistor(Node begin, Node end, double resistance, boolean diagramView) {
+        super(begin, end, diagramView);
         this.resistance = resistance;
         this.current = 0;
 
@@ -51,6 +51,8 @@ public class Resistor extends Component {
             System.out.println("Could not load resistor image");
             IMAGE_DISPLAY = null;
         }
+
+        display = diagramView ? DIAGRAM_DISPLAY : IMAGE_DISPLAY;
     }
 
     public void enableDragAndRotate() {

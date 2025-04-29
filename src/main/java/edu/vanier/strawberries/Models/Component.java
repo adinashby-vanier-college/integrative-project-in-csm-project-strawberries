@@ -15,17 +15,17 @@ public abstract class Component extends StackPane {
     public Node end;
     protected Image DIAGRAM_DISPLAY, IMAGE_DISPLAY;
     public Image display;
-    public boolean selected, edit;
+    public boolean selected, edit, diagramView;
     private double angle;
     protected double resistance;
     protected double current;
     protected double voltage;
 
-    public Component(Node begin, Node end) {
+    public Component(Node begin, Node end, boolean diagramView) {
         this.begin = begin;
         this.end = end;
         angle = 0;
-        getChildren().add(new ImageView(display));
+        this.diagramView = diagramView;
     }
 
     public void switchDisplay(boolean isDiagram) {

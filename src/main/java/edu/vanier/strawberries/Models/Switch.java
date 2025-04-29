@@ -13,8 +13,8 @@ public class Switch extends Component {
     private double mouseOffsetY;
     private Image openImg, closedImg, rOpenImg, rClosedImg;
 
-    public Switch(Node begin, Node end, boolean isClosed) {
-        super(begin, end);
+    public Switch(Node begin, Node end, boolean isClosed, boolean diagramView) {
+        super(begin, end, diagramView);
         this.isClosed = isClosed;
 
         //load images
@@ -35,7 +35,7 @@ public class Switch extends Component {
 
         DIAGRAM_DISPLAY = openImg;
         IMAGE_DISPLAY = rOpenImg;
-        display = openImg;
+        display = diagramView ? DIAGRAM_DISPLAY : IMAGE_DISPLAY;
     }
 
     public void toggle() {
@@ -49,6 +49,8 @@ public class Switch extends Component {
             DIAGRAM_DISPLAY = openImg;
             IMAGE_DISPLAY = rOpenImg;
         }
+
+        display = diagramView ? DIAGRAM_DISPLAY : IMAGE_DISPLAY;
     }
 
     public void setOpen(boolean open) {

@@ -15,15 +15,14 @@ public class Battery extends Component {
     private double mouseOffsetY;
     // Add this to Battery.java
     
-public Battery(Node begin, Node end, double potential, boolean skipUI) {
-    super(begin, end);
+public Battery(Node begin, Node end, double potential, boolean diagramView, boolean skipUI) {
+    super(begin, end, diagramView);
     this.potential = potential;
 
     if (!skipUI) {
         try {
             URL imgUrl = getClass().getResource("/images/battery_diagram.png");
             DIAGRAM_DISPLAY = new Image(Objects.requireNonNull(imgUrl).toExternalForm());
-            enableDragAndRotate();
         } catch (NullPointerException e) {
             System.out.println("Could not load battery image");
             display = null;
@@ -34,14 +33,13 @@ public Battery(Node begin, Node end, double potential, boolean skipUI) {
 }
 
 
-    public Battery(Node begin, Node end, double potential) {
-        super(begin, end);
+    public Battery(Node begin, Node end, double potential, boolean diagramView) {
+        super(begin, end, diagramView);
         this.potential = potential;
 
         try{
             URL imgUrl = getClass().getResource("/images/battery_diagram.png"); // debug for the image
             DIAGRAM_DISPLAY = new Image(Objects.requireNonNull(imgUrl).toExternalForm());
-            enableDragAndRotate();
         }
         catch(NullPointerException e) {
             System.out.println("Could not load battery image");
@@ -50,42 +48,13 @@ public Battery(Node begin, Node end, double potential, boolean skipUI) {
         try{
             URL imgUrl2 = getClass().getResource("/images/battery_real.png"); // debug for the image
             IMAGE_DISPLAY = new Image(Objects.requireNonNull(imgUrl2).toExternalForm());
-            enableDragAndRotate();
         }
         catch(NullPointerException e) {
             System.out.println("Could not load battery image");
             IMAGE_DISPLAY = null;
         }
-    }
 
-    public void enableDragAndRotate() {
-        this.setOnMousePressed(e -> { // stores information as to where the mouse is from the image's corner
-            mouseOffsetX = e.getSceneX() - this.getLayoutX();
-            mouseOffsetY = e.getSceneY() - this.getLayoutY();
-            e.consume();
-        });
-
-        this.setOnMouseDragged(e -> { // calculates angle between components center and the mouse location
-            if (e.isSecondaryButtonDown()) { // the right mouse button
-                double centerX = this.getLayoutX() + this.getBoundsInParent().getWidth() / 2;
-                double centerY = this.getLayoutY() + this.getBoundsInParent().getHeight() / 2;
-                double angle = Math.toDegrees(Math.atan2(e.getSceneY() - centerY, e.getSceneX() - centerX));
-                this.setRotate(angle); // rotates using trig
-            } else {
-                double newX = e.getSceneX() - mouseOffsetX;
-                double newY = e.getSceneY() - mouseOffsetY;
-                this.setLayoutX(newX);
-                this.setLayoutY(newY);
-                //  update the logical node positions too
-                this.begin.setPosition(newX, newY);
-                // keep end node relative to the original angle/distance
-                double deltaX = end.getX() - begin.getX();
-                double deltaY = end.getY() - begin.getY();
-                this.end.setPosition(newX + deltaX, newY + deltaY);
-
-            }
-            e.consume(); // basically makes it so that only the battery moves
-        });
+        display = diagramView ? DIAGRAM_DISPLAY : IMAGE_DISPLAY;
     }
 
     // Getter for potential (voltage)
