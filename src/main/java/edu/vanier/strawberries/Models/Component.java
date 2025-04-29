@@ -28,8 +28,9 @@ public abstract class Component extends StackPane {
         this.diagramView = diagramView;
     }
 
-    public void switchDisplay(boolean isDiagram) {
-        if (isDiagram) {
+    public void switchDisplay(boolean diagramView) {
+        this.diagramView = diagramView;
+        if (diagramView) {
             display = DIAGRAM_DISPLAY;
         } else {
             display = IMAGE_DISPLAY;

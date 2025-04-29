@@ -33,7 +33,6 @@ public class Circuit {
     }
 
     public void addEdge(int src, int dst) {
-        System.out.println("adding edge between "+src+" and "+dst);
         LinkedList<Component> srcList = arrayList.get(src), dstList = arrayList.get(dst);
         Component dest = arrayList.get(dst).getFirst(),
                   source = arrayList.get(src).getFirst();
@@ -42,7 +41,6 @@ public class Circuit {
     }
 
     public void removeEdge(int src, int dst) {
-        System.out.println("removing edge between "+src+" and "+dst);
         LinkedList<Component> srcList = arrayList.get(src), dstList = arrayList.get(dst);
         Component dest = arrayList.get(dst).getFirst(),
                   source = arrayList.get(src).getFirst();
@@ -75,7 +73,6 @@ public class Circuit {
     }
 
     public void print() {
-        //TODO : Verify connections!!!!! ** Not printing correctly :(
         System.out.println("--------------------- Start of Graph ---------------------");
         for(LinkedList<Component> currentList:arrayList) {
             for(Component component:currentList) {
@@ -93,6 +90,11 @@ public class Circuit {
             }
         }
         return -1; // Not found
+    }
+
+    public void setDiagramView(boolean diagramView) {
+        this.diagramView = diagramView;
+        for(LinkedList<Component> compList : arrayList) compList.getFirst().switchDisplay(diagramView);
     }
 
 }

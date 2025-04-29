@@ -103,6 +103,8 @@ public class MainApp extends Application {
                     // No need to register the start scene as it was already done in the start method.
                     sceneController.activateScene(fxmlFileName);
                     currentController = "startController";
+                    stage.setHeight(500);
+                    stage.setWidth(500);
                 }
                 case MAINAPP_SCENE -> {
                     if (!sceneController.sceneExists(fxmlFileName)) {

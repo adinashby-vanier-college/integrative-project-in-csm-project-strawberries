@@ -31,11 +31,7 @@ public class Capacitor extends Component {
         display = diagramView ? DIAGRAM_DISPLAY : IMAGE_DISPLAY;
 
         System.out.println(DIAGRAM_DISPLAY);
-        System.out.println("is diagram: "+diagramView);
-        System.out.println("display: "+display);
     }
-
-    // TODO: Fix the method above to have a text field pop up to input the information for the component
 
     public double getStoredEnergy() {
         return storedEnergy;

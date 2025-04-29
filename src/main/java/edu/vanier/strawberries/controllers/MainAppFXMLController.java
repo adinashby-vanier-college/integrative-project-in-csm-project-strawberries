@@ -546,13 +546,20 @@ public class MainAppFXMLController {
                     setCursor(Cursor.DEFAULT);
                 }
                 case W -> drawingTool.setCurrentAction("place-wire");
-
+                case B -> drawingTool.setCurrentAction("place-battery");
+                case C -> drawingTool.setCurrentAction("place-capacitor");
+                case L -> drawingTool.setCurrentAction("place-lightbulb");
+                case T -> drawingTool.setCurrentAction("place-switch");
+                case R -> drawingTool.setCurrentAction("place-resistor");
                 case DELETE,BACK_SPACE -> circuit.deleteComponent(editing);
                 case COMMA -> {
                     if(editing!=null) editing.rotate("left");
                 }
                 case PERIOD -> {
                     if(editing!=null) editing.rotate("right");
+                }
+                case P -> {
+                    circuit.print();
                 }
             }
         });
