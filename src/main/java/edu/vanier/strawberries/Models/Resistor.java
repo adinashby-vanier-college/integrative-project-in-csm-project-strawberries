@@ -92,7 +92,7 @@ public void handleEdit(Pane parentPane) {
     double midX = (begin.getX() + end.getX()) / 2;
     double midY = (begin.getY() + end.getY()) / 2;
 
-    // ❗ Use TextArea, not TextField
+ 
     javafx.scene.control.TextArea infoArea = new javafx.scene.control.TextArea();
     infoArea.setEditable(false);
     infoArea.setPrefWidth(180);
@@ -117,7 +117,7 @@ public void handleEdit(Pane parentPane) {
         }
     });
 
-    // 🎯 Double-click the box to change resistance
+    
     infoArea.setOnMouseClicked(e -> {
         if (e.getClickCount() == 2) { // Double-click
             TextField editField = new TextField();

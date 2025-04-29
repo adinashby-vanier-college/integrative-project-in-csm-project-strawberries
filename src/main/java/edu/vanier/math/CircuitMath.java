@@ -14,7 +14,8 @@ public class CircuitMath {
         this.visited = new boolean[circuit.arrayList.size()];
     }
 
-    private void dfs(int current, List<Component> path) {
+    
+    private void search(int current, List<Component> path) {
         if (visited[current]) return;
         visited[current] = true;
 
@@ -23,11 +24,12 @@ public class CircuitMath {
 
         for (int i = 0; i < circuit.arrayList.size(); i++) {
             if (circuit.checkEdge(current, i)) {
-                dfs(i, path);
+                search(i, path);
             }
         }
     }
 
+    
     public List<Component> getTraversalPath() {
         Arrays.fill(visited, false);
         List<Component> path = new ArrayList<>();
@@ -35,36 +37,32 @@ public class CircuitMath {
         for (int i = 0; i < circuit.arrayList.size(); i++) {
             Component c = circuit.arrayList.get(i).getFirst();
             if (c instanceof Battery || circuit.arrayList.get(i).size() > 1) {
-                dfs(i, path);
+                search(i, path);
                 break;
             }
         }
         return path;
     }
 
+    
     public double getTotalResistance() {
         List<Component> path = getTraversalPath();
-        double seriesResistance = 0.0;
-        double reciprocalSum = 0.0;
-        int resistorCount = 0;
+        double totalResistance = 0.0;
 
         for (Component c : path) {
             if (c instanceof Resistor r) {
-                resistorCount++;
-                reciprocalSum += 1.0 / r.getResistance();
-                seriesResistance += r.getResistance();
+                totalResistance += r.getResistance();
             }
         }
 
-        if (resistorCount > 1) {
-            return 1.0 / reciprocalSum;  // Parallel Resistance
-        }
-        return seriesResistance; // Series Resistance
+        return totalResistance;
     }
 
+   
     public double getTotalVoltage() {
         List<Component> path = getTraversalPath();
         double voltage = 0.0;
+
         for (Component c : path) {
             if (c instanceof Battery b) {
                 voltage += b.getPotential();
@@ -73,25 +71,32 @@ public class CircuitMath {
         return voltage;
     }
 
+    // Calculates total current using Ohm's Law: I = V / R
     public double getTotalCurrent() {
         double R = getTotalResistance();
         double V = getTotalVoltage();
         return R == 0 ? 0 : V / R;
     }
 
+    public double getVoltageAcrossResistor(Resistor resistor) {
+        double current = getTotalCurrent();
+        return current * resistor.getResistance();
+    }
+
+ 
     public void assignValuesToComponents() {
         double totalCurrent = getTotalCurrent();
         double totalVoltage = getTotalVoltage();
 
-        System.out.println(" Total voltage: " + totalVoltage + " V");
-        System.out.println(" Total current: " + totalCurrent + " A");
+        System.out.println("Total voltage: " + totalVoltage + " V");
+        System.out.println("Total current: " + totalCurrent + " A");
 
         for (LinkedList<Component> list : circuit.arrayList) {
             Component c = list.getFirst();
 
             if (c instanceof Wire wire) {
                 wire.setCurrent(totalCurrent);
-                wire.setVoltage(0);
+                wire.setVoltage(0); // wires assumed ideal
             }
 
             if (c instanceof Resistor resistor) {
@@ -102,9 +107,8 @@ public class CircuitMath {
                     alert.setContentText("A resistor is not connected to any components.");
                     alert.showAndWait();
                 } else {
-                    double R = resistor.getResistance();
-                    resistor.setCurrent(totalVoltage / R);
-                    resistor.setVoltage(totalVoltage);
+                    resistor.setCurrent(totalCurrent);
+                    resistor.setVoltage(getVoltageAcrossResistor(resistor));
                     System.out.println("Resistor updated: V=" + resistor.getVoltage() + "V, I=" + resistor.getCurrent() + "A");
                 }
             }
