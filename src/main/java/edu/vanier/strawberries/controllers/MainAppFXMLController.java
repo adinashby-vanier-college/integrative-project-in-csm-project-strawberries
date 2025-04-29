@@ -598,6 +598,7 @@ public class MainAppFXMLController {
       menuZoomIn.setOnAction(zoomInBtn.getOnAction());
       menuZoomOut.setOnAction(zoomOutBtn.getOnAction());
       menuToggleGrid.setOnAction(_->drawingArea.toggleGrid());
+      exportBtn.setOnAction(_->drawingArea.exportCircuit());
       //String recentProject = MainApp.signOnLogInController.getRecent();
       //menuOpenRecent.setOnAction(_->openRecent(recentProject));
 

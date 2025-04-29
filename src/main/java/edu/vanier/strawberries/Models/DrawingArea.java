@@ -135,6 +135,25 @@ public class DrawingArea {
         }
     }
 
+    public void exportCircuit() {
+        String output = "";
+        // Draw the Components
+        for(Component component : circuit.toArrayList()) {
+            assert component != null;
+            if (component instanceof Wire wire) {
+                gc.setLineWidth(3);
+                output += "wire|" + wire.getColor() + "|" + component.begin.getX() + "|" + component.begin.getY() + "|"  + component.end.getX() + "|"  + component.end.getY() + "\n";
+                Node[] nodes = {wire.begin, wire.end};
+                for (Node node : nodes) {
+                    if (node.isConnected()) output += "1|";
+                }
+            } else {
+                output += component.getType() + "|" + component.begin.getX() + "|" + component.begin.getY() + "|" + component.getAngle() + "\n";
+            }
+        }
+        System.out.println(output);
+    }
+
 
     public void animateCurrentFlow(boolean start) {
         animateCurrent = start;
