@@ -11,9 +11,8 @@ import javafx.scene.paint.Color;
 import javafx.animation.PathTransition;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Rotate;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+
+import java.util.*;
 
 public class DrawingArea {
     public DrawingTool drawingTool = new DrawingTool();
@@ -136,22 +135,28 @@ public class DrawingArea {
     }
 
     public void exportCircuit() {
-        String output = "";
-        // Draw the Components
+        String output = ""; // final output
+        // go through each component and add to final output
         for(Component component : circuit.toArrayList()) {
             assert component != null;
             if (component instanceof Wire wire) {
-                gc.setLineWidth(3);
-                output += "wire|" + wire.getColor() + "|" + component.begin.getX() + "|" + component.begin.getY() + "|"  + component.end.getX() + "|"  + component.end.getY() + "\n";
                 Node[] nodes = {wire.begin, wire.end};
                 for (Node node : nodes) {
                     if (node.isConnected()) output += "1|";
                 }
+                gc.setLineWidth(3);
+                output += "wire|" + wire.getColor() + "|" + component.begin.getX() + "|" + component.begin.getY() + "|"  + component.end.getX() + "|"  + component.end.getY() + "\n";
             } else {
                 output += component.getType() + "|" + component.begin.getX() + "|" + component.begin.getY() + "|" + component.getAngle() + "\n";
             }
         }
-        System.out.println(output);
+        // remove duplicate lines
+        StringBuilder builder = new StringBuilder();
+        for (String line: new LinkedHashSet<String>(Arrays.asList(output.split("\n"))) ) {
+            builder.append(line).append("\n");
+        }
+        String result = builder.toString();
+        System.out.println(result);
     }
 
 
