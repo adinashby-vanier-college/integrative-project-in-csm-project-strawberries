@@ -19,13 +19,15 @@ public class Resistor extends Component {
         if (!skipUI) {
             try {
                 URL imgUrl = getClass().getResource("/images/resistor_diagram.png");
-                display = new Image(Objects.requireNonNull(imgUrl).toExternalForm());
+                DIAGRAM_DISPLAY = new Image(Objects.requireNonNull(imgUrl).toExternalForm());
                 enableDragAndRotate();
             } catch (NullPointerException e) {
                 System.out.println("Could not load resistor image");
-                display = null;
+                DIAGRAM_DISPLAY = null;
             }
         }
+
+        display = DIAGRAM_DISPLAY;
     }
 
     public Resistor(Node begin, Node end, double resistance) {

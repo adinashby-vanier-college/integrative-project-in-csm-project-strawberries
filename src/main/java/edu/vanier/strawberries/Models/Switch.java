@@ -5,47 +5,49 @@ import javafx.scene.image.ImageView;
 import javafx.scene.transform.Rotate;
 
 import java.net.URL;
+import java.util.Objects;
 
 public class Switch extends Component {
     private boolean isClosed;
     private double mouseOffsetX;
     private double mouseOffsetY;
+    private Image openImg, closedImg, rOpenImg, rClosedImg;
 
     public Switch(Node begin, Node end, boolean isClosed) {
         super(begin, end);
         this.isClosed = isClosed;
 
-        URL imgUrl = getClass().getResource("/images/open_switch_diagram.png");
-        if (imgUrl == null) {
-            System.out.println("Could not load open switch image");
+        //load images
+        try {
+            URL openURL = getClass().getResource("/images/open_switch_diagram.png");
+            URL closedURL = getClass().getResource("/images/closed_switch_diagram.png");
+            URL rOpenURL = getClass().getResource("/images/switch_open_real.png");
+            URL rClosedURL = getClass().getResource("/images/switch_closed_real.png");
+
+            openImg = new Image(Objects.requireNonNull(openURL).toExternalForm());
+            closedImg = new Image(Objects.requireNonNull(closedURL).toExternalForm());
+            rOpenImg = new Image(Objects.requireNonNull(rOpenURL).toExternalForm());
+            rClosedImg = new Image(Objects.requireNonNull(rClosedURL).toExternalForm());
+
+        } catch (Exception e) {
+            System.out.println("Could not fetch resource");
         }
-        else {
-            display = new Image(imgUrl.toExternalForm());
-        }
+
+        DIAGRAM_DISPLAY = openImg;
+        IMAGE_DISPLAY = rOpenImg;
+        display = openImg;
     }
 
     public void toggle() {
         isClosed = !isClosed;
         // updates image to show closed/open state
-        if (isClosed) {
-            URL imgUrl = getClass().getResource("/images/closed_switch_diagram.png");
-            URL imgUrl2 = getClass().getResource("/images/switch_closed_real.png");
-            if ((imgUrl == null)||(imgUrl2 == null)) {
-                System.out.println("Could not load open switch image");
-            } else {
-                DIAGRAM_DISPLAY = new Image(imgUrl.toExternalForm());
-                IMAGE_DISPLAY = new Image(imgUrl2.toExternalForm());
-            }
-        } else {
-            URL imgUrl = getClass().getResource("/images/open_switch_diagram.png");
-            URL imgUrl2 = getClass().getResource("/images/switch_open_real.png");
-            if ((imgUrl == null) || (imgUrl2 == null)) {
-                System.out.println("Could not load open switch image");
-            }
-            else {
-                DIAGRAM_DISPLAY = new Image(imgUrl.toExternalForm());
-                IMAGE_DISPLAY = new Image(imgUrl2.toExternalForm());
-            }
+        if(isClosed) {
+            DIAGRAM_DISPLAY = closedImg;
+            IMAGE_DISPLAY = rClosedImg;
+        }
+        else {
+            DIAGRAM_DISPLAY = openImg;
+            IMAGE_DISPLAY = rOpenImg;
         }
     }
 
@@ -56,35 +58,4 @@ public class Switch extends Component {
     public boolean isClosed() {
         return isClosed;
     }
-
-//    public void enableDragAndRotate() {
-//        this.setOnMousePressed(e -> {
-//            mouseOffsetX = e.getSceneX() - this.getLayoutX();
-//            mouseOffsetY = e.getSceneY() - this.getLayoutY();
-//            e.consume();
-//        });
-//
-//        this.setOnMouseDragged(e -> {
-//            if (e.isSecondaryButtonDown()) {
-//                double centerX = this.getLayoutX() + this.getBoundsInParent().getWidth() / 2;
-//                double centerY = this.getLayoutY() + this.getBoundsInParent().getHeight() / 2;
-//                double angle = Math.toDegrees(Math.atan2(e.getSceneY() - centerY, e.getSceneX() - centerX));
-//                this.setRotate(angle);
-//            } else {
-//                double newX = e.getSceneX() - mouseOffsetX;
-//                double newY = e.getSceneY() - mouseOffsetY;
-//                this.setLayoutX(newX);
-//                this.setLayoutY(newY);
-//                this.begin.setPosition(newX, newY);
-//
-//                double deltaX = end.getX() - begin.getX();
-//                double deltaY = end.getY() - begin.getY();
-//                this.end.setPosition(newX + deltaX, newY + deltaY);
-//            }
-//            e.consume();
-//        });
-//    }
-
-    // TODO: Fix the method above to have a text field pop up to input the information for the component
-
 }

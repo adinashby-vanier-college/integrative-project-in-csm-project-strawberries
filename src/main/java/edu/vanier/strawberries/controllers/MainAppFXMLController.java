@@ -137,7 +137,6 @@ public class MainAppFXMLController {
                 }
             }
         }
-
         // Draw everything
         drawingArea.drawContent();
     }
@@ -307,13 +306,16 @@ public class MainAppFXMLController {
                     edit(selection);
                    if (selection instanceof Battery battery) {
                         battery.handleEdit(leftPanel);
-                    }
-                    else if (selection instanceof Resistor resistor) {
-                        resistor.handleEdit(leftPanel);
-                    }
-                    if(selection instanceof Wire wire) {
-                        initialBegin = wire.begin.getPosition();
-                        initialEnd = wire.end.getPosition();
+                   }
+                   else if (selection instanceof Resistor resistor) {
+                       resistor.handleEdit(leftPanel);
+                   }
+                   if(selection instanceof Wire wire) {
+                       initialBegin = wire.begin.getPosition();
+                       initialEnd = wire.end.getPosition();
+                   }
+                   if(selection instanceof Switch switchObj) { // switch is a reserved word
+                       switchObj.toggle();
                     }
                 }
                 default -> {}
