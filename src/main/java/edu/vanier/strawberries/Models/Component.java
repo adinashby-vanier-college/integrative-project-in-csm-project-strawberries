@@ -36,6 +36,10 @@ public abstract class Component extends StackPane {
         }
     }
 
+    public String getType() {
+        return this.getClass().getSimpleName();
+    }
+
     /**
      * Moving ONE Node (the other one is a pivot)
      * @param movingNode the node being moved
