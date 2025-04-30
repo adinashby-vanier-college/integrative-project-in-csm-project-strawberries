@@ -291,9 +291,9 @@ public class MainAppFXMLController {
             animationRunning = !animationRunning;
             if (animationRunning) {
                 runStopBtn.setText("Stop");
-               /* // creates a circuit math object
+                // creates a circuit math object
                 edu.vanier.math.CircuitMath math = new edu.vanier.math.CircuitMath(drawingArea.circuit);
-                math.assignValuesToComponents();*/
+                math.assignValuesToComponents();
                 drawingArea.animateCurrentFlow(true);
             } else {
                 runStopBtn.setText("Run");

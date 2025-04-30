@@ -128,22 +128,22 @@ public class DrawingArea {
     private static class Electron {
         private final Wire wire;
         private double progress;
-      //  private double speedFactor;
+        private final double speedFactor;
 
-        public Electron(Wire wire) {
+        public Electron(Wire wire, double speedFactor) {
             this.wire = wire;
+            this.speedFactor = speedFactor;
             this.progress = 0;
-
         }
-       public void update() {
-            //TODO: fix that
 
-            progress += 0.01;
+        public void update() {
+            progress += 0.001 * speedFactor;
             if (progress > 1.0) {
-                progress = 0; // Loop the electron back to the start
+                progress = 0;
             }
         }
-        public Point2D getPosition() { // get electron position along the wire based on progress
+
+        public Point2D getPosition() {
             double x = wire.begin.getX() + (wire.end.getX() - wire.begin.getX()) * progress;
             double y = wire.begin.getY() + (wire.end.getY() - wire.begin.getY()) * progress;
             return new Point2D(x, y);
@@ -182,48 +182,40 @@ public class DrawingArea {
 
     public void animateCurrentFlow(boolean start) {
         animateCurrent = start;
-
-        for (PathTransition t : activeTransitions) {
-            t.stop();
-        }
         activeTransitions.clear();
-
-        // Clear existing animated electrons
         animatedElectrons.clear();
 
         if (!(canvas.getParent() instanceof Pane parent)) return;
 
         if (start) {
             int dotsPerWire = 5;
-            double baseSpeed = 50.0;
+            double speedFactor;
 
             CircuitMath circuitMath = new CircuitMath(circuit);
             double totalCurrent = circuitMath.getTotalCurrent(); // get the total current
 
-            // avoid division by zero
-         //   double currentSpeedFactor = totalCurrent;
+            // Determine animation speed based on total current
+            if (totalCurrent < 100) {
+                speedFactor = 0.5;
+            } else if (totalCurrent < 600) {
+                speedFactor = 1.0;
+            } else {
+                speedFactor = 2.0;
+            }
 
             for (LinkedList<Component> list : circuit.arrayList) {
                 for (Component c : list) {
                     if (c instanceof Wire wire) {
                         for (int i = 0; i < dotsPerWire; i++) {
-                            Electron e = new Electron(wire);
+                            Electron e = new Electron(wire, speedFactor);
                             e.progress = i / (double) dotsPerWire;
                             animatedElectrons.add(e);
-
-                            PathTransition transition = new PathTransition();
-
-                            double durationInSeconds = baseSpeed / totalCurrent; // if the speed factor (total current) is high, the duration will be smaller since its gon be faster..
-                            transition.setDuration(Duration.seconds(durationInSeconds));
-                            transition.setInterpolator(Interpolator.LINEAR);
-                            transition.setCycleCount(PathTransition.INDEFINITE);
-                            transition.play();
                         }
                     }
                 }
             }
         }
-    }
+}
 
     public void stopElectronAnimation() {
         if (!(canvas.getParent() instanceof Pane parent)) return;
@@ -260,7 +252,7 @@ public class DrawingArea {
         this.circuit = circuit;
     }
 
-    public void updateAnimation() { // update the electrons animation
+   public void updateAnimation() { // update the electrons animation
         if (animateCurrent) {
             for (Electron e : animatedElectrons) {
                 e.update();

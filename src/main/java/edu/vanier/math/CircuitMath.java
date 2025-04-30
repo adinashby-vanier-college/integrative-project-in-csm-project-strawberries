@@ -75,7 +75,9 @@ public class CircuitMath {
     public double getTotalCurrent() {
         double R = getTotalResistance();
         double V = getTotalVoltage();
-        return R == 0 ? 0 : V / R;
+        System.out.println("Voltage = " + V + ", Resistance = " + R + ", Current = " + V/R );
+
+       return 9; //R == 0 ? 0 : V / R; for testing purposese you can remove this after
     }
 
     public double getVoltageAcrossResistor(Resistor resistor) {
@@ -93,6 +95,14 @@ public class CircuitMath {
         double totalCurrent = getTotalCurrent();
         double totalVoltage = getTotalVoltage();
 
+     /*   if (totalCurrent == 0) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("No Current Flowing");
+            alert.setHeaderText(null);
+            alert.setContentText("Total current is zero. Please check the circuit connections!");
+            alert.showAndWait();
+        }
+*/
         System.out.println("Total voltage: " + totalVoltage + " V");
         System.out.println("Total current: " + totalCurrent + " A");
 
