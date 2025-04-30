@@ -1,6 +1,8 @@
 package edu.vanier.strawberries.Models;
 
+import edu.vanier.math.CircuitMath;
 import edu.vanier.strawberries.ui.MainApp;
+import javafx.animation.Interpolator;
 import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
@@ -10,8 +12,11 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.animation.PathTransition;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Path;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Rotate;
+import javafx.util.Duration;
 
 import java.util.*;
 
@@ -123,21 +128,22 @@ public class DrawingArea {
     private static class Electron {
         private final Wire wire;
         private double progress;
+      //  private double speedFactor;
 
         public Electron(Wire wire) {
             this.wire = wire;
             this.progress = 0;
-        }
 
-        public void update() {
-            progress += 0.01; // Adjust speed here --> COMMENT: Shouldn't this be the current?
-//            progress += wire.current
+        }
+       public void update() {
+            //TODO: fix that
+
+            progress += 0.01;
             if (progress > 1.0) {
-                progress = 0; // Loop the electron back to start
+                progress = 0; // Loop the electron back to the start
             }
         }
-
-        public Point2D getPosition() { //get wire position
+        public Point2D getPosition() { // get electron position along the wire based on progress
             double x = wire.begin.getX() + (wire.end.getX() - wire.begin.getX()) * progress;
             double y = wire.begin.getY() + (wire.end.getY() - wire.begin.getY()) * progress;
             return new Point2D(x, y);
@@ -176,10 +182,26 @@ public class DrawingArea {
 
     public void animateCurrentFlow(boolean start) {
         animateCurrent = start;
-        animatedElectrons.clear();  // Reset electrons when toggled
+
+        for (PathTransition t : activeTransitions) {
+            t.stop();
+        }
+        activeTransitions.clear();
+
+        // Clear existing animated electrons
+        animatedElectrons.clear();
+
+        if (!(canvas.getParent() instanceof Pane parent)) return;
 
         if (start) {
             int dotsPerWire = 5;
+            double baseSpeed = 50.0;
+
+            CircuitMath circuitMath = new CircuitMath(circuit);
+            double totalCurrent = circuitMath.getTotalCurrent(); // get the total current
+
+            // avoid division by zero
+         //   double currentSpeedFactor = totalCurrent;
 
             for (LinkedList<Component> list : circuit.arrayList) {
                 for (Component c : list) {
@@ -188,6 +210,14 @@ public class DrawingArea {
                             Electron e = new Electron(wire);
                             e.progress = i / (double) dotsPerWire;
                             animatedElectrons.add(e);
+
+                            PathTransition transition = new PathTransition();
+
+                            double durationInSeconds = baseSpeed / totalCurrent; // if the speed factor (total current) is high, the duration will be smaller since its gon be faster..
+                            transition.setDuration(Duration.seconds(durationInSeconds));
+                            transition.setInterpolator(Interpolator.LINEAR);
+                            transition.setCycleCount(PathTransition.INDEFINITE);
+                            transition.play();
                         }
                     }
                 }
