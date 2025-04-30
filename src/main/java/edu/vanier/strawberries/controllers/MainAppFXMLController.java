@@ -162,7 +162,7 @@ public class MainAppFXMLController {
 
     private void initUI() {
 // 1. BIND DIMENSIONS:
-    // Heights
+        // Heights
         window.prefHeightProperty().bind(MainApp.stage.heightProperty());
         splitPane.prefHeightProperty().bind(window.heightProperty());
         leftPanel.prefHeightProperty().bind(splitPane.heightProperty());
@@ -170,18 +170,18 @@ public class MainAppFXMLController {
         rightPanel.prefHeightProperty().bind(splitPane.heightProperty());
         toolbarHBox.setPrefHeight(toolbarHBox.getChildren().getFirst().getLayoutBounds().getHeight());
         toolbarScrollPane.prefViewportHeightProperty().bind(toolbarHBox.heightProperty());
-    //Widths
+        //Widths
         leftPanelVBox.prefWidthProperty().bind(leftPanel.prefWidthProperty());
         toolbarScrollPane.prefWidthProperty().bind(leftPanelVBox.prefWidthProperty());
         toolbarHBox.prefWidthProperty().bind(toolbarScrollPane.prefWidthProperty());
         canvas.widthProperty().bind(leftPanel.prefWidthProperty());
 
 // 2. OTHER FORMATTING
-        toolbarScrollPane.widthProperty().addListener(_-> {
+        toolbarScrollPane.widthProperty().addListener(_ -> {
             //TODO make that little space under the buttons disappear when there is no scrollbar...
         });
-        leftPanel.widthProperty().addListener(_-> leftPanel.setPrefWidth(leftPanel.getWidth()));
-        window.widthProperty().addListener(_-> splitPane.setDividerPosition(0,window.getWidth()));
+        leftPanel.widthProperty().addListener(_ -> leftPanel.setPrefWidth(leftPanel.getWidth()));
+        window.widthProperty().addListener(_ -> splitPane.setDividerPosition(0, window.getWidth()));
 
 // 3. INITIALIZE CLASSES
         // Linking to existing classes
@@ -192,13 +192,13 @@ public class MainAppFXMLController {
 // 4. SET UP UI ELEMENTS
 
         // SET BUTTON ACTIONS
-        zoomInBtn.setOnAction(_-> drawingArea.zoomIn());
-        zoomOutBtn.setOnAction(_-> drawingArea.zoomOut());
-        addWireBtn.setOnAction(_-> drawingTool.setCurrentAction("place-wire"));
-        addResistorBtn.setOnAction(_->drawingTool.setCurrentAction("place-resistor"));
-        addBatteryBtn.setOnAction(_->drawingTool.setCurrentAction("place-battery"));
-        addCapacitorBtn.setOnAction(_->drawingTool.setCurrentAction("place-capacitor"));
-        addSwitchBtn.setOnAction(_->drawingTool.setCurrentAction("place-switch"));
+        zoomInBtn.setOnAction(_ -> drawingArea.zoomIn());
+        zoomOutBtn.setOnAction(_ -> drawingArea.zoomOut());
+        addWireBtn.setOnAction(_ -> drawingTool.setCurrentAction("place-wire"));
+        addResistorBtn.setOnAction(_ -> drawingTool.setCurrentAction("place-resistor"));
+        addBatteryBtn.setOnAction(_ -> drawingTool.setCurrentAction("place-battery"));
+        addCapacitorBtn.setOnAction(_ -> drawingTool.setCurrentAction("place-capacitor"));
+        addSwitchBtn.setOnAction(_ -> drawingTool.setCurrentAction("place-switch"));
 
         // view
         drawingArea.switchView(true);
@@ -208,23 +208,23 @@ public class MainAppFXMLController {
         realisticItem.setOnAction(e -> drawingArea.switchView(false));
         viewMenuBtn.setOnAction(e -> drawingArea.switchView(true));
 
-        clearBtn.setOnAction(_-> {
+        clearBtn.setOnAction(_ -> {
             drawingArea.circuit.print();
             drawingArea.circuit.clear();
             // clear animation as well
             drawingArea.animateCurrentFlow(false);
             runStopBtn.setText("Run");
 
-            drawingArea.canvas.getGraphicsContext2D().clearRect(0,0,canvas.getWidth(), canvas.getHeight());
+            drawingArea.canvas.getGraphicsContext2D().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
         });
         defaultWireColorPicker.setValue(Color.BLACK);
         defaultWireColorPicker.setOnAction(_ -> {
             Color pickedColor = defaultWireColorPicker.getValue();
-            if(pickedColor==null) pickedColor = Color.BLACK;
+            if (pickedColor == null) pickedColor = Color.BLACK;
             drawingTool.defaultWireColor = pickedColor;
         });
 
-        polarityCheckBox.setOnAction(_-> {
+        polarityCheckBox.setOnAction(_ -> {
             if (polarityCheckBox.isSelected()) {
                 System.out.println("Clicked");
             } else {
@@ -274,25 +274,32 @@ public class MainAppFXMLController {
         });
         runStopBtn.setText("Run");
         runStopBtn.setOnAction(_ -> {
-            animationRunning = !animationRunning;  // Toggle the animation state
-
+            // Check if there's an open switch
+            boolean hasOpenSwitch = drawingArea.circuit.toArrayList().stream()
+                    .filter(c -> c instanceof edu.vanier.strawberries.Models.Switch)
+                    .map(c -> (edu.vanier.strawberries.Models.Switch) c)
+                    .anyMatch(s -> !s.isClosed());
+            if (!animationRunning && hasOpenSwitch) {
+                // shows an error message if the switch is open
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("Open Switch Detected");
+                alert.setHeaderText(null);
+                alert.setContentText("The switch is open!! Close it to allow current to flow");
+                alert.showAndWait();
+                return; // no animation
+            }
+            animationRunning = !animationRunning;
             if (animationRunning) {
-                runStopBtn.setText("Stop");  // Change button text to "Stop"
-
-                // Create the CircuitMath instance and assign values to components
+                runStopBtn.setText("Stop");
+               /* // creates a circuit math object
                 edu.vanier.math.CircuitMath math = new edu.vanier.math.CircuitMath(drawingArea.circuit);
-                math.assignValuesToComponents();  // Assuming this method assigns current, voltage, resistance values to components.
-
-                // Start the current flow animation
+                math.assignValuesToComponents();*/
                 drawingArea.animateCurrentFlow(true);
             } else {
-                runStopBtn.setText("Run");  // Change button text back to "Run"
-
-                // Stop the current flow animation
+                runStopBtn.setText("Run");
                 drawingArea.animateCurrentFlow(false);
             }
         });
-        setUpMenuActions();
     }
 
     private void mouseMoved(MouseEvent e) {
