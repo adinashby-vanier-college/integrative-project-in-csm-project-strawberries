@@ -136,8 +136,10 @@ public class DrawingArea {
             this.progress = 0;
         }
 
-        public void update() {
-            progress += 0.001 * speedFactor;
+        public void update(double current) {
+            double dynamicSpeedFactor = speedFactor * (current / 1000);  // Normalize speed based on current
+
+            progress += 0.01 * dynamicSpeedFactor;
             if (progress > 1.0) {
                 progress = 0;
             }
@@ -180,6 +182,8 @@ public class DrawingArea {
         return result;
     }
 
+    boolean printedValues = false;
+
     public void animateCurrentFlow(boolean start) {
         animateCurrent = start;
         activeTransitions.clear();
@@ -193,14 +197,23 @@ public class DrawingArea {
 
             CircuitMath circuitMath = new CircuitMath(circuit);
             double totalCurrent = circuitMath.getTotalCurrent(); // get the total current
+            double totalResistance = circuitMath.getTotalResistance(); // get the total resistance
+            double totalVoltage = circuitMath.getTotalVoltage(); // get the total voltage
+
+            if (!printedValues) {
+                System.out.println("Voltage: " + totalVoltage + "V");
+                System.out.println("Resistance: " + totalResistance + "Ω");
+                System.out.println("Current: " + totalCurrent + "A");
+                printedValues = true;
+            }
 
             // Determine animation speed based on total current
             if (totalCurrent < 100) {
                 speedFactor = 0.5;
             } else if (totalCurrent < 600) {
-                speedFactor = 1.0;
+                speedFactor = 5.0;
             } else {
-                speedFactor = 2.0;
+                speedFactor = 10.0;
             }
 
             for (LinkedList<Component> list : circuit.arrayList) {
@@ -252,10 +265,16 @@ public class DrawingArea {
         this.circuit = circuit;
     }
 
-   public void updateAnimation() { // update the electrons animation
+    public void updateAnimation() {
         if (animateCurrent) {
+            // Get the total current from CircuitMath
+            CircuitMath circuitMath = new CircuitMath(circuit);
+            double totalCurrent = circuitMath.getTotalCurrent();  // Get the total current
+
+
+            // Update all electrons with the current speed factor
             for (Electron e : animatedElectrons) {
-                e.update();
+                e.update(totalCurrent);  // Pass the current to the update method
             }
         }
     }

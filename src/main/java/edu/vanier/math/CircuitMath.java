@@ -75,9 +75,9 @@ public class CircuitMath {
     public double getTotalCurrent() {
         double R = getTotalResistance();
         double V = getTotalVoltage();
-        System.out.println("Voltage = " + V + ", Resistance = " + R + ", Current = " + V/R );
+        //System.out.println("Voltage = " + V + ", Resistance = " + R + ", Current = " + V/R );
 
-       return 9; //R == 0 ? 0 : V / R; for testing purposese you can remove this after
+       return  R == 0 ? 0 : V / R;  //for testing purposese you can remove this after
     }
 
     public double getVoltageAcrossResistor(Resistor resistor) {
