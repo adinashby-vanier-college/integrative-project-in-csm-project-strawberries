@@ -1,9 +1,6 @@
 package edu.vanier.strawberries.Models;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
 /**
  * The Circuit is based on a Graph data structure
@@ -17,6 +14,19 @@ public class Circuit {
         closed = false;
         arrayList = new ArrayList<>();
         this.diagramView = diagramView;
+    }
+
+    public List<Component> getComponents() {
+        List<Component> all = new ArrayList<>();
+        for (LinkedList<Component> list : arrayList) {
+            if (!list.isEmpty()) {
+                Component main = list.getFirst(); // Assuming first is the node key
+                if (!all.contains(main)) {
+                    all.add(main);
+                }
+            }
+        }
+        return all;
     }
 
     public void addComponent(Component component) {

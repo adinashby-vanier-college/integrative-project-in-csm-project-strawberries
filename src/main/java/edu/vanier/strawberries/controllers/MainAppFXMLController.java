@@ -259,7 +259,33 @@ public class MainAppFXMLController {
             graphTitle.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
 
             // Graph
-            final LineChart<Number, Number> lineChart = getChart(drawingArea);
+            // Define axes
+            NumberAxis xAxis = new NumberAxis();
+            xAxis.setLabel("Resistance (Ω)");
+
+            NumberAxis yAxis = new NumberAxis();
+            yAxis.setLabel("Current (A)");
+
+            // Create chart
+            LineChart<Number, Number> lineChart = new LineChart<>(xAxis, yAxis);
+            lineChart.setTitle("Current vs Resistance");
+
+            // Series for data
+            XYChart.Series<Number, Number> series = new XYChart.Series<>();
+            series.setName("Components");
+
+            // Add data points from circuit
+            for (Component c : drawingArea.circuit.getComponents()) {
+                double r = c.getResistance();
+                double i = c.getCurrent();
+                // Only plot components with valid values
+                if (!Double.isNaN(r) && !Double.isNaN(i)) {
+                    series.getData().add(new XYChart.Data<>(r, i));
+                }
+            }
+
+            lineChart.getData().add(series);
+            lineChart.setLegendVisible(false);
 
             // Close button
             Button closeButton = new Button("Close");
@@ -274,7 +300,7 @@ public class MainAppFXMLController {
             codeStage.setScene(scene);
             codeStage.show();
 
-            // Animation: the real thing coming soon
+            // Animation
             VBox bottomContainer = new VBox(closeButton);
             bottomContainer.setAlignment(Pos.CENTER);
             bottomContainer.setSpacing(10);
