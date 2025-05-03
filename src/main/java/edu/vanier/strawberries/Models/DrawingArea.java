@@ -18,7 +18,14 @@ import javafx.scene.transform.Affine;
 import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
+
+import static edu.vanier.strawberries.controllers.SignOnLogInController.findRecent;
+import javafx.scene.paint.Color;
 
 public class DrawingArea {
     public DrawingTool drawingTool = new DrawingTool();
@@ -181,6 +188,105 @@ public class DrawingArea {
         System.out.println(result);
         return result;
     }
+
+    public static void importFromJson(String username, DrawingArea drawingArea) {
+        File jsonFile = new File("users.json");
+
+        if (!jsonFile.exists()) {
+            System.out.println("JSON file not found.");
+            return;
+        }
+
+        // Read the file into content
+        String content = "";
+        try (BufferedReader reader = new BufferedReader(new FileReader(jsonFile))) {
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line).append("\n");
+            }
+            content = sb.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        String recent = findRecent(content, username);
+        if (recent.isEmpty()) {
+            System.out.println("No recent project found for user: " + username);
+            return;
+        }
+
+        String[] lines = recent.split("\n");
+        Circuit circuit = new Circuit(true);  // Create new circuit
+
+        for (String line : lines) {
+            if (line.startsWith("wire|")) {
+                // wire format: wire|color|x1|y1|x2|y2
+                String[] parts = line.split("\\|");
+                if (parts.length == 6) {
+                    Color color = Color.web(parts[1].trim());
+                    double x1 = Double.parseDouble(parts[2]);
+                    double y1 = Double.parseDouble(parts[3]);
+                    double x2 = Double.parseDouble(parts[4]);
+                    double y2 = Double.parseDouble(parts[5]);
+
+                    // Create nodes and wire
+                    Node begin = new Node(x1, y1);
+                    Node end = new Node(x2, y2);
+                    Wire wire = new Wire(begin, end, color, 10, 10);
+
+                    // add wire to circuit
+                    circuit.addComponent(wire);
+                }
+            } else if (line.contains("|")) {
+                // component format: type|x|y|angle
+                String[] parts = line.split("\\|");
+                if (parts.length == 4) {
+                    String type = parts[0];
+                    double x = Double.parseDouble(parts[1]);
+                    double y = Double.parseDouble(parts[2]);
+                    int angle = Integer.parseInt(parts[3]);
+
+                    Component component = null;
+                    Node begin = new Node(x, y);
+                    Node end = new Node(x + 50, y);
+
+                    switch (type.toLowerCase()) {
+                        case "resistor":
+                            component = new Resistor(begin, end, 100.0, false); // default resistance
+                            break;
+                        case "battery":
+                            component = new Battery(begin, end, 5.0, false); // default voltage
+                            break;
+                        case "capacitor":
+                            component = new Capacitor(begin, end, 10, true);
+                            break;
+                        case "lightbulb":
+                            component = new Lightbulb(begin, end, Color.web("BLACK"), 10, true);
+                            break;
+                        case "fuse":
+                            component = new Fuse(begin, end, 10, true);
+                        case "switch":
+                            component = new Switch(begin, end, true, true);
+                        default:
+                            System.out.println("Unknown component type: " + type);
+                            break;
+                    }
+
+                    if (component != null) {
+                        component.setRotate(angle); // rotation
+                        circuit.addComponent(component);
+                    }
+                }
+            }
+        }
+
+        drawingArea.setCircuit(circuit);
+        drawingArea.drawContent();
+        System.out.println("Circuit imported successfully from JSON.");
+    }
+
 
     boolean printedValues = false;
 

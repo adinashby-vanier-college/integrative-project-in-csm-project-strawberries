@@ -1,10 +1,12 @@
 package edu.vanier.strawberries.controllers;
 
 
-import edu.vanier.strawberries.Models.Component;
+import edu.vanier.strawberries.Models.*;
 import edu.vanier.strawberries.ui.MainApp;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 
 import java.io.BufferedReader;
@@ -43,6 +45,8 @@ public class SignOnLogInController {
     public String getRecent() {
         return Login();
     }
+
+    public String getUsername() {return this.username.getText().trim();}
 
     private String Login() {
         String recentProject = "";
@@ -98,7 +102,7 @@ public class SignOnLogInController {
         return false;
     }
 
-    private static String findRecent(String content, String username) { // return recent project
+    public static String findRecent(String content, String username) { // return recent project
         int index = 0;
         while ((index = content.indexOf("\"username\":", index)) != -1) {
             int startUser = content.indexOf("\"", index + 11) + 1;
@@ -109,44 +113,13 @@ public class SignOnLogInController {
                 int recentIndex = content.indexOf("\"recent\":", endUser);
                 int startRecent = content.indexOf("\"", recentIndex + 9) +1;
                 int endRecent = content.indexOf("\"", startRecent);
-                String recentProject = content.substring(startRecent, endRecent);
-                return recentProject;
+                return content.substring(startRecent, endRecent)
+                        .replace("\\n", "\n") // handle escaped newlines
+                        .replace("\\\"", "\"");
             }
             index = endUser;
         }
         return "";
-    }
-
-    public void importGraph(String content, String username) {
-        String recent = findRecent(content, username);
-
-        if (recent.isEmpty()) {
-            System.out.println("No recent project found for user: " + username);
-            return;
-        }
-
-        edu.vanier.strawberries.Models.Circuit circuit = new edu.vanier.strawberries.Models.Circuit(true);
-        circuit.clear();
-
-        String[] lines = recent.split(", "); // split by each line
-        for (String line : lines) {
-            String[] parts = line.split(" -> ");
-            LinkedList<Component> currentList = new LinkedList<>();
-
-            for (String part : parts) {
-                int openParen = part.indexOf('(');
-                if (openParen == -1) continue;
-
-                String name = part.substring(0, openParen);
-                System.out.println(name);
-                //circuit.addComponent();
-                // add component to currentList
-            }
-
-            //arrayList.add(currentList); add currentlist to canvas
-        }
-
-        System.out.println("Graph imported successfully from recent field.");
     }
 
     public String hashSHA256(String input) throws Exception { // ecrypt inputted password

@@ -25,23 +25,23 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import java.nio.file.Path;
+
+import java.io.*;
+
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+
+import static edu.vanier.strawberries.controllers.SignOnLogInController.findRecent;
 
 /**
  * FXML controller class for the primary stage scene.
@@ -650,11 +650,15 @@ public class MainAppFXMLController {
       menuZoomIn.setOnAction(zoomInBtn.getOnAction());
       menuZoomOut.setOnAction(zoomOutBtn.getOnAction());
       menuToggleGrid.setOnAction(_->drawingArea.toggleGrid());
-      exportBtn.setOnAction(_->exportToJson());
-      //String recentProject = MainApp.signOnLogInController.getRecent();
+      String username = MainApp.signOnLogInController.getUsername();
+      exportBtn.setOnAction(_->exportToJson(username));
+      String recentProject = MainApp.signOnLogInController.getRecent();
       //menuOpenRecent.setOnAction(_->openRecent(recentProject));
+      menuOpenRecent.setOnAction(_-> {
+          DrawingArea.importFromJson(username, drawingArea);
+      });
 
-  // INSERT MENU
+      // INSERT MENU
       //wire
       menuWire.setOnAction(_-> drawingTool.setCurrentAction("place-wire"));
       menuRedWire.setOnAction(_-> drawingTool.setCurrentColor(Color.RED));
@@ -678,13 +682,110 @@ public class MainAppFXMLController {
         else leftPanelVBox.getChildren().remove(toolbarScrollPane);
   }
 
-  private void exportToJson() {
-        String info = drawingArea.exportCircuit(circuitNameField.getText()); // get drawingArea to put in json
-      // add txt to json
-  }
+    private void exportToJson(String username) {
+        String info = drawingArea.exportCircuit(circuitNameField.getText());
+        File jsonFile = new File("users.json");
+
+        String content = "";
+
+        // read json
+        if (jsonFile.exists()) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(jsonFile))) {
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line).append("\n");
+                }
+                content = sb.toString();
+            } catch (IOException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Failed to read JSON file.");
+                return;
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "JSON file does not exist.");
+            return;
+        }
+
+        // look for user, replace recent
+        String[] lines = content.split("\n");
+        StringBuilder updated = new StringBuilder();
+        boolean userFound = false;
+        boolean insideTargetUser = false;
+
+        for (int i = 0; i < lines.length; i++) {
+            String line = lines[i];
+
+            if (line.trim().startsWith("\"username\":") && line.contains("\"" + username + "\"")) {
+                userFound = true;
+                insideTargetUser = true;
+                updated.append(line).append("\n");
+                continue;
+            }
+
+            if (insideTargetUser && line.trim().startsWith("\"recent\":")) {
+                // replace the recent field
+                updated.append("      \"recent\": \"").append(escape(info.trim())).append("\",\n");
+                continue;
+            }
+
+            // insert recent if it wasn't already there
+            if (insideTargetUser && line.trim().startsWith("}")) {
+                if (!content.contains("\"recent\"") || !lineAboveContainsRecent(lines, i)) {
+                    updated.append("      \"recent\": \"").append(escape(info.trim())).append("\"\n");
+                }
+                insideTargetUser = false;
+            }
+
+            updated.append(line).append("\n");
+        }
+
+        if (!userFound) {
+            JOptionPane.showMessageDialog(null, "User not found in JSON.");
+            return;
+        }
+
+        try (FileWriter writer = new FileWriter(jsonFile)) {
+            writer.write(updated.toString());
+            JOptionPane.showMessageDialog(null, "Exported circuit to JSON for user: " + username);
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Failed to write to JSON file.");
+        }
+    }
+
+    private String escape(String input) { // helper method for formatting
+        return input.replace("\\", "\\\\").replace("\"", "\\\"");
+    }
+
+    private boolean lineAboveContainsRecent(String[] lines, int index) { // helper method check if there is recent
+        for (int i = index - 1; i >= 0; i--) {
+            String trimmed = lines[i].trim();
+            if (trimmed.startsWith("\"") && trimmed.endsWith(",")) {
+                return trimmed.startsWith("\"recent\":");
+            } else if (trimmed.equals("{")) {
+                break;
+            }
+        }
+        return false;
+    }
 
   private void exportToTxt() {
         String info = drawingArea.exportCircuit(circuitNameField.getText()); // get drawingArea to put in txt
-      // open file chooser dialog and bufferedwrite to txt file
+      JFileChooser fileChooser = new JFileChooser();
+      fileChooser.setDialogTitle("Save Circuit as TXT");
+      int userSelection = fileChooser.showSaveDialog(null); // file dialog
+
+      if (userSelection == JFileChooser.APPROVE_OPTION) {
+          File fileToSave = fileChooser.getSelectedFile();
+
+          try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileToSave))) {
+              writer.write(info);
+              JOptionPane.showMessageDialog(null, "Circuit exported to TXT successfully.");
+          } catch (IOException e) {
+              e.printStackTrace();
+              JOptionPane.showMessageDialog(null, "Error exporting circuit to TXT.");
+          }
+      }
   }
 }
