@@ -193,97 +193,107 @@ public class DrawingArea {
         File jsonFile = new File("src/main/resources/users.json");
 
         if (!jsonFile.exists()) {
-            System.out.println("JSON file not found.");
+            System.out.println("[DEBUG] JSON file not found.");
             return;
         }
 
-        //String recentDraft = findRecent(content, username); // not working!!
         String recent = MainApp.recentProject;
 
-        if (recent.isEmpty()) {
-            System.out.println("No recent project found for user: " + username);
+        if (recent == null || recent.isEmpty()) {
+            System.out.println("[DEBUG] No recent project found for user: " + username);
             return;
         }
 
         String[] lines = recent.split("\n");
-        Circuit circuit = new Circuit(true);  // create new circuit
+        System.out.println("[DEBUG] Total lines read: " + lines.length);
 
+        Circuit circuit = new Circuit(true);  // create new circuit
         ArrayList<Component> components = new ArrayList<>(); // temp component holder
 
         for (String line : lines) {
-            // remove "1|" or "1|1|" before "wire"
+            System.out.println("[DEBUG] Processing line: " + line);
+
+            // Remove any prefix before "wire|"
             if (line.matches(".*\\|wire\\|.*")) {
                 line = line.substring(line.indexOf("wire|"));
+                System.out.println("[DEBUG] Trimmed wire line: " + line);
             }
-            if (line.startsWith("wire|")) {
-                // wire format: wire|color|x1|y1|x2|y2
 
-                // fix!! wire does not appear
+            if (line.startsWith("wire|")) {
                 String[] parts = line.split("\\|");
                 if (parts.length == 6) {
-                    Color color = Color.web(parts[1].trim());
-                    double x1 = Double.parseDouble(parts[2]);
-                    double y1 = Double.parseDouble(parts[3]);
-                    double x2 = Double.parseDouble(parts[4]);
-                    double y2 = Double.parseDouble(parts[5]);
+                    try {
+                        Color color = Color.web(parts[1].trim());
+                        double x1 = Double.parseDouble(parts[2]);
+                        double y1 = Double.parseDouble(parts[3]);
+                        double x2 = Double.parseDouble(parts[4]);
+                        double y2 = Double.parseDouble(parts[5]);
 
-                    // Create nodes and wire
-                    Node begin = new Node(x1, y1);
-                    Node end = new Node(x2, y2);
-                    Wire wire = new Wire(begin, end, color, 10, 10);
+                        Node begin = new Node(x1, y1);
+                        Node end = new Node(x2, y2);
+                        Wire wire = new Wire(begin, end, color, 10, 10);
 
-                    // add wire to circuit
-                    // debug
-                    System.out.println("Added a wire:" + line);
-                    circuit.addComponent(wire);
+                        circuit.addComponent(wire);
+                        System.out.println("[DEBUG] Added wire: " + wire);
+                    } catch (Exception e) {
+                        System.out.println("[ERROR] Failed to parse wire: " + e.getMessage());
+                    }
+                } else {
+                    System.out.println("[DEBUG] Invalid wire format: " + line);
                 }
             } else if (line.contains("|")) {
-                // component format: type|x|y|angle
                 String[] parts = line.split("\\|");
                 if (parts.length == 4) {
-                    String type = parts[0];
-                    double x = Double.parseDouble(parts[1]);
-                    double y = Double.parseDouble(parts[2]);
-                    int angle = (int) Double.parseDouble(parts[3]);
+                    try {
+                        String type = parts[0];
+                        double x = Double.parseDouble(parts[1]);
+                        double y = Double.parseDouble(parts[2]);
+                        int angle = (int) Double.parseDouble(parts[3]);
 
-                    Component component = null;
-                    Node begin = new Node(x, y);
-                    Node end = new Node(x + 50, y);
+                        Component component = null;
+                        Node begin = new Node(x, y);
+                        Node end = new Node(x + 50, y);
 
-                    switch (type.toLowerCase()) {
-                        case "resistor":
-                            component = new Resistor(begin, end, 100.0, false); // default resistance
-                            break;
-                        case "battery":
-                            component = new Battery(begin, end, 5.0, false); // default voltage
-                            break;
-                        case "capacitor":
-                            component = new Capacitor(begin, end, 10, true);
-                            break;
-                        case "lightbulb":
-                            component = new Lightbulb(begin, end, Color.web("BLACK"), 10, true);
-                            break;
-                        case "fuse":
-                            component = new Fuse(begin, end, 10, true);
-                            break;
-                        case "switch":
-                            component = new Switch(begin, end, true, true);
-                            break;
-                        default:
-                            System.out.println("Unknown component type: " + type);
-                            break;
+                        switch (type.toLowerCase()) {
+                            case "resistor":
+                                component = new Resistor(begin, end, 100.0, false);
+                                break;
+                            case "battery":
+                                component = new Battery(begin, end, 5.0, false);
+                                break;
+                            case "capacitor":
+                                component = new Capacitor(begin, end, 10, true);
+                                break;
+                            case "lightbulb":
+                                component = new Lightbulb(begin, end, Color.web("BLACK"), 10, true);
+                                break;
+                            case "fuse":
+                                component = new Fuse(begin, end, 10, true);
+                                break;
+                            case "switch":
+                                component = new Switch(begin, end, true, true);
+                                break;
+                            default:
+                                System.out.println("[DEBUG] Unknown component type: " + type);
+                        }
+
+                        if (component != null) {
+                            component.setRotate(angle);
+                            circuit.addComponent(component);
+                            components.add(component);
+                            System.out.println("[DEBUG] Added component: " + component + " at (" + x + "," + y + ") angle: " + angle);
+                        }
+                    } catch (Exception e) {
+                        System.out.println("[ERROR] Failed to parse component: " + e.getMessage());
                     }
-
-                    if (component != null) {
-                        component.setRotate(angle); // rotation
-                        circuit.addComponent(component);
-                        components.add(component);
-                    }
+                } else {
+                    System.out.println("[DEBUG] Invalid component format: " + line);
                 }
             }
         }
 
-        // connect components that share node position
+        System.out.println("[DEBUG] Total components added: " + components.size());
+
         for (int i = 0; i < components.size(); i++) {
             for (int j = i + 1; j < components.size(); j++) {
                 Component a = components.get(i);
@@ -294,23 +304,32 @@ public class DrawingArea {
                     int indexB = circuit.getIndex(b);
                     if (indexA != -1 && indexB != -1) {
                         circuit.addEdge(indexA, indexB);
+                        System.out.println("[DEBUG] Connected components: " + a + " & " + b);
+                    } else {
+                        System.out.println("[DEBUG] Could not get indices for connection");
                     }
-                    System.out.println("Connecting " + a + " to " + b);
                 } else {
-                    System.out.println("Not connecting..."); // debug
+                    System.out.println("[DEBUG] Components not connected: " + a + " &  " + b);
                 }
             }
         }
 
-        // visual
         drawingArea.setCircuit(circuit);
+        System.out.println("[DEBUG] Circuit set on drawingArea");
         drawingArea.drawContent();
-        circuit.print(); // debug
-        circuit.checkForCycle(); //debug
+        System.out.println("[DEBUG] drawContent() called");
 
-        System.out.println("Circuit imported successfully from JSON.");
+        // Extra circuit state debug
+        System.out.println("[DEBUG] Components in circuit:");
+        for (Component c : circuit.toArrayList()) {
+            System.out.println("  - " + c);
+        }
+
+        circuit.print(); // optional debug
+        circuit.checkForCycle(); // optional debug
+
+        System.out.println("[DEBUG] Circuit import complete.");
     }
-
 
     boolean printedValues = false;
 
