@@ -93,8 +93,25 @@ public class CircuitMath {
  
     public void assignValuesToComponents() {
         double totalCurrent = getTotalCurrent();
-        double totalVoltage = getTotalVoltage();
+        double totalVoltage = getTotalVoltage(); 
+        double totalResistance = getTotalResistance();
 
+if (totalResistance == 0 && totalVoltage > 0) {
+    System.out.println("️ SHORT CIRCUIT DETECTED! Resistance = 0 Ω");
+
+    Alert alert = new Alert(Alert.AlertType.ERROR);
+    alert.setTitle("Short Circuit Detected");
+    alert.setHeaderText("Danger: No resistance in circuit");
+    alert.setContentText("This is a short circuit! Add at least one resistor to prevent damage.");
+    alert.showAndWait();
+}
+
+        
+        
+        
+        
+        
+        
      /*   if (totalCurrent == 0) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("No Current Flowing");
