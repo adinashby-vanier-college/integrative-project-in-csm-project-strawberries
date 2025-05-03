@@ -4,22 +4,15 @@ import edu.vanier.math.CircuitMath;
 import edu.vanier.strawberries.controllers.MainAppFXMLController;
 import edu.vanier.strawberries.controllers.SignOnLogInController;
 import edu.vanier.strawberries.ui.MainApp;
-import javafx.animation.Interpolator;
 import javafx.geometry.Point2D;
-import javafx.scene.Cursor;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.animation.PathTransition;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Path;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Rotate;
-import javafx.util.Duration;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -38,6 +31,9 @@ public class DrawingArea {
     private boolean showGrid;
 
     private final List<PathTransition> activeTransitions = new ArrayList<>();
+    // Make a list to store the electrons to that are going to get animated
+    private final List<Electron> animatedElectrons = new ArrayList<>();
+    private boolean animateCurrent = false;
 
     public DrawingArea(Canvas canvas) {
         this.canvas = canvas;
@@ -47,6 +43,9 @@ public class DrawingArea {
         drawingTool.setCurrentAction("");
     }
 
+    /**
+     * Method called every frame. Draws the elements to be displayed in the canvas, such as circuit components
+     */
     public void drawContent() {
         gc.clearRect(0,0,canvas.getWidth(),canvas.getHeight());
 
@@ -118,6 +117,11 @@ public class DrawingArea {
         }
     }
 
+    /**
+     * Allows the component nodes to snap to the closed grid intersection when dragging
+     * @param pos the un-snapped position of the node
+     * @return The updated, snapped position relative to the grid.
+     */
     public double snap(double pos) {
         double remainder = pos % (squareSize);
         if (remainder == 0)
@@ -128,10 +132,9 @@ public class DrawingArea {
             return pos + (squareSize - remainder);
     }
 
-    //make a list to store the electrons to that r going to get animated
-    private final List<Electron> animatedElectrons = new ArrayList<>();
-    private boolean animateCurrent = false;
-
+    /**
+     *  INSERT JAVADOC COMMENT HERE
+     */
     private static class Electron {
         private final Wire wire;
         private double progress;
@@ -158,6 +161,7 @@ public class DrawingArea {
             return new Point2D(x, y);
         }
     }
+
 
     public String exportCircuit(String circuitName) {
         String output = "";
@@ -220,6 +224,8 @@ public class DrawingArea {
             }
 
             if (line.startsWith("wire|")) {
+                // wire format: wire|color|x1|y1|x2|y2
+                // fix!! wire does not appear
                 String[] parts = line.split("\\|");
                 if (parts.length == 6) {
                     try {
@@ -242,6 +248,7 @@ public class DrawingArea {
                     System.out.println("[DEBUG] Invalid wire format: " + line);
                 }
             } else if (line.contains("|")) {
+                // component format: type|x|y|angle
                 String[] parts = line.split("\\|");
                 if (parts.length == 4) {
                     try {
@@ -292,8 +299,9 @@ public class DrawingArea {
             }
         }
 
+        //TODO check here
+        // connect components that share node position
         System.out.println("[DEBUG] Total components added: " + components.size());
-
         for (int i = 0; i < components.size(); i++) {
             for (int j = i + 1; j < components.size(); j++) {
                 Component a = components.get(i);
@@ -314,22 +322,16 @@ public class DrawingArea {
             }
         }
 
+        // visual
         drawingArea.setCircuit(circuit);
         System.out.println("[DEBUG] Circuit set on drawingArea");
         drawingArea.drawContent();
-        System.out.println("[DEBUG] drawContent() called");
+        circuit.print(); // debug
+        Circuit.checkForCycle(circuit);
 
-        // Extra circuit state debug
-        System.out.println("[DEBUG] Components in circuit:");
-        for (Component c : circuit.toArrayList()) {
-            System.out.println("  - " + c);
-        }
-
-        circuit.print(); // optional debug
-        circuit.checkForCycle(); // optional debug
-
-        System.out.println("[DEBUG] Circuit import complete.");
+        System.out.println("Circuit imported successfully from JSON.");
     }
+
 
     boolean printedValues = false;
 

@@ -36,6 +36,13 @@ public class Resistor extends Component {
         });
     }
 
+    /**
+     * Main constructor of the {@link Resistor} class
+     * @param begin The "begin" node
+     * @param end The temporary "end" node
+     * @param resistance The resistance of the resistor
+     * @param diagramView true if it should be displayed as a diagram
+     */
     public Resistor(Node begin, Node end, double resistance, boolean diagramView) {
         super(begin, end, diagramView);
         this.resistance = resistance;
@@ -62,7 +69,10 @@ public class Resistor extends Component {
   
     }
 
-    // Manually triggered edit (like battery)
+    /**
+     * Show the editing dialog of the resistor when it is being edited
+     * @param parentPane The layout pane where the editing box will be displayed
+     */
     public void handleEdit(Pane parentPane) {
         TextField inputField = new TextField(String.valueOf(resistance));
         inputField.setPrefWidth(60);
@@ -89,6 +99,11 @@ public class Resistor extends Component {
         });
     }
 
+    /**
+     * Update the resistor's resistance based on the user's input from the popup field from {@link #handleEdit(Pane)}
+     * @param inputField The input field
+     * @param parentPane The layout pane where the editing box was displayed
+     */
     private void updateResistanceFromField(TextField inputField, Pane parentPane) {
         try {
             double newResistance = Double.parseDouble(inputField.getText());
@@ -105,7 +120,11 @@ public class Resistor extends Component {
         parentPane.getChildren().remove(inputField);
     }
 
-    // Double-click shows this
+    /**
+     *
+     * @implNote This method is called when the resistor is double-clicked
+     * @param parentPane The layout pane to display the info box on
+     */
     public void showInfoBox(Pane parentPane) {
         TextArea infoArea = new TextArea();
         infoArea.setEditable(false);
@@ -133,13 +152,17 @@ public class Resistor extends Component {
         });
         
         infoArea.setOnKeyPressed(keyEvent -> {
-    switch (keyEvent.getCode()) {
-        case ESCAPE, ENTER -> parentPane.getChildren().remove(infoArea);
+            switch (keyEvent.getCode()) {
+                case ESCAPE, ENTER -> parentPane.getChildren().remove(infoArea);
+            }
+        });
     }
-});
 
-    }
-
+    /**
+     * Checks if it is connected to the rest of the circuit
+     * @param circuit The circuit
+     * @return True if it is connected
+     */
     public boolean isConnected(Circuit circuit) {
         int resistorIndex = circuit.getIndex(this);
         for (LinkedList<Component> list : circuit.arrayList) {

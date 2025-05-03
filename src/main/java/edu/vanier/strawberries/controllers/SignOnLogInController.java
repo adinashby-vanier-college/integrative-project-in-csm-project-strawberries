@@ -42,6 +42,10 @@ public class SignOnLogInController {
         });
     }
 
+    /**
+     * TODO javadoc here
+     * @return
+     */
     public String Login() {
         String recentProject = "";
         String username = this.username.getText().trim();
@@ -79,7 +83,14 @@ public class SignOnLogInController {
         return recentProject;
     }
 
-    private boolean findCheckUser(String content, String username, String hashedPassword) { // check existing user
+    /**
+     * Verifies that the username and password combination exists
+     * @param content The existing user-password combinations
+     * @param username The username to attempt
+     * @param hashedPassword The password to attempt (hashed for security)
+     * @return true if the username and password match an existing user
+     */
+    private boolean findCheckUser(String content, String username, String hashedPassword) {
         int index = 0;
         while ((index = content.indexOf("\"username\":", index)) != -1) {
             int startUser = content.indexOf("\"", index + 11) + 1;
@@ -98,6 +109,12 @@ public class SignOnLogInController {
         return false;
     }
 
+    /**
+     * Get the user's recent project
+     * @param content The existing users
+     * @param username The user whose recent project to find.
+     * @return the filepath of the user's recent project
+     */
     public static String findRecent(String content, String username) { // return recent project
         // debug
         System.out.println("username" + username);
@@ -134,7 +151,12 @@ public class SignOnLogInController {
         return "";
     }
 
-    public String hashSHA256(String input) throws Exception { // ecrypt inputted password
+    /**
+     * Encrypts the user's passwords
+     * @param input The original password
+     * @return The encrypted password
+     */
+    public String hashSHA256(String input) throws Exception {
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
         byte[] encodedHash = digest.digest(input.getBytes(StandardCharsets.UTF_8));
         StringBuilder hexString = new StringBuilder(2 * encodedHash.length);
@@ -146,6 +168,11 @@ public class SignOnLogInController {
         return hexString.toString();
     }
 
+    /**
+     * Parse a given JSON file
+     * @param file The JSON file to parse
+     * @return a string value for the user information
+     */
     private String readFile(File file) throws IOException { // json format parser
         BufferedReader reader = new BufferedReader(new FileReader(file));
         StringBuilder sb = new StringBuilder();

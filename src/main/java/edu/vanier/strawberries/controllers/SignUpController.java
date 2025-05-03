@@ -36,6 +36,9 @@ public class SignUpController {
         SignUpBtn.setOnAction(_-> signUp());
     }
 
+    /**
+     * Collect user information and create an account
+     */
     private void signUp() {
         String username = this.username.getText().trim();
         String password = this.password.getText().trim();
@@ -100,11 +103,22 @@ public class SignUpController {
 
     }
 
+    /**
+     * Verifies if the user exists in the records
+     * @param content The records of existing accounts
+     * @param username The username to create
+     * @return True if an account under that username already exists
+     */
     private boolean userExists(String content, String username) { // check if user exists
         return content.contains("\"username\": \"" + username + "\"");
     }
 
-    private String hashSHA256(String input) throws Exception { // encrypt password
+    /**
+     * Encrypts the user's passwords
+     * @param input The original password
+     * @return The encrypted password
+     */
+    private String hashSHA256(String input) throws Exception {
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
         byte[] encodedHash = digest.digest(input.getBytes(StandardCharsets.UTF_8));
         StringBuilder hexString = new StringBuilder(2 * encodedHash.length);
@@ -116,6 +130,10 @@ public class SignUpController {
         return hexString.toString();
     }
 
+    /**
+     * Generate a recovery code for the user, in case of a forgotten password
+     * @return The recovery code
+     */
     private String generateRecoveryCode() {
         SecureRandom random = new SecureRandom();
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -126,6 +144,11 @@ public class SignUpController {
         return code.toString();
     }
 
+    /**
+     * Parse a given JSON file
+     * @param file The JSON file to parse
+     * @return a string value for the user information
+     */
     private String readFile(File file) throws IOException { //read json
         BufferedReader reader = new BufferedReader(new FileReader(file));
         StringBuilder sb = new StringBuilder();

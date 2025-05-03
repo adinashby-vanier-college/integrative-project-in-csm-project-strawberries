@@ -14,7 +14,11 @@ public class CircuitMath {
         this.visited = new boolean[circuit.arrayList.size()];
     }
 
-    
+    /**
+     * TODO JAVADOC HERE
+     * @param current
+     * @param path
+     */
     private void search(int current, List<Component> path) {
         if (visited[current]) return;
         visited[current] = true;
@@ -29,7 +33,10 @@ public class CircuitMath {
         }
     }
 
-    
+    /**
+     *
+     * @return
+     */
     public List<Component> getTraversalPath() {
         Arrays.fill(visited, false);
         List<Component> path = new ArrayList<>();
@@ -44,7 +51,9 @@ public class CircuitMath {
         return path;
     }
 
-    
+    /**
+     * @return the equivalent resistance of the circuit.
+     */
     public double getTotalResistance() {
         List<Component> path = getTraversalPath();
         double totalResistance = 0.0;
@@ -58,7 +67,9 @@ public class CircuitMath {
         return totalResistance;
     }
 
-   
+    /**
+     * @return the equivalent voltage of the circuit
+     */
     public double getTotalVoltage() {
         List<Component> path = getTraversalPath();
         double voltage = 0.0;
@@ -71,7 +82,10 @@ public class CircuitMath {
         return voltage;
     }
 
-    // Calculates total current using Ohm's Law: I = V / R
+    /**
+     * Calculates total current using Ohm's Law: I = V / R
+     * @return The total current in the circuit
+     */
     public double getTotalCurrent() {
         double R = getTotalResistance();
         double V = getTotalVoltage();
@@ -80,37 +94,43 @@ public class CircuitMath {
        return  R == 0 ? 0 : V / R;  //for testing purposese you can remove this after
     }
 
+    /**
+     * Calculates the voltage across a given resistor
+     * @param resistor The resistor in question
+     * @return The voltage across the resistor
+     */
     public double getVoltageAcrossResistor(Resistor resistor) {
         double current = getTotalCurrent();
         return current * resistor.getResistance();
     }
 
+    /**
+     * Set the voltage across a certain component.
+     * @param component The given component
+     */
     public static void setVoltageAcross(Component component) {
         if(component.getResistance() > 0 && component.getCurrent() > 0) {
             component.setVoltage(component.getResistance()*component.getCurrent());
         }
     }
- 
+
+    /**
+     * Assigns the correct values to the components of the circuit
+     */
     public void assignValuesToComponents() {
         double totalCurrent = getTotalCurrent();
         double totalVoltage = getTotalVoltage(); 
         double totalResistance = getTotalResistance();
 
-if (totalResistance == 0 && totalVoltage > 0) {
-    System.out.println("️ SHORT CIRCUIT DETECTED! Resistance = 0 Ω");
+        if (totalResistance == 0 && totalVoltage > 0) {
+        System.out.println("️ SHORT CIRCUIT DETECTED! Resistance = 0 Ω");
 
-    Alert alert = new Alert(Alert.AlertType.ERROR);
-    alert.setTitle("Short Circuit Detected");
-    alert.setHeaderText("Danger: No resistance in circuit");
-    alert.setContentText("This is a short circuit! Add at least one resistor to prevent damage.");
-    alert.showAndWait();
-}
-
-        
-        
-        
-        
-        
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Short Circuit Detected");
+        alert.setHeaderText("Danger: No resistance in circuit");
+        alert.setContentText("This is a short circuit! Add at least one resistor to prevent damage.");
+        alert.showAndWait();
+        }
         
      /*   if (totalCurrent == 0) {
             Alert alert = new Alert(Alert.AlertType.WARNING);

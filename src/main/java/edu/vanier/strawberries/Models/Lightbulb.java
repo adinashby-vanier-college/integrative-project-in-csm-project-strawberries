@@ -38,6 +38,10 @@ public class Lightbulb extends Component {
         return minVoltage;
     }
 
+    public void setMinVoltage(double minVoltage) {
+        this.minVoltage = minVoltage;
+    }
+
     public double getLightIntensity() {
         if(voltage >= minVoltage) return voltage/2*minVoltage;
         else return 0;
@@ -53,6 +57,10 @@ public class Lightbulb extends Component {
 
     public Color getColor() {
         return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 
 }

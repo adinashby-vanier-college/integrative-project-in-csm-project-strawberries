@@ -25,18 +25,15 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-
-import java.io.*;
-
 import javafx.scene.text.Text;
+import java.io.*;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.swing.*;
 import java.util.ArrayList;
+import javax.swing.*;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -50,17 +47,17 @@ public class MainAppFXMLController {
 
     private final static Logger logger = LoggerFactory.getLogger(MainAppFXMLController.class);
     public boolean animationRunning;
-    public Component selection, editing;
+    public Component selection,editing;
     public Circuit circuit;
-    private double posX, posY;
+    private double posX,posY;
     private Node[] toMove = new Node[2];
-    private Point2D mouseDownLocation, initialBegin, initialEnd;
+    private Point2D mouseDownLocation,initialBegin,initialEnd;
     public boolean diagramView;
     private String currentTheme;
 
     //Import FXML variables
     @FXML
-    VBox window, leftPanelVBox, rightPanelVBox;
+    VBox window,leftPanelVBox,rightPanelVBox;
     @FXML
     SplitPane splitPane;
     @FXML
@@ -68,7 +65,7 @@ public class MainAppFXMLController {
     @FXML
     HBox toolbarHBox;
     @FXML
-    Button zoomInBtn, zoomOutBtn, undoBtn, redoBtn, copyBtn, pasteBtn, addWireBtn, addResistorBtn, addCapacitorBtn, addBatteryBtn, addSwitchBtn;
+    Button zoomInBtn,zoomOutBtn,undoBtn,redoBtn,copyBtn,pasteBtn,addWireBtn,addResistorBtn,addCapacitorBtn,addBatteryBtn,addSwitchBtn;
     @FXML
     Canvas canvas;
     @FXML
@@ -76,7 +73,7 @@ public class MainAppFXMLController {
     @FXML
     TextField circuitNameField;
     @FXML
-    Button exportBtn, moreInformationBtn, runStopBtn, resetBtn, clearBtn;
+    Button exportBtn,moreInformationBtn,runStopBtn,resetBtn,clearBtn;
     @FXML
     Label runStopLabel;
     @FXML
@@ -99,6 +96,9 @@ public class MainAppFXMLController {
     private DrawingTool drawingTool;
     public DrawingArea drawingArea;
 
+    /**
+     * Initializes the application before launching the window.
+     */
     @FXML
     public void initialize() {
         logger.info("Initializing MainAppController...");
@@ -116,11 +116,12 @@ public class MainAppFXMLController {
         canvas.addEventHandler(MouseEvent.MOUSE_DRAGGED, this::mouseDragged);
         canvas.addEventHandler(MouseEvent.MOUSE_RELEASED, this::mouseReleased);
 
-        if (drawingArea.circuit == null) {
-            drawingArea.setCircuit(circuit);
-        }
+        if(drawingArea.circuit == null) drawingArea.setCircuit(circuit);
     }
 
+    /**
+     * Method called at every frame. Checks on circuit state and updates values when necessary.
+     */
     public void update() {
         Point2D mouseAt = new Point2D(posX, posY);
         // Update selection
@@ -166,6 +167,10 @@ public class MainAppFXMLController {
         drawingArea.drawContent();
     }
 
+    /**
+     * Initializing the functions of UI elements such as buttons, menus, etc. before launching.
+     * @implNote This method should be called in the {@link #initialize()} method
+     */
     private void initUI() {
 // 1. BIND DIMENSIONS:
         // Heights
@@ -206,12 +211,12 @@ public class MainAppFXMLController {
         addSwitchBtn.setOnAction(_ -> drawingTool.setCurrentAction("place-switch"));
 
         // view
-        drawingArea.switchView(true);
+        switchView(true);
         MenuItem diagramItem = viewMenuBtn.getItems().get(0);
         MenuItem realisticItem = viewMenuBtn.getItems().get(1);
-        diagramItem.setOnAction(e -> drawingArea.switchView(true));
-        realisticItem.setOnAction(e -> drawingArea.switchView(false));
-        viewMenuBtn.setOnAction(e -> drawingArea.switchView(true));
+        diagramItem.setOnAction(_ -> switchView(true));
+        realisticItem.setOnAction(_ -> switchView(false));
+        viewMenuBtn.setOnAction(_ -> switchView(true));
 
         // menu buttons
         setUpMenuActions();
@@ -275,7 +280,7 @@ public class MainAppFXMLController {
             series.setName("Components");
 
             // Add data points from circuit
-            for (Component c : drawingArea.circuit.getComponents()) {
+            for (Component c : drawingArea.circuit.toArrayList()) {
                 double r = c.getResistance();
                 double i = c.getCurrent();
                 // Only plot components with valid values
@@ -337,62 +342,49 @@ public class MainAppFXMLController {
         });
     }
 
+    /**
+     * Method called whenever the mouse moves location on the screen.
+     * @implNote Serves update the global variables {@link #posX} and {@link #posY} and the state of the cursor when hovering a circuit element.
+     * @param e the MouseEvent fired.
+     */
     private void mouseMoved(MouseEvent e) {
         posX = e.getX();
         posY = e.getY();
-        if (drawingTool.getCurrentAction().equals("select")) {
-            if (selection != null) {
-                setCursor(Cursor.OPEN_HAND);
-            } else {
-                setCursor(Cursor.DEFAULT);
-            }
+        if(drawingTool.getCurrentAction().equals("select")) {
+            if (selection != null) setCursor(Cursor.OPEN_HAND);
+            else setCursor(Cursor.DEFAULT);
         }
     }
 
+    /**
+     * Method called whenever the mouse is pressed down.
+     * @param e The MouseEvent fired.
+     */
     private void mousePressed(MouseEvent e) {
-        mouseDownLocation = new Point2D(e.getX(), e.getY());
-        if (!Objects.equals(drawingTool.getCurrentAction(), "")) {
-            if (selection != null && !Objects.equals(drawingTool.getCurrentAction(), "select")) {
-                unselect(selection);
-            }
-            if (editing != null) {
-                edit(null);
-            }
+        mouseDownLocation = new Point2D(e.getX(),e.getY());
+        if(!Objects.equals(drawingTool.getCurrentAction(),"")) {
+            if(selection!=null && !Objects.equals(drawingTool.getCurrentAction(), "select")) unselect(selection);
+            if(editing!=null) edit(null);
             drawingTool.setPencilDown(true);
             Node eventLocation = new Node(drawingArea.snap(e.getX()), drawingArea.snap(e.getY()));
             Node tempEnd = Node.copyOf(eventLocation);
             switch (drawingTool.getCurrentAction()) {
-                case "place-wire" ->
-                    select(new Wire(eventLocation, tempEnd, ((drawingTool.getCurrentColor() == null) ? drawingTool.defaultWireColor : drawingTool.getCurrentColor()), 0, 0));
-                case "place-battery" ->
-                    select(new Battery(eventLocation, tempEnd, 12, diagramView));
-                case "place-capacitor" ->
-                    select(new Capacitor(eventLocation, tempEnd, 0, diagramView));
-                case "place-fuse" ->
-                    select(new Fuse(eventLocation, tempEnd, 20, diagramView));
-                case "place-lightbulb" ->
-                    select(new Lightbulb(eventLocation, tempEnd, (drawingTool.getCurrentColor() == null) ? drawingTool.defaultLightbulbColor : drawingTool.getCurrentColor(), 0, diagramView));
-                case "place-resistor" ->
-                    select(new Resistor(eventLocation, tempEnd, 10, diagramView));
-                case "place-switch" ->
-                    select(new Switch(eventLocation, tempEnd, false, diagramView));
+                case "place-wire" -> select(new Wire(eventLocation, tempEnd, ((drawingTool.getCurrentColor()==null) ? drawingTool.defaultWireColor : drawingTool.getCurrentColor()), 0, 0));
+                case "place-battery" -> select(new Battery(eventLocation, tempEnd, 12, diagramView));
+                case "place-capacitor" -> select(new Capacitor(eventLocation, tempEnd, 0, diagramView));
+                case "place-fuse" -> select(new Fuse(eventLocation, tempEnd,20, diagramView));
+                case "place-lightbulb" -> select(new Lightbulb(eventLocation, tempEnd,(drawingTool.getCurrentColor()==null) ? drawingTool.defaultLightbulbColor : drawingTool.getCurrentColor(),0, diagramView));
+                case "place-resistor" -> select(new Resistor(eventLocation, tempEnd, 10, diagramView));
+                case "place-switch" -> select(new Switch(eventLocation, tempEnd, false,diagramView));
                 case "select" -> {
-                    if (selection != null) {
-                        setCursor(Cursor.CLOSED_HAND);
-                    }
+                    if(selection != null) setCursor(Cursor.CLOSED_HAND);
                     edit(selection);
-
-                    if (selection instanceof Resistor resistor) {
-                        if (e.getClickCount() == 2) {
-                            resistor.handleEdit(leftPanel); // double click to edit resistance
-                        } else if (e.getClickCount() == 3) {
-                            resistor.showInfoBox(leftPanel); // triple click to show info
+                   if (selection instanceof Battery battery) {
+                        battery.handleEdit(leftPanel);
+                   }
+                   else if (selection instanceof Resistor resistor) {
+                        resistor.handleEdit(leftPanel);
                         }
-                    }
-
-                    if (selection instanceof Battery battery && e.getClickCount() == 2) {
-                        battery.handleEdit(leftPanel); 
-                    }
 
                     if (selection instanceof Wire wire) {
                         initialBegin = wire.begin.getPosition();
@@ -403,9 +395,7 @@ public class MainAppFXMLController {
                         switchObj.toggle();
                     }
                 }
-
-                default -> {
-                }
+                default -> {}
             }
             drawingTool.setCurrentColor(null);
             if (!Objects.equals(drawingTool.getCurrentAction(), "select")) {
@@ -416,8 +406,8 @@ public class MainAppFXMLController {
             }
         }
 
-        if (editing != null) {
-            if (editing instanceof Wire wire) {
+        if(editing != null) {
+            if(editing instanceof Wire wire) {
                 //find which node to move
 
                 //1. Calculate the dist from the point to either node
@@ -437,50 +427,25 @@ public class MainAppFXMLController {
                     toMove[0] = wire.begin;
                     toMove[1] = wire.end;
                 }
-            } else { //Images
-                if (editing.getAngle() == 0 || editing.getAngle() == 180) {
-                    toMove[0] = (editing.begin.getX() < editing.end.getX() ? editing.begin : editing.end);
-                } else {
-                    toMove[0] = (editing.begin.getY() < editing.end.getY() ? editing.begin : editing.end);
-                }
+            }
+            else {
+                //Images
+                if(editing.getAngle()==0 || editing.getAngle()==180) toMove[0] = (editing.begin.getX() < editing.end.getX() ? editing.begin : editing.end);
+                else toMove[0] = (editing.begin.getY() < editing.end.getY() ? editing.begin : editing.end);
             }
         }
     }
 
-    private boolean checkComponentCollision(Point2D source, Component component) {
-        boolean vertical = (component.getAngle() == 90 || component.getAngle() == 270);
-
-        double maxX, maxY;
-        Point2D minimums = component.getMinimums();
-        if (vertical) {
-            maxX = minimums.getX() + (component.display.getHeight() / 2);
-            maxY = minimums.getY() + component.display.getWidth();
-        } else {
-            maxX = minimums.getX() + component.display.getWidth();
-            maxY = minimums.getY() + component.display.getHeight();
-        }
-
-        return ((source.getX() <= maxX && source.getX() >= minimums.getX()) && (source.getY() <= maxY && source.getY() >= minimums.getY()));
-    }
-
-    private void quit() {
-        MainApp.switchScene(MainApp.START_SCENE);
-    }
-
+    /**
+     * Method called when the mouse is dragged across the screen
+     * @param e The MouseEvent fired
+     */
     private void mouseDragged(MouseEvent e) {
         double correctedX = e.getX(), correctedY = e.getY();
-        if (e.getX() > canvas.getWidth()) {
-            correctedX = canvas.getWidth();
-        }
-        if (e.getX() < 0) {
-            correctedX = 0;
-        }
-        if (e.getY() > canvas.getHeight() - toolbarScrollPane.getHeight()) {
-            correctedY = canvas.getHeight() - toolbarScrollPane.getHeight() - 5;
-        }
-        if (e.getY() < toolbarScrollPane.getHeight()) {
-            correctedY = 0;
-        }
+        if(e.getX() > canvas.getWidth()) correctedX = canvas.getWidth();
+        if(e.getX() < 0) correctedX = 0;
+        if(e.getY() > canvas.getHeight()-toolbarScrollPane.getHeight()) correctedY = canvas.getHeight() - toolbarScrollPane.getHeight() - 5;
+        if(e.getY() < toolbarScrollPane.getHeight()) correctedY = 0;
 
         double displacementX = mouseDownLocation.getX() - correctedX;
         double displacementY = mouseDownLocation.getY() - correctedY;
@@ -492,21 +457,45 @@ public class MainAppFXMLController {
         }
 
         //TODO testing
-        if (editing != null) {
-            if (editing instanceof Wire wire) {
-                if (toMove[1] != null) {
+        if(editing != null) {
+            if(editing instanceof Wire wire) {
+                if(toMove[1]!=null) {
                     //move both (keep length)
-                    wire.begin.setPosition(drawingArea.snap(initialBegin.getX() - displacementX), drawingArea.snap(initialBegin.getY() - displacementY));
-                    wire.end.setPosition(drawingArea.snap(initialEnd.getX() - displacementX), drawingArea.snap(initialEnd.getY() - displacementY));
-                } else {
+                    wire.begin.setPosition(drawingArea.snap(initialBegin.getX()-displacementX),drawingArea.snap(initialBegin.getY()-displacementY));
+                    wire.end.setPosition(drawingArea.snap(initialEnd.getX()-displacementX), drawingArea.snap(initialEnd.getY()-displacementY));
+                }
+                else {
                     Node node = toMove[0];
                     node.setPosition(drawingArea.snap(correctedX), drawingArea.snap(correctedY));
                 }
-            } else {
+            }
+            else {
                 Node node = toMove[0];
-                node.setPosition(drawingArea.snap(correctedX - editing.display.getWidth() / 2), drawingArea.snap(correctedY - editing.display.getHeight() / 2));
+                node.setPosition(drawingArea.snap(correctedX-editing.display.getWidth()/2),drawingArea.snap(correctedY-editing.display.getHeight()/2));
             }
         }
+    }
+
+    /**
+     * Checks if the user pressed on a given component that is NOT a wire.
+     * @param source The Point2D representing the coordinates of where the mouse was pressed.
+     * @param component The component to verify.
+     * @return true if component was pressed.
+     */
+    private boolean checkComponentCollision(Point2D source, Component component) {
+        boolean vertical = (component.getAngle() == 90 || component.getAngle() == 270);
+
+        double maxX,maxY;
+        Point2D minimums = component.getMinimums();
+        if(vertical) {
+            maxX = minimums.getX() + (component.display.getHeight() / 2);
+            maxY = minimums.getY() + component.display.getWidth();
+        } else {
+            maxX = minimums.getX() + component.display.getWidth();
+            maxY = minimums.getY() + component.display.getHeight();
+        }
+
+        return ((source.getX() <= maxX && source.getX() >= minimums.getX()) && (source.getY() <= maxY && source.getY() >= minimums.getY()));
     }
 
     private boolean checkLineCollision(Point2D source, Wire wire) {
@@ -521,44 +510,65 @@ public class MainAppFXMLController {
         double length = begin.distance(end);
         double buffer = 1; // Accounts for uncertainty due to cursor size
 
-        return (d1 + d2 >= length - buffer && d1 + d2 <= length + buffer);
+        return (d1+d2 >= length-buffer && d1+d2 <= length+buffer);
     }
 
+    /**
+     * Method called when the mouse is released.
+     * @implNote Serves to reset necessary values such as {@link #selection}.
+     * @param e The MouseEvent fired
+     */
     private void mouseReleased(MouseEvent e) {
         toMove = new Node[2];
         if (selection != null) {
             attemptConnection(selection, selection.begin);
             if (drawingTool.isPencilDown()) {
                 drawingTool.setPencilDown(false);
-                if (selection.getLength() <= 0) {
-                    circuit.deleteComponent(selection);
-                }
+                if(selection.getLength()<=0) circuit.deleteComponent(selection);
             }
-            if (canvas.getCursor().equals(Cursor.CLOSED_HAND)) {
-                setCursor(Cursor.OPEN_HAND);
-            }
-        } else if (editing != null) {
-            attemptConnection(editing, editing.begin);
+            if(canvas.getCursor().equals(Cursor.CLOSED_HAND)) setCursor(Cursor.OPEN_HAND);
         }
+        else if(editing != null) attemptConnection(editing, editing.begin);
 
-        circuit.checkForCycle();
+        Circuit.checkForCycle(circuit);
     }
 
+    /**
+     * Returns the application to the log-in page
+     */
+    private void quit() {
+        MainApp.switchScene(MainApp.START_SCENE);
+    }
+
+    /**
+     * Mark a given component as the currently selected one 
+     * @param component The component to select
+     * @implNote It is possible to pass "null" to unselect, but it is preferred to use the method {@link #unselect(Component)}
+     */
     public void select(Component component) {
-        if (selection != null) {
-            selection.markAsSelected(false);
-        }
+        if(selection!=null) selection.markAsSelected(false);
         component.markAsSelected(true);
         selection = component;
     }
 
+    /**
+     * Unselect the given component
+     * @param component The component to unselect
+     * @implNote The component passed in the function does not have to be the currently selected one. This will be taken into account by the method itself.
+     */
     public void unselect(Component component) {
-        if (component != null && selection == component) {
+        if(component != null && selection == component) {
             component.markAsSelected(false);
             selection = null;
         }
     }
 
+    /**
+     * Verify and confirm the connection/disconnection of circuit components given the positions of their nodes.
+     * @param toCheck The component to connect
+     * @param node The node whose position to check
+     * @implSpec The initial call must have the <b>begin</b> node as the node parameter. The <b>end</b> node will be checked recursively.
+     */
     private void attemptConnection(Component toCheck, Node node) {
         int srcIndex = circuit.getIndex(toCheck);
         Point2D checkPoint = node.getPosition();
@@ -567,32 +577,26 @@ public class MainAppFXMLController {
         // CHECK FOR CONNECTION
         for (LinkedList<Component> currentList : circuit.arrayList) {
             for (Component connectedComponent : currentList) {
-                if (connectedComponent != toCheck) {
+                if(connectedComponent != toCheck) {
                     int dstIndex = circuit.getIndex(connectedComponent);
 
                     Point2D componentBegin = connectedComponent.begin.getPosition();
                     Point2D componentEnd = connectedComponent.end.getPosition();
 
                     if ((componentBegin.distance(checkPoint) <= 1) || (componentEnd.distance(checkPoint) <= 1)) {
-                        if (!connectedComponents.contains(dstIndex)) {
-                            connectedComponents.add(dstIndex);
-                        }
-                        if (!node.isConnected()) {
-                            node.setConnected(true);
-                        }
+                        if(!connectedComponents.contains(dstIndex)) connectedComponents.add(dstIndex);
+                        if(!node.isConnected()) node.setConnected(true);
                     }
                 }
             }
         }
-        for (int compIndex : connectedComponents) {
-            circuit.addEdge(srcIndex, compIndex);
-        }
+        for (int compIndex : connectedComponents) circuit.addEdge(srcIndex, compIndex);
 
         // CHECK FOR DISCONNECTION
         Point2D checkBegin = toCheck.begin.getPosition(),
                 checkEnd = toCheck.end.getPosition();
-        for (Component connected : circuit.arrayList.get(srcIndex)) {
-            if (connected != toCheck) {
+        for(Component connected : circuit.arrayList.get(srcIndex)) {
+            if(connected != toCheck) {
                 Point2D compBegin = connected.begin.getPosition(),
                         compEnd = connected.end.getPosition();
                 if ((checkBegin.distance(compBegin) > 1 && checkBegin.distance(compEnd) > 1) && (checkEnd.distance(compBegin) > 1 && checkEnd.distance(compEnd) > 1)) {
@@ -601,11 +605,14 @@ public class MainAppFXMLController {
             }
         }
 
-        if (node == toCheck.begin) {
-            attemptConnection(toCheck, toCheck.end);
-        }
+        if(node == toCheck.begin) attemptConnection(toCheck, toCheck.end);
     }
 
+    /**
+     * TODO INSERT JAVADOC HERE
+     * @param drawingArea
+     * @return
+     */
     private static LineChart<Number, Number> getChart(DrawingArea drawingArea) {
         final NumberAxis xAxis = new NumberAxis();
         final NumberAxis yAxis = new NumberAxis();
@@ -644,37 +651,30 @@ public class MainAppFXMLController {
         drawingTool.setCurrentAction("select");
     }
 
+    /**
+     * Initializes the key listeners of the main applications, so that the user can use keyboard shortcuts.
+     * @implNote This method should be called in the {@link #initialize()} method.
+     */
     private void setUpKeyListeners() {
         window.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
-            switch (event.getCode()) {
-                case S, ESCAPE -> {
+            switch(event.getCode()) {
+                case S,ESCAPE -> {
                     unselect(selection);
                     drawingTool.setCurrentAction("select");
                     setCursor(Cursor.DEFAULT);
                 }
-                case W ->
-                    drawingTool.setCurrentAction("place-wire");
-                case B ->
-                    drawingTool.setCurrentAction("place-battery");
-                case C ->
-                    drawingTool.setCurrentAction("place-capacitor");
-                case L ->
-                    drawingTool.setCurrentAction("place-lightbulb");
-                case T ->
-                    drawingTool.setCurrentAction("place-switch");
-                case R ->
-                    drawingTool.setCurrentAction("place-resistor");
-                case DELETE, BACK_SPACE ->
-                    circuit.deleteComponent(editing);
+                case W -> drawingTool.setCurrentAction("place-wire");
+                case B -> drawingTool.setCurrentAction("place-battery");
+                case C -> drawingTool.setCurrentAction("place-capacitor");
+                case L -> drawingTool.setCurrentAction("place-lightbulb");
+                case T -> drawingTool.setCurrentAction("place-switch");
+                case R -> drawingTool.setCurrentAction("place-resistor");
+                case DELETE,BACK_SPACE -> circuit.deleteComponent(editing);
                 case COMMA -> {
-                    if (editing != null) {
-                        editing.rotate("left");
-                    }
+                    if(editing!=null) editing.rotate("left");
                 }
                 case PERIOD -> {
-                    if (editing != null) {
-                        editing.rotate("right");
-                    }
+                    if(editing!=null) editing.rotate("right");
                 }
                 case P -> {
                     circuit.print();
@@ -683,60 +683,89 @@ public class MainAppFXMLController {
         });
     }
 
+    /**
+     * Modify the appearance of the cursor in the main window.
+     * @param cursor The Cursor object to set as the current cursor.
+     */
     public void setCursor(Cursor cursor) {
         canvas.setCursor(cursor);
     }
 
+    /**
+     * Modify the color scheme of the application
+     * @param cssFile The filepath to the css file containing the style to be applied.
+     */
     private void applyTheme(String cssFile) {
         window.getStylesheets().clear();
         window.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/" + cssFile)).toExternalForm());
-        currentTheme = cssFile.substring(0, cssFile.length() - 4);
+        currentTheme = cssFile.substring(0,cssFile.length()-4);
     }
 
+    /**
+     *
+     * @return the current applied theme of the application (ex.: "light-mode", "dark-mode", "strawberries")
+     */
     public String getTheme() {
         return currentTheme;
     }
 
+    /**
+     *
+     * @param project
+     */
     private void openRecent(String project) {
         // TODO: open project
     }
 
-    private void edit(Component component) {
-        if (editing != component) {
-            if (component != null) {
-                component.setEdit(true);
-            }
-            if (editing != null) {
-                if (component == null) {
-                    editing.setEdit(false);
-                    editing = null;
-                } else {
-                    editing.setEdit(false);
-                    editing = component;
-                }
+    /**
+     * Set the currently being edited element
+     * @param component The component to be edited.
+     * @implNote The <em>editing</em> variable is different from the <em>selection</em> variable.
+     */
+  private void edit(Component component) {
+    if (editing != component) {
+        if (component != null) component.setEdit(true);
+        if (editing != null) {
+            if (component == null) {
+                editing.setEdit(false);
+                editing = null;
             } else {
+                editing.setEdit(false);
                 editing = component;
             }
+        } else {
+            editing = component;
+        }
 
-            if (component instanceof Battery battery) {
-                battery.handleEdit(leftPanel);
-            }
+        if (component instanceof Battery battery) {
+            battery.handleEdit(leftPanel);
         }
     }
+  }
 
-    private void setUpMenuActions() {
-        //FILE MENU
-        menuNew.setOnAction(_ -> {
-        });
-        menuOpen.setOnAction(_ -> {
-        });
-        menuOpenRecent.setOnAction(_ -> {
-        });
-        menuSave.setOnAction(_ -> {
-        });
-        String circuitName = circuitNameField.getText();
-        menuSaveAs.setOnAction(_ -> exportToTxt(circuitName));
-        menuQuit.setOnAction(_ -> quit());
+    /**
+     * Switch between realistic and diagram views of the components
+     * @param diagramView Represents if the program should display a diagram view.
+     */
+  private void switchView(boolean diagramView) {
+        this.diagramView = diagramView;
+        viewMenuBtn.setText(diagramView ? "Diagram" : "Realistic");
+        drawingArea.switchView(diagramView);
+  }
+
+    /**
+     * Initializes the methods of menu items
+     * @implNote This method should be called in the {@link #initialize()} method
+     */
+  private void setUpMenuActions() {
+  //FILE MENU
+      menuNew.setOnAction(_-> {});
+      menuOpen.setOnAction(_->{});
+      menuOpenRecent.setOnAction(_->{});
+      menuSave.setOnAction(_->{});
+      String circuitName = circuitNameField.getText();
+      menuSaveAs.setOnAction(_->exportToTxt(circuitName));
+      menuQuit.setOnAction(_->quit());
 
         // SETTINGS & VIEW MENU
         menuShowToolbar.setOnAction(_ -> showToolBar(true));
@@ -750,7 +779,7 @@ public class MainAppFXMLController {
         menuZoomOut.setOnAction(zoomOutBtn.getOnAction());
         menuToggleGrid.setOnAction(_ -> drawingArea.toggleGrid());
         String username = MainApp.loggedInUsername;
-        if (username != "") {
+        if (!Objects.equals(username, "")) {
             String finalUsername1 = username;
             exportBtn.setOnAction(_ -> exportToJson(finalUsername1)); // if logged in, export to json file
         } else {
@@ -784,6 +813,10 @@ public class MainAppFXMLController {
         lightbulbColorPicker.setOnAction(_ -> drawingTool.setCurrentColor(lightbulbColorPicker.getValue()));
     }
 
+    /**
+     * Toggle the toolbar's visibility on/off
+     * @param show true if the toolbar should be shown
+     */
     private void showToolBar(boolean show) {
         if (show) {
             leftPanelVBox.getChildren().addFirst(toolbarScrollPane);
@@ -792,6 +825,10 @@ public class MainAppFXMLController {
         }
     }
 
+    /**
+     * TODO insert description
+     * @param username The username of the currently logged-in user
+     */
     private void exportToJson(String username) {
         String info = drawingArea.exportCircuit(circuitNameField.getText());
         File jsonFile = new File("src/main/resources/users.json");
@@ -864,10 +901,21 @@ public class MainAppFXMLController {
         }
     }
 
+    /**
+     * Helper method for formatting json file
+     * @param input The text to format
+     * @return The formatted text
+     */
     private String escape(String input) { // helper method for formatting
         return input.replace("\\", "\\\\").replace("\"", "\\\"");
     }
 
+    /**
+     * Helper method to check if there is recent (TODO recent what..? + param descriptions)
+     * @param lines
+     * @param index
+     * @return
+     */
     private boolean lineAboveContainsRecent(String[] lines, int index) { // helper method check if there is recent
         for (int i = index - 1; i >= 0; i--) {
             String trimmed = lines[i].trim();
@@ -880,6 +928,10 @@ public class MainAppFXMLController {
         return false;
     }
 
+    /**
+     * Exports the circuit as a text file
+     * @param circuitName The name of the circuit (given by the user in {@link #circuitNameField})
+     */
     private void exportToTxt(String circuitName) {
         String info = drawingArea.exportCircuit(circuitName); // get drawingArea to put in txt
         JFileChooser fileChooser = new JFileChooser();
@@ -893,7 +945,6 @@ public class MainAppFXMLController {
                 writer.write(info);
                 JOptionPane.showMessageDialog(null, "Circuit exported to TXT successfully.");
             } catch (IOException e) {
-                e.printStackTrace();
                 JOptionPane.showMessageDialog(null, "Error exporting circuit to TXT.");
             }
         }

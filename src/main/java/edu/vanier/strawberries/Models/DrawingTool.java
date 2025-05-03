@@ -19,6 +19,10 @@ public class DrawingTool {
         defaultLightbulbColor = Color.YELLOW;
     }
 
+    /**
+     * Set the current action to be performed by the drawing tool and updates the image of the cursor
+     * @param currentAction The action to be performed
+     */
     public void setCurrentAction(String currentAction) {
         this.currentAction = currentAction;
 

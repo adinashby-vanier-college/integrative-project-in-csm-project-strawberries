@@ -38,6 +38,9 @@ public class Switch extends Component {
         display = diagramView ? DIAGRAM_DISPLAY : IMAGE_DISPLAY;
     }
 
+    /**
+     * Toggle the switch's current state (from open to closed, and vice-versa)
+     */
     public void toggle() {
         isClosed = !isClosed;
         // updates image to show closed/open state
@@ -53,10 +56,10 @@ public class Switch extends Component {
         display = diagramView ? DIAGRAM_DISPLAY : IMAGE_DISPLAY;
     }
 
-    public void setOpen(boolean open) {
-        this.isClosed = !open;
-    }
-
+    /**
+     * Verify if the switch is open or closed
+     * @return true if the switch is closed
+     */
     public boolean isClosed() {
         return isClosed;
     }

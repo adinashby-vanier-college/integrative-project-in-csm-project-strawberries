@@ -15,7 +15,15 @@ public abstract class Component extends StackPane {
     public Node end;
     protected Image DIAGRAM_DISPLAY, IMAGE_DISPLAY;
     public Image display;
-    public boolean selected, edit, diagramView;
+    /** The component currently being hovered over */
+    public boolean selected;
+    /**
+     * The most recently selected element when the user pressed down on the mouse
+     * @implNote This element will remain the edited component until the user clicks outside of it or clicks on a different component.
+     */
+    public boolean edit;
+    /**  */
+    public boolean diagramView;
     private double angle;
     protected double resistance;
     protected double current;
@@ -28,6 +36,10 @@ public abstract class Component extends StackPane {
         this.diagramView = diagramView;
     }
 
+    /**
+     * Change the image of the component from a diagram view to a realistic one (and vice-versa).
+     * @param diagramView true if the program should display the diagram image.
+     */
     public void switchDisplay(boolean diagramView) {
         this.diagramView = diagramView;
         if (diagramView) {
@@ -73,7 +85,6 @@ public abstract class Component extends StackPane {
     }
 
     /**
-     *
      * @param direction "left" or "right", not case-sensitive
      */
     public void rotate(String direction) {
@@ -120,11 +131,10 @@ public abstract class Component extends StackPane {
         this.voltage = voltage;
     }
 
-    public void calculateCurrent(double voltage) {
-        this.voltage = voltage;
-        this.current = (resistance != 0) ? voltage / resistance : 0;
-    }
-
+    /**
+     * @implNote This method is not meant for instances of the {@link Wire} class
+     * @return The coordinates of the upper-left corner of the component's image
+     */
     public Point2D getMinimums() {
         boolean vertical = (angle==90 || angle==270);
         double minX,minY,maxX,maxY;
@@ -138,6 +148,10 @@ public abstract class Component extends StackPane {
         return new Point2D(minX,minY);
     }
 
+    /**
+     * @implNote This method is not meant for instances of the {@link Wire} class
+     * @return The coordinates of the center of the component's image
+     */
     public Point2D getCenter() {
         Point2D minimum = getMinimums();
         double x,y;
@@ -157,6 +171,7 @@ public abstract class Component extends StackPane {
     public Node[] getNodes() {
         return new Node[]{begin, end};
     }
+
 
     public boolean sharesNode(Component other) {
         for (Node nodeA : this.getNodes()) {
