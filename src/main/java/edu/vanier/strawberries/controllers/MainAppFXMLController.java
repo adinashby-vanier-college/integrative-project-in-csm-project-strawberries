@@ -41,8 +41,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-import static edu.vanier.strawberries.controllers.SignOnLogInController.findRecent;
-
 /**
  * FXML controller class for the primary stage scene.
  *
@@ -214,6 +212,9 @@ public class MainAppFXMLController {
         diagramItem.setOnAction(e -> drawingArea.switchView(true));
         realisticItem.setOnAction(e -> drawingArea.switchView(false));
         viewMenuBtn.setOnAction(e -> drawingArea.switchView(true));
+
+        // menu buttons
+        setUpMenuActions();
 
         clearBtn.setOnAction(_ -> {
             drawingArea.circuit.print();
@@ -707,7 +708,8 @@ public class MainAppFXMLController {
         });
         menuSave.setOnAction(_ -> {
         });
-        menuSaveAs.setOnAction(_ -> exportToTxt());
+        String circuitName = circuitNameField.getText();
+        menuSaveAs.setOnAction(_ -> exportToTxt(circuitName));
         menuQuit.setOnAction(_ -> quit());
 
         // SETTINGS & VIEW MENU
@@ -721,12 +723,21 @@ public class MainAppFXMLController {
         menuZoomIn.setOnAction(zoomInBtn.getOnAction());
         menuZoomOut.setOnAction(zoomOutBtn.getOnAction());
         menuToggleGrid.setOnAction(_ -> drawingArea.toggleGrid());
-        String username = MainApp.signOnLogInController.getUsername();
-        exportBtn.setOnAction(_ -> exportToJson(username));
-        String recentProject = MainApp.signOnLogInController.getRecent();
+        String username = "";
+        try {
+            username = MainApp.signOnLogInController.getUsername();
+            String finalUsername1 = username;
+            exportBtn.setOnAction(_ -> exportToJson(finalUsername1)); // if logged in, export to json file
+        } catch (Exception e) { // if not logged in, export to txt (local)
+            System.out.println(e.getMessage());
+        }
+        String finalUsername = username;
+        // check if logged in, if not hen export to txt!!
+        exportBtn.setOnAction(_ -> exportToJson(finalUsername)); // export
+        //String recentProject = MainApp.signOnLogInController.getRecent();
         //menuOpenRecent.setOnAction(_->openRecent(recentProject));
         menuOpenRecent.setOnAction(_ -> {
-            DrawingArea.importFromJson(username, drawingArea);
+            DrawingArea.importFromJson(finalUsername, drawingArea);
         });
 
         // INSERT MENU
@@ -758,7 +769,7 @@ public class MainAppFXMLController {
 
     private void exportToJson(String username) {
         String info = drawingArea.exportCircuit(circuitNameField.getText());
-        File jsonFile = new File("users.json");
+        File jsonFile = new File("users.json"); // change pathname!!
 
         String content = "";
 
@@ -844,8 +855,8 @@ public class MainAppFXMLController {
         return false;
     }
 
-    private void exportToTxt() {
-        String info = drawingArea.exportCircuit(circuitNameField.getText()); // get drawingArea to put in txt
+    private void exportToTxt(String circuitName) {
+        String info = drawingArea.exportCircuit(circuitName); // get drawingArea to put in txt
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Save Circuit as TXT");
         int userSelection = fileChooser.showSaveDialog(null); // file dialog
