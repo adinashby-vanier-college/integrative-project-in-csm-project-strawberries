@@ -153,5 +153,7 @@ public abstract class Component extends StackPane {
 
         return new Point2D(x,y);
     }
+    
+    
 }
 

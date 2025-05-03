@@ -59,11 +59,7 @@ public class Resistor extends Component {
 
         display = diagramView ? DIAGRAM_DISPLAY : IMAGE_DISPLAY;
 
-        this.setOnMouseClicked(e -> {
-            if (e.getClickCount() == 2 && this.getParent() instanceof Pane parentPane) {
-                showInfoBox(parentPane);
-            }
-        });
+  
     }
 
     // Manually triggered edit (like battery)
@@ -135,6 +131,13 @@ public class Resistor extends Component {
                 parentPane.getChildren().remove(infoArea);
             }
         });
+        
+        infoArea.setOnKeyPressed(keyEvent -> {
+    switch (keyEvent.getCode()) {
+        case ESCAPE, ENTER -> parentPane.getChildren().remove(infoArea);
+    }
+});
+
     }
 
     public boolean isConnected(Circuit circuit) {

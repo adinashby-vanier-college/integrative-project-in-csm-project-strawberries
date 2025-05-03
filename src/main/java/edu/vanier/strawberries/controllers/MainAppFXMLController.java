@@ -52,17 +52,17 @@ public class MainAppFXMLController {
 
     private final static Logger logger = LoggerFactory.getLogger(MainAppFXMLController.class);
     public boolean animationRunning;
-    public Component selection,editing;
+    public Component selection, editing;
     public Circuit circuit;
-    private double posX,posY;
+    private double posX, posY;
     private Node[] toMove = new Node[2];
-    private Point2D mouseDownLocation,initialBegin,initialEnd;
+    private Point2D mouseDownLocation, initialBegin, initialEnd;
     public boolean diagramView;
     private String currentTheme;
 
     //Import FXML variables
     @FXML
-    VBox window,leftPanelVBox,rightPanelVBox;
+    VBox window, leftPanelVBox, rightPanelVBox;
     @FXML
     SplitPane splitPane;
     @FXML
@@ -70,7 +70,7 @@ public class MainAppFXMLController {
     @FXML
     HBox toolbarHBox;
     @FXML
-    Button zoomInBtn,zoomOutBtn,undoBtn,redoBtn,copyBtn,pasteBtn,addWireBtn,addResistorBtn,addCapacitorBtn,addBatteryBtn,addSwitchBtn;
+    Button zoomInBtn, zoomOutBtn, undoBtn, redoBtn, copyBtn, pasteBtn, addWireBtn, addResistorBtn, addCapacitorBtn, addBatteryBtn, addSwitchBtn;
     @FXML
     Canvas canvas;
     @FXML
@@ -78,7 +78,7 @@ public class MainAppFXMLController {
     @FXML
     TextField circuitNameField;
     @FXML
-    Button exportBtn,moreInformationBtn,runStopBtn,resetBtn,clearBtn;
+    Button exportBtn, moreInformationBtn, runStopBtn, resetBtn, clearBtn;
     @FXML
     Label runStopLabel;
     @FXML
@@ -118,7 +118,9 @@ public class MainAppFXMLController {
         canvas.addEventHandler(MouseEvent.MOUSE_DRAGGED, this::mouseDragged);
         canvas.addEventHandler(MouseEvent.MOUSE_RELEASED, this::mouseReleased);
 
-        if(drawingArea.circuit==null) drawingArea.setCircuit(circuit);
+        if (drawingArea.circuit == null) {
+            drawingArea.setCircuit(circuit);
+        }
     }
 
     public void update() {
@@ -141,20 +143,26 @@ public class MainAppFXMLController {
         drawingArea.updateAnimation();
 
         // Component specific states
-        for(LinkedList<Component> list : circuit.arrayList) {
-            for(Component component : list) {
+        for (LinkedList<Component> list : circuit.arrayList) {
+            for (Component component : list) {
                 CircuitMath.setVoltageAcross(component);
-                if(component instanceof Lightbulb lightbulb) {
-                    System.out.println("lightbulb voltage: "+lightbulb.getVoltage());
-                    if(lightbulb.getVoltage() >= lightbulb.getMinVoltage()) lightbulb.turnOn(true);
+                if (component instanceof Lightbulb lightbulb) {
+                    System.out.println("lightbulb voltage: " + lightbulb.getVoltage());
+                    if (lightbulb.getVoltage() >= lightbulb.getMinVoltage()) {
+                        lightbulb.turnOn(true);
+                    }
                 }
             }
         }
 
         //Update circuit message
-        if(circuit.arrayList.isEmpty()) circuitStateText.setText("Empty circuit. A blank canvas!");
-        else if(circuit.isClosed()) circuitStateText.setText("Closed circuit!");
-        else circuitStateText.setText("Open circuit... No current :(");
+        if (circuit.arrayList.isEmpty()) {
+            circuitStateText.setText("Empty circuit. A blank canvas!");
+        } else if (circuit.isClosed()) {
+            circuitStateText.setText("Closed circuit!");
+        } else {
+            circuitStateText.setText("Open circuit... No current :(");
+        }
 
         // Draw everything
         drawingArea.drawContent();
@@ -190,7 +198,6 @@ public class MainAppFXMLController {
         drawingTool = drawingArea.drawingTool;
 
 // 4. SET UP UI ELEMENTS
-
         // SET BUTTON ACTIONS
         zoomInBtn.setOnAction(_ -> drawingArea.zoomIn());
         zoomOutBtn.setOnAction(_ -> drawingArea.zoomOut());
@@ -220,7 +227,9 @@ public class MainAppFXMLController {
         defaultWireColorPicker.setValue(Color.BLACK);
         defaultWireColorPicker.setOnAction(_ -> {
             Color pickedColor = defaultWireColorPicker.getValue();
-            if (pickedColor == null) pickedColor = Color.BLACK;
+            if (pickedColor == null) {
+                pickedColor = Color.BLACK;
+            }
             drawingTool.defaultWireColor = pickedColor;
         });
 
@@ -265,7 +274,6 @@ public class MainAppFXMLController {
             codeStage.show();
 
             // Animation: the real thing coming soon
-
             VBox bottomContainer = new VBox(closeButton);
             bottomContainer.setAlignment(Pos.CENTER);
             bottomContainer.setSpacing(10);
@@ -305,59 +313,84 @@ public class MainAppFXMLController {
     private void mouseMoved(MouseEvent e) {
         posX = e.getX();
         posY = e.getY();
-        if(drawingTool.getCurrentAction().equals("select")) {
-            if (selection != null) setCursor(Cursor.OPEN_HAND);
-            else setCursor(Cursor.DEFAULT);
+        if (drawingTool.getCurrentAction().equals("select")) {
+            if (selection != null) {
+                setCursor(Cursor.OPEN_HAND);
+            } else {
+                setCursor(Cursor.DEFAULT);
+            }
         }
     }
 
     private void mousePressed(MouseEvent e) {
-        mouseDownLocation = new Point2D(e.getX(),e.getY());
-        if(!Objects.equals(drawingTool.getCurrentAction(),"")) {
-            if(selection!=null && !Objects.equals(drawingTool.getCurrentAction(), "select")) unselect(selection);
-            if(editing!=null) edit(null);
+        mouseDownLocation = new Point2D(e.getX(), e.getY());
+        if (!Objects.equals(drawingTool.getCurrentAction(), "")) {
+            if (selection != null && !Objects.equals(drawingTool.getCurrentAction(), "select")) {
+                unselect(selection);
+            }
+            if (editing != null) {
+                edit(null);
+            }
             drawingTool.setPencilDown(true);
             Node eventLocation = new Node(drawingArea.snap(e.getX()), drawingArea.snap(e.getY()));
             Node tempEnd = Node.copyOf(eventLocation);
             switch (drawingTool.getCurrentAction()) {
-                case "place-wire" -> select(new Wire(eventLocation, tempEnd, ((drawingTool.getCurrentColor()==null) ? drawingTool.defaultWireColor : drawingTool.getCurrentColor()), 0, 0));
-                case "place-battery" -> select(new Battery(eventLocation, tempEnd, 12, diagramView));
-                case "place-capacitor" -> select(new Capacitor(eventLocation, tempEnd, 0, diagramView));
-                case "place-fuse" -> select(new Fuse(eventLocation, tempEnd,20, diagramView));
-                case "place-lightbulb" -> select(new Lightbulb(eventLocation, tempEnd,(drawingTool.getCurrentColor()==null) ? drawingTool.defaultLightbulbColor : drawingTool.getCurrentColor(),0, diagramView));
-                case "place-resistor" -> select(new Resistor(eventLocation, tempEnd, 10, diagramView));
-                case "place-switch" -> select(new Switch(eventLocation, tempEnd, false,diagramView));
+                case "place-wire" ->
+                    select(new Wire(eventLocation, tempEnd, ((drawingTool.getCurrentColor() == null) ? drawingTool.defaultWireColor : drawingTool.getCurrentColor()), 0, 0));
+                case "place-battery" ->
+                    select(new Battery(eventLocation, tempEnd, 12, diagramView));
+                case "place-capacitor" ->
+                    select(new Capacitor(eventLocation, tempEnd, 0, diagramView));
+                case "place-fuse" ->
+                    select(new Fuse(eventLocation, tempEnd, 20, diagramView));
+                case "place-lightbulb" ->
+                    select(new Lightbulb(eventLocation, tempEnd, (drawingTool.getCurrentColor() == null) ? drawingTool.defaultLightbulbColor : drawingTool.getCurrentColor(), 0, diagramView));
+                case "place-resistor" ->
+                    select(new Resistor(eventLocation, tempEnd, 10, diagramView));
+                case "place-switch" ->
+                    select(new Switch(eventLocation, tempEnd, false, diagramView));
                 case "select" -> {
-                    if(selection != null) setCursor(Cursor.CLOSED_HAND);
+                    if (selection != null) {
+                        setCursor(Cursor.CLOSED_HAND);
+                    }
                     edit(selection);
-                   if (selection instanceof Battery battery) {
-                        battery.handleEdit(leftPanel);
-                   }
-                   else if (selection instanceof Resistor resistor) {
-                        resistor.handleEdit(leftPanel);
-                        }
 
-                   if(selection instanceof Wire wire) {
-                       initialBegin = wire.begin.getPosition();
-                       initialEnd = wire.end.getPosition();
-                   }
-                   if(selection instanceof Switch switchObj) { // switch is a reserved word
-                       switchObj.toggle();
+                    if (selection instanceof Resistor resistor) {
+                        if (e.getClickCount() == 2) {
+                            resistor.handleEdit(leftPanel); // double click to edit resistance
+                        } else if (e.getClickCount() == 3) {
+                            resistor.showInfoBox(leftPanel); // triple click to show info
+                        }
+                    }
+
+                    if (selection instanceof Battery battery && e.getClickCount() == 2) {
+                        battery.handleEdit(leftPanel); 
+                    }
+
+                    if (selection instanceof Wire wire) {
+                        initialBegin = wire.begin.getPosition();
+                        initialEnd = wire.end.getPosition();
+                    }
+
+                    if (selection instanceof Switch switchObj) {
+                        switchObj.toggle();
                     }
                 }
-                default -> {}
+
+                default -> {
+                }
             }
             drawingTool.setCurrentColor(null);
             if (!Objects.equals(drawingTool.getCurrentAction(), "select")) {
                 circuit.addComponent(selection);
-                if(!(selection instanceof Wire)) {
-                    selection.end.setPosition(selection.begin.getX()+selection.display.getWidth(),selection.begin.getY());
+                if (!(selection instanceof Wire)) {
+                    selection.end.setPosition(selection.begin.getX() + selection.display.getWidth(), selection.begin.getY());
                 }
             }
         }
 
-        if(editing != null) {
-            if(editing instanceof Wire wire) {
+        if (editing != null) {
+            if (editing instanceof Wire wire) {
                 //find which node to move
 
                 //1. Calculate the dist from the point to either node
@@ -377,24 +410,25 @@ public class MainAppFXMLController {
                     toMove[0] = wire.begin;
                     toMove[1] = wire.end;
                 }
-            }
-            else { //Images
-                if(editing.getAngle()==0 || editing.getAngle()==180) toMove[0] = (editing.begin.getX() < editing.end.getX() ? editing.begin : editing.end);
-                else toMove[0] = (editing.begin.getY() < editing.end.getY() ? editing.begin : editing.end);
+            } else { //Images
+                if (editing.getAngle() == 0 || editing.getAngle() == 180) {
+                    toMove[0] = (editing.begin.getX() < editing.end.getX() ? editing.begin : editing.end);
+                } else {
+                    toMove[0] = (editing.begin.getY() < editing.end.getY() ? editing.begin : editing.end);
+                }
             }
         }
     }
 
     private boolean checkComponentCollision(Point2D source, Component component) {
-        boolean vertical = (component.getAngle()==90 || component.getAngle()==270);
+        boolean vertical = (component.getAngle() == 90 || component.getAngle() == 270);
 
-        double maxX,maxY;
+        double maxX, maxY;
         Point2D minimums = component.getMinimums();
-        if(vertical) {
+        if (vertical) {
             maxX = minimums.getX() + (component.display.getHeight() / 2);
             maxY = minimums.getY() + component.display.getWidth();
-        }
-        else {
+        } else {
             maxX = minimums.getX() + component.display.getWidth();
             maxY = minimums.getY() + component.display.getHeight();
         }
@@ -408,10 +442,18 @@ public class MainAppFXMLController {
 
     private void mouseDragged(MouseEvent e) {
         double correctedX = e.getX(), correctedY = e.getY();
-        if(e.getX() > canvas.getWidth()) correctedX = canvas.getWidth();
-        if(e.getX() < 0) correctedX = 0;
-        if(e.getY() > canvas.getHeight()-toolbarScrollPane.getHeight()) correctedY = canvas.getHeight() - toolbarScrollPane.getHeight() - 5;
-        if(e.getY() < toolbarScrollPane.getHeight()) correctedY = 0;
+        if (e.getX() > canvas.getWidth()) {
+            correctedX = canvas.getWidth();
+        }
+        if (e.getX() < 0) {
+            correctedX = 0;
+        }
+        if (e.getY() > canvas.getHeight() - toolbarScrollPane.getHeight()) {
+            correctedY = canvas.getHeight() - toolbarScrollPane.getHeight() - 5;
+        }
+        if (e.getY() < toolbarScrollPane.getHeight()) {
+            correctedY = 0;
+        }
 
         double displacementX = mouseDownLocation.getX() - correctedX;
         double displacementY = mouseDownLocation.getY() - correctedY;
@@ -423,21 +465,19 @@ public class MainAppFXMLController {
         }
 
         //TODO testing
-        if(editing != null) {
-            if(editing instanceof Wire wire) {
-                if(toMove[1]!=null) {
+        if (editing != null) {
+            if (editing instanceof Wire wire) {
+                if (toMove[1] != null) {
                     //move both (keep length)
-                    wire.begin.setPosition(drawingArea.snap(initialBegin.getX()-displacementX),drawingArea.snap(initialBegin.getY()-displacementY));
-                    wire.end.setPosition(drawingArea.snap(initialEnd.getX()-displacementX), drawingArea.snap(initialEnd.getY()-displacementY));
-                }
-                else {
+                    wire.begin.setPosition(drawingArea.snap(initialBegin.getX() - displacementX), drawingArea.snap(initialBegin.getY() - displacementY));
+                    wire.end.setPosition(drawingArea.snap(initialEnd.getX() - displacementX), drawingArea.snap(initialEnd.getY() - displacementY));
+                } else {
                     Node node = toMove[0];
                     node.setPosition(drawingArea.snap(correctedX), drawingArea.snap(correctedY));
                 }
-            }
-            else {
+            } else {
                 Node node = toMove[0];
-                node.setPosition(drawingArea.snap(correctedX-editing.display.getWidth()/2),drawingArea.snap(correctedY-editing.display.getHeight()/2));
+                node.setPosition(drawingArea.snap(correctedX - editing.display.getWidth() / 2), drawingArea.snap(correctedY - editing.display.getHeight() / 2));
             }
         }
     }
@@ -454,9 +494,8 @@ public class MainAppFXMLController {
         double length = begin.distance(end);
         double buffer = 1; // Accounts for uncertainty due to cursor size
 
-        return (d1+d2 >= length-buffer && d1+d2 <= length+buffer);
+        return (d1 + d2 >= length - buffer && d1 + d2 <= length + buffer);
     }
-
 
     private void mouseReleased(MouseEvent e) {
         toMove = new Node[2];
@@ -464,23 +503,30 @@ public class MainAppFXMLController {
             attemptConnection(selection, selection.begin);
             if (drawingTool.isPencilDown()) {
                 drawingTool.setPencilDown(false);
-                if(selection.getLength()<=0) circuit.deleteComponent(selection);
+                if (selection.getLength() <= 0) {
+                    circuit.deleteComponent(selection);
+                }
             }
-            if(canvas.getCursor().equals(Cursor.CLOSED_HAND)) setCursor(Cursor.OPEN_HAND);
+            if (canvas.getCursor().equals(Cursor.CLOSED_HAND)) {
+                setCursor(Cursor.OPEN_HAND);
+            }
+        } else if (editing != null) {
+            attemptConnection(editing, editing.begin);
         }
-        else if(editing != null) attemptConnection(editing, editing.begin);
 
         circuit.checkForCycle();
     }
 
     public void select(Component component) {
-        if(selection!=null) selection.markAsSelected(false);
+        if (selection != null) {
+            selection.markAsSelected(false);
+        }
         component.markAsSelected(true);
         selection = component;
     }
 
     public void unselect(Component component) {
-        if(component != null && selection == component) {
+        if (component != null && selection == component) {
             component.markAsSelected(false);
             selection = null;
         }
@@ -494,26 +540,32 @@ public class MainAppFXMLController {
         // CHECK FOR CONNECTION
         for (LinkedList<Component> currentList : circuit.arrayList) {
             for (Component connectedComponent : currentList) {
-                if(connectedComponent != toCheck) {
+                if (connectedComponent != toCheck) {
                     int dstIndex = circuit.getIndex(connectedComponent);
 
                     Point2D componentBegin = connectedComponent.begin.getPosition();
                     Point2D componentEnd = connectedComponent.end.getPosition();
 
                     if ((componentBegin.distance(checkPoint) <= 1) || (componentEnd.distance(checkPoint) <= 1)) {
-                        if(!connectedComponents.contains(dstIndex)) connectedComponents.add(dstIndex);
-                        if(!node.isConnected()) node.setConnected(true);
+                        if (!connectedComponents.contains(dstIndex)) {
+                            connectedComponents.add(dstIndex);
+                        }
+                        if (!node.isConnected()) {
+                            node.setConnected(true);
+                        }
                     }
                 }
             }
         }
-        for (int compIndex : connectedComponents) circuit.addEdge(srcIndex, compIndex);
+        for (int compIndex : connectedComponents) {
+            circuit.addEdge(srcIndex, compIndex);
+        }
 
         // CHECK FOR DISCONNECTION
         Point2D checkBegin = toCheck.begin.getPosition(),
                 checkEnd = toCheck.end.getPosition();
-        for(Component connected : circuit.arrayList.get(srcIndex)) {
-            if(connected != toCheck) {
+        for (Component connected : circuit.arrayList.get(srcIndex)) {
+            if (connected != toCheck) {
                 Point2D compBegin = connected.begin.getPosition(),
                         compEnd = connected.end.getPosition();
                 if ((checkBegin.distance(compBegin) > 1 && checkBegin.distance(compEnd) > 1) && (checkEnd.distance(compBegin) > 1 && checkEnd.distance(compEnd) > 1)) {
@@ -522,7 +574,9 @@ public class MainAppFXMLController {
             }
         }
 
-        if(node == toCheck.begin) attemptConnection(toCheck, toCheck.end);
+        if (node == toCheck.begin) {
+            attemptConnection(toCheck, toCheck.end);
+        }
     }
 
     private static LineChart<Number, Number> getChart(DrawingArea drawingArea) {
@@ -542,7 +596,6 @@ public class MainAppFXMLController {
         XYChart.Series<Number, Number> series = new XYChart.Series<>();
 
         // constant Voltage
-
         edu.vanier.math.CircuitMath maths = new edu.vanier.math.CircuitMath(drawingArea.circuit);
 
         List<Component> path = maths.getTraversalPath();
@@ -566,24 +619,35 @@ public class MainAppFXMLController {
 
     private void setUpKeyListeners() {
         window.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
-            switch(event.getCode()) {
-                case S,ESCAPE -> {
+            switch (event.getCode()) {
+                case S, ESCAPE -> {
                     unselect(selection);
                     drawingTool.setCurrentAction("select");
                     setCursor(Cursor.DEFAULT);
                 }
-                case W -> drawingTool.setCurrentAction("place-wire");
-                case B -> drawingTool.setCurrentAction("place-battery");
-                case C -> drawingTool.setCurrentAction("place-capacitor");
-                case L -> drawingTool.setCurrentAction("place-lightbulb");
-                case T -> drawingTool.setCurrentAction("place-switch");
-                case R -> drawingTool.setCurrentAction("place-resistor");
-                case DELETE,BACK_SPACE -> circuit.deleteComponent(editing);
+                case W ->
+                    drawingTool.setCurrentAction("place-wire");
+                case B ->
+                    drawingTool.setCurrentAction("place-battery");
+                case C ->
+                    drawingTool.setCurrentAction("place-capacitor");
+                case L ->
+                    drawingTool.setCurrentAction("place-lightbulb");
+                case T ->
+                    drawingTool.setCurrentAction("place-switch");
+                case R ->
+                    drawingTool.setCurrentAction("place-resistor");
+                case DELETE, BACK_SPACE ->
+                    circuit.deleteComponent(editing);
                 case COMMA -> {
-                    if(editing!=null) editing.rotate("left");
+                    if (editing != null) {
+                        editing.rotate("left");
+                    }
                 }
                 case PERIOD -> {
-                    if(editing!=null) editing.rotate("right");
+                    if (editing != null) {
+                        editing.rotate("right");
+                    }
                 }
                 case P -> {
                     circuit.print();
@@ -599,7 +663,7 @@ public class MainAppFXMLController {
     private void applyTheme(String cssFile) {
         window.getStylesheets().clear();
         window.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/css/" + cssFile)).toExternalForm());
-        currentTheme = cssFile.substring(0,cssFile.length()-4);
+        currentTheme = cssFile.substring(0, cssFile.length() - 4);
     }
 
     public String getTheme() {
@@ -610,77 +674,87 @@ public class MainAppFXMLController {
         // TODO: open project
     }
 
-  private void edit(Component component) {
-    if (editing != component) {
-        if (component != null) component.setEdit(true);
-        if (editing != null) {
-            if (component == null) {
-                editing.setEdit(false);
-                editing = null;
+    private void edit(Component component) {
+        if (editing != component) {
+            if (component != null) {
+                component.setEdit(true);
+            }
+            if (editing != null) {
+                if (component == null) {
+                    editing.setEdit(false);
+                    editing = null;
+                } else {
+                    editing.setEdit(false);
+                    editing = component;
+                }
             } else {
-                editing.setEdit(false);
                 editing = component;
             }
-        } else {
-            editing = component;
-        }
 
-        if (component instanceof Battery battery) {
-            battery.handleEdit(leftPanel);
+            if (component instanceof Battery battery) {
+                battery.handleEdit(leftPanel);
+            }
         }
     }
-  }
 
-  private void setUpMenuActions() {
-  //FILE MENU
-      menuNew.setOnAction(_-> {});
-      menuOpen.setOnAction(_->{});
-      menuOpenRecent.setOnAction(_->{});
-      menuSave.setOnAction(_->{});
-      menuSaveAs.setOnAction(_->exportToTxt());
-      menuQuit.setOnAction(_->quit());
+    private void setUpMenuActions() {
+        //FILE MENU
+        menuNew.setOnAction(_ -> {
+        });
+        menuOpen.setOnAction(_ -> {
+        });
+        menuOpenRecent.setOnAction(_ -> {
+        });
+        menuSave.setOnAction(_ -> {
+        });
+        menuSaveAs.setOnAction(_ -> exportToTxt());
+        menuQuit.setOnAction(_ -> quit());
 
-  // SETTINGS & VIEW MENU
-      menuShowToolbar.setOnAction(_-> showToolBar(true));
-      menuHideToolbar.setOnAction(_-> showToolBar(false));
-      lightThemeItem.setOnAction(_ -> applyTheme("light-mode.css"));
-      darkThemeItem.setOnAction(_-> applyTheme("dark-mode.css"));
-      strawThemeItem.setOnAction(_-> applyTheme("strawberries-theme.css"));
-      menuFitToScreen.setOnAction(_->{});
-      menuZoomIn.setOnAction(zoomInBtn.getOnAction());
-      menuZoomOut.setOnAction(zoomOutBtn.getOnAction());
-      menuToggleGrid.setOnAction(_->drawingArea.toggleGrid());
-      String username = MainApp.signOnLogInController.getUsername();
-      exportBtn.setOnAction(_->exportToJson(username));
-      String recentProject = MainApp.signOnLogInController.getRecent();
-      //menuOpenRecent.setOnAction(_->openRecent(recentProject));
-      menuOpenRecent.setOnAction(_-> {
-          DrawingArea.importFromJson(username, drawingArea);
-      });
+        // SETTINGS & VIEW MENU
+        menuShowToolbar.setOnAction(_ -> showToolBar(true));
+        menuHideToolbar.setOnAction(_ -> showToolBar(false));
+        lightThemeItem.setOnAction(_ -> applyTheme("light-mode.css"));
+        darkThemeItem.setOnAction(_ -> applyTheme("dark-mode.css"));
+        strawThemeItem.setOnAction(_ -> applyTheme("strawberries-theme.css"));
+        menuFitToScreen.setOnAction(_ -> {
+        });
+        menuZoomIn.setOnAction(zoomInBtn.getOnAction());
+        menuZoomOut.setOnAction(zoomOutBtn.getOnAction());
+        menuToggleGrid.setOnAction(_ -> drawingArea.toggleGrid());
+        String username = MainApp.signOnLogInController.getUsername();
+        exportBtn.setOnAction(_ -> exportToJson(username));
+        String recentProject = MainApp.signOnLogInController.getRecent();
+        //menuOpenRecent.setOnAction(_->openRecent(recentProject));
+        menuOpenRecent.setOnAction(_ -> {
+            DrawingArea.importFromJson(username, drawingArea);
+        });
 
-      // INSERT MENU
-      //wire
-      menuWire.setOnAction(_-> drawingTool.setCurrentAction("place-wire"));
-      menuRedWire.setOnAction(_-> drawingTool.setCurrentColor(Color.RED));
-      menuBlackWire.setOnAction(_-> drawingTool.setCurrentColor(Color.BLACK));
-      menuColorPicker.setOnAction(_-> drawingTool.setCurrentColor(menuColorPicker.getValue()));
-      //other components
-      menuResistor.setOnAction(_-> drawingTool.setCurrentAction("place-resistor"));
-      menuBattery.setOnAction(_-> drawingTool.setCurrentAction("place-battery"));
-      menuSwitch.setOnAction(_-> drawingTool.setCurrentAction("place-switch"));
-      menuCapacitor.setOnAction(_-> drawingTool.setCurrentAction("place-capacitor"));
-      menuLightbulb.setOnAction(_-> drawingTool.setCurrentAction("place-lightbulb"));
-      menuYellow.setOnAction(_-> drawingTool.setCurrentColor(Color.YELLOW));
-      menuRed.setOnAction(_-> drawingTool.setCurrentColor(Color.RED));
-      menuGreen.setOnAction(_-> drawingTool.setCurrentColor(Color.GREEN));
-      menuBlue.setOnAction(_-> drawingTool.setCurrentColor(Color.BLUE));
-      lightbulbColorPicker.setOnAction(_-> drawingTool.setCurrentColor(lightbulbColorPicker.getValue()));
-  }
+        // INSERT MENU
+        //wire
+        menuWire.setOnAction(_ -> drawingTool.setCurrentAction("place-wire"));
+        menuRedWire.setOnAction(_ -> drawingTool.setCurrentColor(Color.RED));
+        menuBlackWire.setOnAction(_ -> drawingTool.setCurrentColor(Color.BLACK));
+        menuColorPicker.setOnAction(_ -> drawingTool.setCurrentColor(menuColorPicker.getValue()));
+        //other components
+        menuResistor.setOnAction(_ -> drawingTool.setCurrentAction("place-resistor"));
+        menuBattery.setOnAction(_ -> drawingTool.setCurrentAction("place-battery"));
+        menuSwitch.setOnAction(_ -> drawingTool.setCurrentAction("place-switch"));
+        menuCapacitor.setOnAction(_ -> drawingTool.setCurrentAction("place-capacitor"));
+        menuLightbulb.setOnAction(_ -> drawingTool.setCurrentAction("place-lightbulb"));
+        menuYellow.setOnAction(_ -> drawingTool.setCurrentColor(Color.YELLOW));
+        menuRed.setOnAction(_ -> drawingTool.setCurrentColor(Color.RED));
+        menuGreen.setOnAction(_ -> drawingTool.setCurrentColor(Color.GREEN));
+        menuBlue.setOnAction(_ -> drawingTool.setCurrentColor(Color.BLUE));
+        lightbulbColorPicker.setOnAction(_ -> drawingTool.setCurrentColor(lightbulbColorPicker.getValue()));
+    }
 
-  private void showToolBar(boolean show) {
-        if(show) leftPanelVBox.getChildren().addFirst(toolbarScrollPane);
-        else leftPanelVBox.getChildren().remove(toolbarScrollPane);
-  }
+    private void showToolBar(boolean show) {
+        if (show) {
+            leftPanelVBox.getChildren().addFirst(toolbarScrollPane);
+        } else {
+            leftPanelVBox.getChildren().remove(toolbarScrollPane);
+        }
+    }
 
     private void exportToJson(String username) {
         String info = drawingArea.exportCircuit(circuitNameField.getText());
@@ -770,22 +844,22 @@ public class MainAppFXMLController {
         return false;
     }
 
-  private void exportToTxt() {
+    private void exportToTxt() {
         String info = drawingArea.exportCircuit(circuitNameField.getText()); // get drawingArea to put in txt
-      JFileChooser fileChooser = new JFileChooser();
-      fileChooser.setDialogTitle("Save Circuit as TXT");
-      int userSelection = fileChooser.showSaveDialog(null); // file dialog
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Save Circuit as TXT");
+        int userSelection = fileChooser.showSaveDialog(null); // file dialog
 
-      if (userSelection == JFileChooser.APPROVE_OPTION) {
-          File fileToSave = fileChooser.getSelectedFile();
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File fileToSave = fileChooser.getSelectedFile();
 
-          try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileToSave))) {
-              writer.write(info);
-              JOptionPane.showMessageDialog(null, "Circuit exported to TXT successfully.");
-          } catch (IOException e) {
-              e.printStackTrace();
-              JOptionPane.showMessageDialog(null, "Error exporting circuit to TXT.");
-          }
-      }
-  }
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileToSave))) {
+                writer.write(info);
+                JOptionPane.showMessageDialog(null, "Circuit exported to TXT successfully.");
+            } catch (IOException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Error exporting circuit to TXT.");
+            }
+        }
+    }
 }
