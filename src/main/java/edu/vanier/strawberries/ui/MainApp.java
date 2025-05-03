@@ -24,6 +24,8 @@ import org.slf4j.LoggerFactory;
  */
 public class MainApp extends Application {
 
+    public static String recentProject;
+    public static String loggedInUsername;
     // The FXML file name of the primary scene.
     public static final String MAINAPP_SCENE = "MainApp_layout";
     // The FXML file name of the secondary scene.

@@ -153,7 +153,23 @@ public abstract class Component extends StackPane {
 
         return new Point2D(x,y);
     }
-    
+
+    public Node[] getNodes() {
+        return new Node[]{begin, end};
+    }
+
+    public boolean sharesNode(Component other) {
+        for (Node nodeA : this.getNodes()) {
+            for (Node nodeB : other.getNodes()) {
+                if (nodeA.getX() == nodeB.getX() && nodeA.getY() == nodeB.getY()) {
+                    System.out.println("Shared node between " + this + " and " + other +
+                            " at (" + nodeA.getX() + ", " + nodeA.getY() + ")");
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     
 }
 

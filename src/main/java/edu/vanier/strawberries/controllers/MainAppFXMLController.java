@@ -723,21 +723,20 @@ public class MainAppFXMLController {
         menuZoomIn.setOnAction(zoomInBtn.getOnAction());
         menuZoomOut.setOnAction(zoomOutBtn.getOnAction());
         menuToggleGrid.setOnAction(_ -> drawingArea.toggleGrid());
-        String username = "";
-        try {
-            username = MainApp.signOnLogInController.getUsername();
+        String username = MainApp.loggedInUsername;
+        if (username != "") {
             String finalUsername1 = username;
             exportBtn.setOnAction(_ -> exportToJson(finalUsername1)); // if logged in, export to json file
-        } catch (Exception e) { // if not logged in, export to txt (local)
-            System.out.println(e.getMessage());
+        } else {
+            // System.out.println(e.getMessage());
+            exportBtn.setOnAction(_ -> exportToTxt(circuitName)); // if not logged in, export to txt (local)
         }
-        String finalUsername = username;
-        // check if logged in, if not hen export to txt!!
-        exportBtn.setOnAction(_ -> exportToJson(finalUsername)); // export
         //String recentProject = MainApp.signOnLogInController.getRecent();
         //menuOpenRecent.setOnAction(_->openRecent(recentProject));
+        String finalUsername = username;
         menuOpenRecent.setOnAction(_ -> {
             DrawingArea.importFromJson(finalUsername, drawingArea);
+            update();
         });
 
         // INSERT MENU
@@ -769,7 +768,7 @@ public class MainAppFXMLController {
 
     private void exportToJson(String username) {
         String info = drawingArea.exportCircuit(circuitNameField.getText());
-        File jsonFile = new File("users.json"); // change pathname!!
+        File jsonFile = new File("src/main/resources/users.json");
 
         String content = "";
 

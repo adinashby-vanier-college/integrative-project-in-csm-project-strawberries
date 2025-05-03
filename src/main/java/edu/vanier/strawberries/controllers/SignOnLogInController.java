@@ -42,15 +42,10 @@ public class SignOnLogInController {
         });
     }
 
-    public String getRecent() {
-        return Login();
-    }
-
-    public String getUsername() {return this.username.getText().trim();}
-
-    private String Login() {
+    public String Login() {
         String recentProject = "";
         String username = this.username.getText().trim();
+        System.out.println("WORKS: " + username);
         String password = this.password.getText();
 
         if (username.isEmpty() || password.isEmpty()) {
@@ -70,6 +65,7 @@ public class SignOnLogInController {
             if (findCheckUser(content, username, hashedInputPassword)) {
                 statusLabel.setText("Please enter both username and password.");
                 recentProject = findRecent(content, username);
+                MainApp.recentProject = recentProject; // set recent project data as universal variable
                 loadMainScene();
                 return recentProject;
             } else {
@@ -103,6 +99,9 @@ public class SignOnLogInController {
     }
 
     public static String findRecent(String content, String username) { // return recent project
+        // debug
+        System.out.println("username" + username);
+
         int index = 0;
         while ((index = content.indexOf("\"username\":", index)) != -1) {
             int startUser = content.indexOf("\"", index + 11) + 1;
@@ -111,6 +110,19 @@ public class SignOnLogInController {
 
             if (foundUsername.equals(username)) {
                 int recentIndex = content.indexOf("\"recent\":", endUser);
+
+                // debug
+                System.out.println("found username: " + foundUsername); // works
+                System.out.println("searching for recent after index: " + endUser);
+                System.out.println("recentIndex: " + recentIndex);
+
+                // debug 2
+                if (recentIndex == -1) {
+                    System.out.println("No 'recent' key found after username " + username);
+                    index = endUser;
+                    continue;
+                }
+
                 int startRecent = content.indexOf("\"", recentIndex + 9) +1;
                 int endRecent = content.indexOf("\"", startRecent);
                 return content.substring(startRecent, endRecent)

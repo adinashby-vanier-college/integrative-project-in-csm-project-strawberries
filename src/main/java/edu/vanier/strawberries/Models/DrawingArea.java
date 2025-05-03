@@ -1,6 +1,8 @@
 package edu.vanier.strawberries.Models;
 
 import edu.vanier.math.CircuitMath;
+import edu.vanier.strawberries.controllers.MainAppFXMLController;
+import edu.vanier.strawberries.controllers.SignOnLogInController;
 import edu.vanier.strawberries.ui.MainApp;
 import javafx.animation.Interpolator;
 import javafx.geometry.Point2D;
@@ -23,8 +25,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
-
-import static edu.vanier.strawberries.controllers.SignOnLogInController.findRecent;
 import javafx.scene.paint.Color;
 
 public class DrawingArea {
@@ -190,39 +190,35 @@ public class DrawingArea {
     }
 
     public static void importFromJson(String username, DrawingArea drawingArea) {
-        File jsonFile = new File("users.json");
+        File jsonFile = new File("src/main/resources/users.json");
 
         if (!jsonFile.exists()) {
             System.out.println("JSON file not found.");
             return;
         }
 
-        // Read the file into content
-        String content = "";
-        try (BufferedReader reader = new BufferedReader(new FileReader(jsonFile))) {
-            StringBuilder sb = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line).append("\n");
-            }
-            content = sb.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
+        //String recentDraft = findRecent(content, username); // not working!!
+        String recent = MainApp.recentProject;
 
-        String recent = findRecent(content, username);
         if (recent.isEmpty()) {
             System.out.println("No recent project found for user: " + username);
             return;
         }
 
         String[] lines = recent.split("\n");
-        Circuit circuit = new Circuit(true);  // Create new circuit
+        Circuit circuit = new Circuit(true);  // create new circuit
+
+        ArrayList<Component> components = new ArrayList<>(); // temp component holder
 
         for (String line : lines) {
+            // remove "1|" or "1|1|" before "wire"
+            if (line.matches(".*\\|wire\\|.*")) {
+                line = line.substring(line.indexOf("wire|"));
+            }
             if (line.startsWith("wire|")) {
                 // wire format: wire|color|x1|y1|x2|y2
+
+                // fix!! wire does not appear
                 String[] parts = line.split("\\|");
                 if (parts.length == 6) {
                     Color color = Color.web(parts[1].trim());
@@ -237,6 +233,8 @@ public class DrawingArea {
                     Wire wire = new Wire(begin, end, color, 10, 10);
 
                     // add wire to circuit
+                    // debug
+                    System.out.println("Added a wire:" + line);
                     circuit.addComponent(wire);
                 }
             } else if (line.contains("|")) {
@@ -246,7 +244,7 @@ public class DrawingArea {
                     String type = parts[0];
                     double x = Double.parseDouble(parts[1]);
                     double y = Double.parseDouble(parts[2]);
-                    int angle = Integer.parseInt(parts[3]);
+                    int angle = (int) Double.parseDouble(parts[3]);
 
                     Component component = null;
                     Node begin = new Node(x, y);
@@ -267,8 +265,10 @@ public class DrawingArea {
                             break;
                         case "fuse":
                             component = new Fuse(begin, end, 10, true);
+                            break;
                         case "switch":
                             component = new Switch(begin, end, true, true);
+                            break;
                         default:
                             System.out.println("Unknown component type: " + type);
                             break;
@@ -277,13 +277,37 @@ public class DrawingArea {
                     if (component != null) {
                         component.setRotate(angle); // rotation
                         circuit.addComponent(component);
+                        components.add(component);
                     }
                 }
             }
         }
 
+        // connect components that share node position
+        for (int i = 0; i < components.size(); i++) {
+            for (int j = i + 1; j < components.size(); j++) {
+                Component a = components.get(i);
+                Component b = components.get(j);
+
+                if (a.sharesNode(b)) {
+                    int indexA = circuit.getIndex(a);
+                    int indexB = circuit.getIndex(b);
+                    if (indexA != -1 && indexB != -1) {
+                        circuit.addEdge(indexA, indexB);
+                    }
+                    System.out.println("Connecting " + a + " to " + b);
+                } else {
+                    System.out.println("Not connecting..."); // debug
+                }
+            }
+        }
+
+        // visual
         drawingArea.setCircuit(circuit);
         drawingArea.drawContent();
+        circuit.print(); // debug
+        circuit.checkForCycle(); //debug
+
         System.out.println("Circuit imported successfully from JSON.");
     }
 

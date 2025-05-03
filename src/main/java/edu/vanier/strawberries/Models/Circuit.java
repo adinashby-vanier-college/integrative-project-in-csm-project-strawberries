@@ -156,4 +156,5 @@ public class Circuit {
         for(LinkedList<Component> compList : arrayList) compList.getFirst().switchDisplay(diagramView);
     }
 
+
 }
