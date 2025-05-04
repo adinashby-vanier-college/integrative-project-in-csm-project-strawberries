@@ -666,14 +666,6 @@ public class MainAppFXMLController {
     }
 
     /**
-     *
-     * @param project
-     */
-    private void openRecent(String project) {
-        // TODO: open project
-    }
-
-    /**
      * Set the currently being edited element
      * @param component The component to be edited.
      * @implNote The <em>editing</em> variable is different from the <em>selection</em> variable.
@@ -782,7 +774,7 @@ public class MainAppFXMLController {
     }
 
     /**
-     * TODO insert description
+     * Exports current circuit project to json user data
      * @param username The username of the currently logged-in user
      */
     private void exportToJson(String username) {
@@ -877,7 +869,7 @@ public class MainAppFXMLController {
     }
 
     /**
-     * Helper method to check if there is recent (TODO recent what..? + param descriptions)
+     * Helper method to check if there is recent project data in json
      * @param lines
      * @param index
      * @return
@@ -916,6 +908,11 @@ public class MainAppFXMLController {
         }
     }
 
+    /**
+     * Imports the circuit from the json user data to the Drawing Area
+     * @param username
+     * @param drawingArea
+     */
     public void importFromJson(String username, DrawingArea drawingArea) {
         File jsonFile = new File("src/main/resources/users.json");
 

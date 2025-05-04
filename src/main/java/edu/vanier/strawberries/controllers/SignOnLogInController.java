@@ -43,7 +43,7 @@ public class SignOnLogInController {
     }
 
     /**
-     * TODO javadoc here
+     * Checks the username and password field to display corresponding information on statusLabel
      * @return
      */
     public String Login() {
