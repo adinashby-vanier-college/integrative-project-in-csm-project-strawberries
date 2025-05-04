@@ -4,7 +4,7 @@
       "username": "natsto",
       "password": "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918",
       "recoveryCode": "A3X1V",
-      "recent": "unnamedCircuit.txt\nResistor|240.0|80.0|0.0\n1|wire|0xff00ffff|320.0|80.0|480.0|80.0\n1|1|wire|0xff00ffff|200.0|80.0|240.0|80.0\nBattery|340.0|160.0|0.0\n1|1|wire|0xff00ffff|480.0|160.0|400.0|160.0\n1|wire|0xff00ffff|340.0|160.0|200.0|160.0\n1|wire|0xff00ffff|480.0|80.0|480.0|160.0\n1|wire|0xff00ffff|200.0|160.0|200.0|80.0"
+      "recent": "unnamedCircuit.txt\nResistor|240.0|80.0|0.0\nwire|0xff00ffff|320.0|80.0|480.0|80.0\nwire|0xff00ffff|200.0|80.0|240.0|80.0\nBattery|340.0|160.0|0.0\nwire|0xff00ffff|480.0|160.0|400.0|160.0\nwire|0xff00ffff|340.0|160.0|200.0|160.0\nwire|0xff00ffff|480.0|80.0|480.0|160.0\nwire|0xff00ffff|200.0|160.0|200.0|80.0\n",
     }
   ,
     {

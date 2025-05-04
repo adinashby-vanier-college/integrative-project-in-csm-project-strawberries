@@ -779,7 +779,7 @@ public class MainAppFXMLController {
         menuZoomOut.setOnAction(zoomOutBtn.getOnAction());
         menuToggleGrid.setOnAction(_ -> drawingArea.toggleGrid());
         String username = MainApp.loggedInUsername;
-        if (!Objects.equals(username, "")) {
+        if (!Objects.equals(username, null)) {
             String finalUsername1 = username;
             exportBtn.setOnAction(_ -> exportToJson(finalUsername1)); // if logged in, export to json file
         } else {
@@ -830,61 +830,71 @@ public class MainAppFXMLController {
      * @param username The username of the currently logged-in user
      */
     private void exportToJson(String username) {
-        String info = drawingArea.exportCircuit(circuitNameField.getText());
+        System.out.println("EXPORTING..."+username); // is null!!
+        String notFormattedInfo = drawingArea.exportCircuit(circuitNameField.getText());
+        String info = notFormattedInfo.replace("\\", "\\\\")
+                .replace("\"", "\\\"")
+                .replace("\n", "\\n");
         File jsonFile = new File("src/main/resources/users.json");
 
         String content = "";
 
         // read json
-        if (jsonFile.exists()) {
-            try (BufferedReader reader = new BufferedReader(new FileReader(jsonFile))) {
-                StringBuilder sb = new StringBuilder();
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    sb.append(line).append("\n");
-                }
-                content = sb.toString();
-            } catch (IOException e) {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(null, "Failed to read JSON file.");
-                return;
-            }
-        } else {
+        if (!jsonFile.exists()) {
             JOptionPane.showMessageDialog(null, "JSON file does not exist.");
             return;
         }
 
-        // look for user, replace recent
-        String[] lines = content.split("\n");
+        StringBuilder contentBuilder = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new FileReader(jsonFile))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                contentBuilder.append(line).append("\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Failed to read JSON file.");
+            return;
+        }
+
+        String[] lines = contentBuilder.toString().split("\n");
         StringBuilder updated = new StringBuilder();
         boolean userFound = false;
-        boolean insideTargetUser = false;
+        boolean insideUser = false;
+        boolean recentReplaced = false;
 
         for (int i = 0; i < lines.length; i++) {
             String line = lines[i];
 
-            if (line.trim().startsWith("\"username\":") && line.contains("\"" + username + "\"")) {
-                userFound = true;
-                insideTargetUser = true;
-                updated.append(line).append("\n");
+            // Detect start of target user
+            if (line.trim().startsWith("\"username\":")) {
+                String foundUsername = line.trim().replace("\"username\":", "")
+                        .replace("\"", "")
+                        .replace(",", "")
+                        .trim();
+                insideUser = foundUsername.equals(username);
+                userFound |= insideUser;
+            }
+
+            // Replace first matching "recent" field
+            if (insideUser && line.trim().startsWith("\"recent\":") && !recentReplaced) {
+                updated.append("      \"recent\": \"").append(info).append("\",\n");
+                recentReplaced = true;
                 continue;
             }
 
-            if (insideTargetUser && line.trim().startsWith("\"recent\":")) {
-                // replace the recent field
-                updated.append("      \"recent\": \"").append(escape(info.trim())).append("\",\n");
-                continue;
-            }
-
-            // insert recent if it wasn't already there
-            if (insideTargetUser && line.trim().startsWith("}")) {
-                if (!content.contains("\"recent\"") || !lineAboveContainsRecent(lines, i)) {
-                    updated.append("      \"recent\": \"").append(escape(info.trim())).append("\"\n");
-                }
-                insideTargetUser = false;
+            // Add new recent if it wasn't there
+            if (insideUser && line.trim().equals("}") && !recentReplaced) {
+                updated.append("      \"recent\": \"").append(info).append("\"\n");
+                recentReplaced = true;
             }
 
             updated.append(line).append("\n");
+
+            // Exit user block
+            if (insideUser && line.trim().equals("}")) {
+                insideUser = false;
+            }
         }
 
         if (!userFound) {

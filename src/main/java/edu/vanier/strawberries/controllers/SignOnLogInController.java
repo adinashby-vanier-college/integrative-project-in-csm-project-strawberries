@@ -70,6 +70,7 @@ public class SignOnLogInController {
                 statusLabel.setText("Please enter both username and password.");
                 recentProject = findRecent(content, username);
                 MainApp.recentProject = recentProject; // set recent project data as universal variable
+                MainApp.loggedInUsername = username; // set username as universal variable
                 loadMainScene();
                 return recentProject;
             } else {
