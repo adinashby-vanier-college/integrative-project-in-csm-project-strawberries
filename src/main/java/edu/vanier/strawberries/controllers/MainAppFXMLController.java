@@ -1,25 +1,5 @@
 package edu.vanier.strawberries.controllers;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.logging.Logger;
-
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Node;
-import org.w3c.dom.Text;
-import org.w3c.dom.events.MouseEvent;
-
 import edu.vanier.math.CircuitMath;
 import edu.vanier.strawberries.Models.*;
 import edu.vanier.strawberries.Models.DrawingArea;
@@ -42,11 +22,21 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import java.io.*;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.util.ArrayList;
+import javax.swing.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * FXML controller class for the primary stage scene.
@@ -389,12 +379,12 @@ public class MainAppFXMLController {
                 case "select" -> {
                     if(selection != null) setCursor(Cursor.CLOSED_HAND);
                     edit(selection);
-                   if (selection instanceof Battery battery) {
+                    if (selection instanceof Battery battery) {
                         battery.handleEdit(leftPanel);
-                   }
-                   else if (selection instanceof Resistor resistor) {
+                    }
+                    else if (selection instanceof Resistor resistor) {
                         resistor.handleEdit(leftPanel);
-                        }
+                    }
 
                     if (selection instanceof Wire wire) {
                         initialBegin = wire.begin.getPosition();
@@ -551,7 +541,7 @@ public class MainAppFXMLController {
     }
 
     /**
-     * Mark a given component as the currently selected one 
+     * Mark a given component as the currently selected one
      * @param component The component to select
      * @implNote It is possible to pass "null" to unselect, but it is preferred to use the method {@link #unselect(Component)}
      */
@@ -687,50 +677,50 @@ public class MainAppFXMLController {
      * @param component The component to be edited.
      * @implNote The <em>editing</em> variable is different from the <em>selection</em> variable.
      */
-  private void edit(Component component) {
-    if (editing != component) {
-        if (component != null) component.setEdit(true);
-        if (editing != null) {
-            if (component == null) {
-                editing.setEdit(false);
-                editing = null;
+    private void edit(Component component) {
+        if (editing != component) {
+            if (component != null) component.setEdit(true);
+            if (editing != null) {
+                if (component == null) {
+                    editing.setEdit(false);
+                    editing = null;
+                } else {
+                    editing.setEdit(false);
+                    editing = component;
+                }
             } else {
-                editing.setEdit(false);
                 editing = component;
             }
-        } else {
-            editing = component;
-        }
 
-        if (component instanceof Battery battery) {
-            battery.handleEdit(leftPanel);
+            if (component instanceof Battery battery) {
+                battery.handleEdit(leftPanel);
+            }
         }
     }
-  }
 
     /**
      * Switch between realistic and diagram views of the components
      * @param diagramView Represents if the program should display a diagram view.
      */
-  private void switchView(boolean diagramView) {
+    private void switchView(boolean diagramView) {
         this.diagramView = diagramView;
         viewMenuBtn.setText(diagramView ? "Diagram" : "Realistic");
         drawingArea.switchView(diagramView);
-  }
+    }
 
     /**
      * Initializes the methods of menu items
      * @implNote This method should be called in the {@link #initialize()} method
      */
-  private void setUpMenuActions() {
-  //FILE MENU
-      menuNew.setOnAction(_-> {});
-      menuOpen.setOnAction(_->{});
-      menuOpenRecent.setOnAction(_->{});
-      menuSave.setOnAction(_->{});
-      String circuitName = circuitNameField.getText();
-      menuSaveAs.setOnAction(_->exportToTxt(circuitName));
-      menuQuit.setOnAction(_->quit());
+    private void setUpMenuActions() {
+        //FILE MENU
+        menuNew.setOnAction(_-> {});
+        menuOpen.setOnAction(_->{});
+        menuOpenRecent.setOnAction(_->{});
+        menuSave.setOnAction(_->{});
+        String circuitName = circuitNameField.getText();
+        menuSaveAs.setOnAction(_->exportToTxt(circuitName));
+        menuQuit.setOnAction(_->quit());
 
         // SETTINGS & VIEW MENU
         menuShowToolbar.setOnAction(_ -> showToolBar(true));
@@ -744,7 +734,7 @@ public class MainAppFXMLController {
         menuZoomOut.setOnAction(zoomOutBtn.getOnAction());
         menuToggleGrid.setOnAction(_ -> drawingArea.toggleGrid());
         String username = MainApp.loggedInUsername;
-        if (!Objects.equals(username, null)) {
+        if (!Objects.equals(username, "")) {
             String finalUsername1 = username;
             exportBtn.setOnAction(_ -> exportToJson(finalUsername1)); // if logged in, export to json file
         } else {
@@ -755,28 +745,28 @@ public class MainAppFXMLController {
         //menuOpenRecent.setOnAction(_->openRecent(recentProject));
         String finalUsername = username;
         menuOpenRecent.setOnAction(_ -> {
-            DrawingArea.importFromJson(finalUsername, drawingArea);
+            importFromJson(finalUsername, drawingArea);
             update();
         });
 
-    // INSERT MENU
-    //wire
-    menuWire.setOnAction(_ -> drawingTool.setCurrentAction("place-wire"));
-    menuRedWire.setOnAction(_ -> drawingTool.setCurrentColor(Color.RED));
-    menuBlackWire.setOnAction(_ -> drawingTool.setCurrentColor(Color.BLACK));
-    menuColorPicker.setOnAction(_ -> drawingTool.setCurrentColor(menuColorPicker.getValue()));
-    //other components
-    menuResistor.setOnAction(_ -> drawingTool.setCurrentAction("place-resistor"));
-    menuBattery.setOnAction(_ -> drawingTool.setCurrentAction("place-battery"));
-    menuSwitch.setOnAction(_ -> drawingTool.setCurrentAction("place-switch"));
-    menuCapacitor.setOnAction(_ -> drawingTool.setCurrentAction("place-capacitor"));
-    menuLightbulb.setOnAction(_ -> drawingTool.setCurrentAction("place-lightbulb"));
-    menuYellow.setOnAction(_ -> drawingTool.setCurrentColor(Color.YELLOW));
-    menuRed.setOnAction(_ -> drawingTool.setCurrentColor(Color.RED));
-    menuGreen.setOnAction(_ -> drawingTool.setCurrentColor(Color.GREEN));
-    menuBlue.setOnAction(_ -> drawingTool.setCurrentColor(Color.BLUE));
-    lightbulbColorPicker.setOnAction(_ -> drawingTool.setCurrentColor(lightbulbColorPicker.getValue()));
-  }
+        // INSERT MENU
+        //wire
+        menuWire.setOnAction(_ -> drawingTool.setCurrentAction("place-wire"));
+        menuRedWire.setOnAction(_ -> drawingTool.setCurrentColor(Color.RED));
+        menuBlackWire.setOnAction(_ -> drawingTool.setCurrentColor(Color.BLACK));
+        menuColorPicker.setOnAction(_ -> drawingTool.setCurrentColor(menuColorPicker.getValue()));
+        //other components
+        menuResistor.setOnAction(_ -> drawingTool.setCurrentAction("place-resistor"));
+        menuBattery.setOnAction(_ -> drawingTool.setCurrentAction("place-battery"));
+        menuSwitch.setOnAction(_ -> drawingTool.setCurrentAction("place-switch"));
+        menuCapacitor.setOnAction(_ -> drawingTool.setCurrentAction("place-capacitor"));
+        menuLightbulb.setOnAction(_ -> drawingTool.setCurrentAction("place-lightbulb"));
+        menuYellow.setOnAction(_ -> drawingTool.setCurrentColor(Color.YELLOW));
+        menuRed.setOnAction(_ -> drawingTool.setCurrentColor(Color.RED));
+        menuGreen.setOnAction(_ -> drawingTool.setCurrentColor(Color.GREEN));
+        menuBlue.setOnAction(_ -> drawingTool.setCurrentColor(Color.BLUE));
+        lightbulbColorPicker.setOnAction(_ -> drawingTool.setCurrentColor(lightbulbColorPicker.getValue()));
+    }
 
     /**
      * Toggle the toolbar's visibility on/off
