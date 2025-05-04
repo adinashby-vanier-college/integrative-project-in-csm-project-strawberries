@@ -1,5 +1,25 @@
 package edu.vanier.strawberries.controllers;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.logging.Logger;
+
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Node;
+import org.w3c.dom.Text;
+import org.w3c.dom.events.MouseEvent;
+
 import edu.vanier.math.CircuitMath;
 import edu.vanier.strawberries.Models.*;
 import edu.vanier.strawberries.Models.DrawingArea;
@@ -22,21 +42,11 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
-import java.io.*;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import java.util.ArrayList;
-import javax.swing.*;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * FXML controller class for the primary stage scene.
@@ -521,14 +531,14 @@ public class MainAppFXMLController {
     private void mouseReleased(MouseEvent e) {
         toMove = new Node[2];
         if (selection != null) {
-            attemptConnection(selection, selection.begin);
+            circuit.attemptConnection(selection, null);
             if (drawingTool.isPencilDown()) {
                 drawingTool.setPencilDown(false);
                 if(selection.getLength()<=0) circuit.deleteComponent(selection);
             }
             if(canvas.getCursor().equals(Cursor.CLOSED_HAND)) setCursor(Cursor.OPEN_HAND);
         }
-        else if(editing != null) attemptConnection(editing, editing.begin);
+        else if(editing != null) circuit.attemptConnection(editing, null);
 
         Circuit.checkForCycle(circuit);
     }
@@ -561,51 +571,6 @@ public class MainAppFXMLController {
             component.markAsSelected(false);
             selection = null;
         }
-    }
-
-    /**
-     * Verify and confirm the connection/disconnection of circuit components given the positions of their nodes.
-     * @param toCheck The component to connect
-     * @param node The node whose position to check
-     * @implSpec The initial call must have the <b>begin</b> node as the node parameter. The <b>end</b> node will be checked recursively.
-     */
-    private void attemptConnection(Component toCheck, Node node) {
-        int srcIndex = circuit.getIndex(toCheck);
-        Point2D checkPoint = node.getPosition();
-        ArrayList<Integer> connectedComponents = new ArrayList<>(), disconnectedComponents = new ArrayList<>();
-
-        // CHECK FOR CONNECTION
-        for (LinkedList<Component> currentList : circuit.arrayList) {
-            for (Component connectedComponent : currentList) {
-                if(connectedComponent != toCheck) {
-                    int dstIndex = circuit.getIndex(connectedComponent);
-
-                    Point2D componentBegin = connectedComponent.begin.getPosition();
-                    Point2D componentEnd = connectedComponent.end.getPosition();
-
-                    if ((componentBegin.distance(checkPoint) <= 1) || (componentEnd.distance(checkPoint) <= 1)) {
-                        if(!connectedComponents.contains(dstIndex)) connectedComponents.add(dstIndex);
-                        if(!node.isConnected()) node.setConnected(true);
-                    }
-                }
-            }
-        }
-        for (int compIndex : connectedComponents) circuit.addEdge(srcIndex, compIndex);
-
-        // CHECK FOR DISCONNECTION
-        Point2D checkBegin = toCheck.begin.getPosition(),
-                checkEnd = toCheck.end.getPosition();
-        for(Component connected : circuit.arrayList.get(srcIndex)) {
-            if(connected != toCheck) {
-                Point2D compBegin = connected.begin.getPosition(),
-                        compEnd = connected.end.getPosition();
-                if ((checkBegin.distance(compBegin) > 1 && checkBegin.distance(compEnd) > 1) && (checkEnd.distance(compBegin) > 1 && checkEnd.distance(compEnd) > 1)) {
-                    circuit.removeEdge(srcIndex, circuit.getIndex(connected));
-                }
-            }
-        }
-
-        if(node == toCheck.begin) attemptConnection(toCheck, toCheck.end);
     }
 
     /**
@@ -794,24 +759,24 @@ public class MainAppFXMLController {
             update();
         });
 
-        // INSERT MENU
-        //wire
-        menuWire.setOnAction(_ -> drawingTool.setCurrentAction("place-wire"));
-        menuRedWire.setOnAction(_ -> drawingTool.setCurrentColor(Color.RED));
-        menuBlackWire.setOnAction(_ -> drawingTool.setCurrentColor(Color.BLACK));
-        menuColorPicker.setOnAction(_ -> drawingTool.setCurrentColor(menuColorPicker.getValue()));
-        //other components
-        menuResistor.setOnAction(_ -> drawingTool.setCurrentAction("place-resistor"));
-        menuBattery.setOnAction(_ -> drawingTool.setCurrentAction("place-battery"));
-        menuSwitch.setOnAction(_ -> drawingTool.setCurrentAction("place-switch"));
-        menuCapacitor.setOnAction(_ -> drawingTool.setCurrentAction("place-capacitor"));
-        menuLightbulb.setOnAction(_ -> drawingTool.setCurrentAction("place-lightbulb"));
-        menuYellow.setOnAction(_ -> drawingTool.setCurrentColor(Color.YELLOW));
-        menuRed.setOnAction(_ -> drawingTool.setCurrentColor(Color.RED));
-        menuGreen.setOnAction(_ -> drawingTool.setCurrentColor(Color.GREEN));
-        menuBlue.setOnAction(_ -> drawingTool.setCurrentColor(Color.BLUE));
-        lightbulbColorPicker.setOnAction(_ -> drawingTool.setCurrentColor(lightbulbColorPicker.getValue()));
-    }
+    // INSERT MENU
+    //wire
+    menuWire.setOnAction(_ -> drawingTool.setCurrentAction("place-wire"));
+    menuRedWire.setOnAction(_ -> drawingTool.setCurrentColor(Color.RED));
+    menuBlackWire.setOnAction(_ -> drawingTool.setCurrentColor(Color.BLACK));
+    menuColorPicker.setOnAction(_ -> drawingTool.setCurrentColor(menuColorPicker.getValue()));
+    //other components
+    menuResistor.setOnAction(_ -> drawingTool.setCurrentAction("place-resistor"));
+    menuBattery.setOnAction(_ -> drawingTool.setCurrentAction("place-battery"));
+    menuSwitch.setOnAction(_ -> drawingTool.setCurrentAction("place-switch"));
+    menuCapacitor.setOnAction(_ -> drawingTool.setCurrentAction("place-capacitor"));
+    menuLightbulb.setOnAction(_ -> drawingTool.setCurrentAction("place-lightbulb"));
+    menuYellow.setOnAction(_ -> drawingTool.setCurrentColor(Color.YELLOW));
+    menuRed.setOnAction(_ -> drawingTool.setCurrentColor(Color.RED));
+    menuGreen.setOnAction(_ -> drawingTool.setCurrentColor(Color.GREEN));
+    menuBlue.setOnAction(_ -> drawingTool.setCurrentColor(Color.BLUE));
+    lightbulbColorPicker.setOnAction(_ -> drawingTool.setCurrentColor(lightbulbColorPicker.getValue()));
+  }
 
     /**
      * Toggle the toolbar's visibility on/off
@@ -958,5 +923,120 @@ public class MainAppFXMLController {
                 JOptionPane.showMessageDialog(null, "Error exporting circuit to TXT.");
             }
         }
+    }
+
+    public void importFromJson(String username, DrawingArea drawingArea) {
+        File jsonFile = new File("src/main/resources/users.json");
+
+        if (!jsonFile.exists()) {
+            System.out.println("JSON file not found.");
+            return;
+        }
+
+        String recent = MainApp.recentProject;
+
+        if (recent == null || recent.isEmpty()) {
+            System.out.println("No recent project found for user: " + username);
+            return;
+        }
+
+        String[] lines = recent.split("\n");
+
+        Circuit circuit = new Circuit(true);  // reset the circuit
+        ArrayList<Component> components = new ArrayList<>(); // temp component holder
+
+        for (String line : lines) {
+
+            // Remove any prefix before "wire|"
+            if (line.matches(".*\\|wire\\|.*")) {
+                line = line.substring(line.indexOf("wire|"));
+            }
+
+            if (line.contains("wire|")) {
+                // wire format: wire|color|x1|y1|x2|y2
+                // fix!! wire does not appear
+                String[] parts = line.split("\\|");
+                if (parts.length == 6) {
+                    try {
+                        Color color = Color.web(parts[1].trim());
+                        double x1 = Double.parseDouble(parts[2]);
+                        double y1 = Double.parseDouble(parts[3]);
+                        double x2 = Double.parseDouble(parts[4]);
+                        double y2 = Double.parseDouble(parts[5]);
+
+                        Node begin = new Node(x1, y1);
+                        Node end = new Node(x2, y2);
+                        Wire wire = new Wire(begin, end, color, 10, 10);
+
+                        circuit.addComponent(wire);
+                    } catch (Exception e) {
+                        System.out.println("[ERROR] Failed to parse wire: " + e.getMessage());
+                    }
+                } else {
+                    System.out.println("[DEBUG] Invalid wire format: " + line);
+                }
+            } else if (line.contains("|")) {
+                // component format: type|x|y|angle
+                String[] parts = line.split("\\|");
+                if (parts.length == 4) {
+                    try {
+                        String type = parts[0];
+                        double x = Double.parseDouble(parts[1]);
+                        double y = Double.parseDouble(parts[2]);
+                        int angle = (int) Double.parseDouble(parts[3]);
+
+                        Component component = null;
+                        Node begin = new Node(x, y);
+                        Node end = new Node(x + 50, y);
+
+                        switch (type.toLowerCase()) {
+                            case "resistor":
+                                component = new Resistor(begin, end, 100.0, false);
+                                break;
+                            case "battery":
+                                component = new Battery(begin, end, 5.0, false);
+                                break;
+                            case "capacitor":
+                                component = new Capacitor(begin, end, 10, true);
+                                break;
+                            case "lightbulb":
+                                component = new Lightbulb(begin, end, Color.web("BLACK"), 10, true);
+                                break;
+                            case "fuse":
+                                component = new Fuse(begin, end, 10, true);
+                                break;
+                            case "switch":
+                                component = new Switch(begin, end, true, true);
+                                break;
+                            default:
+                                System.out.println("[DEBUG] Unknown component type: " + type);
+                        }
+
+                        if (component != null) {
+                            component.setRotate(angle);
+                            circuit.addComponent(component);
+                            components.add(component);
+                        }
+                    } catch (Exception e) {
+                        System.out.println("[ERROR] Failed to parse component: " + e.getMessage());
+                    }
+                } else {
+                    System.out.println("[DEBUG] Invalid component format: " + line);
+                }
+            }
+        }
+
+        // Connections
+        circuit.connectEntireCircuit();
+
+        // visual
+        this.circuit = circuit;
+        drawingArea.setCircuit(circuit);
+        drawingArea.drawContent();
+        circuit.print();
+        Circuit.checkForCycle(circuit);
+
+        System.out.println("Circuit imported successfully from JSON.");
+        System.out.println(circuit);
     }
 }
