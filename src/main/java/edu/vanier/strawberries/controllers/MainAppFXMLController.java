@@ -377,24 +377,31 @@ public class MainAppFXMLController {
                 case "place-resistor" -> select(new Resistor(eventLocation, tempEnd, 10, diagramView));
                 case "place-switch" -> select(new Switch(eventLocation, tempEnd, false,diagramView));
                 case "select" -> {
-                    if(selection != null) setCursor(Cursor.CLOSED_HAND);
-                    edit(selection);
-                    if (selection instanceof Battery battery) {
-                        battery.handleEdit(leftPanel);
-                    }
-                    else if (selection instanceof Resistor resistor) {
-                        resistor.handleEdit(leftPanel);
-                    }
+    if(selection != null) setCursor(Cursor.CLOSED_HAND);
+    edit(selection); 
 
-                    if (selection instanceof Wire wire) {
-                        initialBegin = wire.begin.getPosition();
-                        initialEnd = wire.end.getPosition();
-                    }
+    if (selection instanceof Resistor resistor) {
+        if (e.getClickCount() == 2) {
+            resistor.handleEdit(leftPanel);
+        } else if (e.getClickCount() == 3) {
+            resistor.showInfoBox(leftPanel); 
+        }
+    }
 
-                    if (selection instanceof Switch switchObj) {
-                        switchObj.toggle();
-                    }
-                }
+    if (selection instanceof Battery battery && e.getClickCount() == 2) {
+        battery.handleEdit(leftPanel); 
+    }
+
+    if (selection instanceof Wire wire) {
+        initialBegin = wire.begin.getPosition();
+        initialEnd = wire.end.getPosition();
+    }
+
+    if (selection instanceof Switch switchObj) {
+        switchObj.toggle();
+    }
+}
+
                 default -> {}
             }
             drawingTool.setCurrentColor(null);

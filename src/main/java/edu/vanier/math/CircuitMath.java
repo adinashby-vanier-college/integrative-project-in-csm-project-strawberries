@@ -169,16 +169,16 @@ public class CircuitMath {
                 System.out.println("Battery detected with potential: " + battery.getPotential() + " V");
             }
             
-//            if (c instanceof Fuse fuse) {
-//    fuse.updateState(totalCurrent);
-//    if (fuse.isBlown()) {
-//        fuse.setCurrent(0);
-//        fuse.setVoltage(0); 
-//    } else {
-//        fuse.setCurrent(totalCurrent);
-//        fuse.setVoltage(0); 
-//    }
-//}
+           if (c instanceof Fuse fuse) {
+    fuse.updateState(totalCurrent);
+    if (fuse.isBlown()) {
+        fuse.setCurrent(0);
+        fuse.setVoltage(0); 
+    } else {
+        fuse.setCurrent(totalCurrent);
+       fuse.setVoltage(0); 
+    }
+}
 
             
             

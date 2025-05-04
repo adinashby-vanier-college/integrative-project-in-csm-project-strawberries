@@ -151,6 +151,7 @@ public class Resistor extends Component {
             }
         });
         
+        
         infoArea.setOnKeyPressed(keyEvent -> {
             switch (keyEvent.getCode()) {
                 case ESCAPE, ENTER -> parentPane.getChildren().remove(infoArea);
