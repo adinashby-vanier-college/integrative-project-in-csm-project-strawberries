@@ -27,6 +27,7 @@ public class Circuit {
      * @param component The component to be added to the calling circuit
      */
     public void addComponent(Component component) {
+        component.updateEnd();
         LinkedList<Component> currentList = new LinkedList<>();
         currentList.add(component);
         arrayList.add(currentList);
@@ -46,6 +47,11 @@ public class Circuit {
     }
 
     public void connectEntireCircuit() {
+        System.out.println("[DEBUG] Circuit: ");
+        for(LinkedList<Component> l : arrayList) {
+            System.out.print(l.getFirst()+"("+getIndex(l.getFirst())+")\t\t\t"+l.getFirst().begin+"\t"+l.getFirst().end);
+            System.out.println();
+        }
         for(LinkedList<Component> list : arrayList) {
             attemptConnection(list.getFirst(),null);
         }
@@ -58,6 +64,7 @@ public class Circuit {
      * @implSpec The initial call must have <b>null</b> as the node parameter.
      */
     public void attemptConnection(Component toCheck, Node node) {
+        System.out.println("[DEBUG] Checking connection for "+toCheck+"("+getIndex(toCheck)+")\t");
         if(node==null) node = toCheck.begin;
         int srcIndex = getIndex(toCheck);
         Point2D checkPoint = node.getPosition();
@@ -205,7 +212,6 @@ public class Circuit {
     }
 
     /**
-     *
      * @return the state of the circuit (true = closed, false = open)
      */
     public boolean isClosed() {

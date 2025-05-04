@@ -101,10 +101,15 @@ public abstract class Component extends StackPane {
             }
             default -> {}
         }
+        updateEnd();
+    }
 
-        newX = begin.getX() + (display.getWidth() * Math.round(Math.cos(Math.toRadians(angle))));
-        newY = begin.getY() + (display.getWidth() * Math.round(Math.sin(Math.toRadians(angle))));
-        end.setPosition(newX,newY);
+    public void updateEnd() {
+        if(!(this instanceof Wire)) {
+            double newX = begin.getX() + (display.getWidth() * Math.round(Math.cos(Math.toRadians(angle))));
+            double newY = begin.getY() + (display.getWidth() * Math.round(Math.sin(Math.toRadians(angle))));
+            end.setPosition(newX, newY);
+        }
     }
 
     public double getResistance() {

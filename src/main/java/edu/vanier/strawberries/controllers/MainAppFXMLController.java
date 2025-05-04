@@ -456,7 +456,6 @@ public class MainAppFXMLController {
             selection.moveNode(selection.end, nearestX, nearestY);
         }
 
-        //TODO testing
         if(editing != null) {
             if(editing instanceof Wire wire) {
                 if(toMove[1]!=null) {
@@ -472,6 +471,7 @@ public class MainAppFXMLController {
             else {
                 Node node = toMove[0];
                 node.setPosition(drawingArea.snap(correctedX-editing.display.getWidth()/2),drawingArea.snap(correctedY-editing.display.getHeight()/2));
+                editing.updateEnd();
             }
         }
     }
@@ -497,6 +497,7 @@ public class MainAppFXMLController {
 
         return ((source.getX() <= maxX && source.getX() >= minimums.getX()) && (source.getY() <= maxY && source.getY() >= minimums.getY()));
     }
+
 
     private boolean checkLineCollision(Point2D source, Wire wire) {
         Point2D begin = wire.begin.getPosition(),
@@ -871,7 +872,7 @@ public class MainAppFXMLController {
      * @param input The text to format
      * @return The formatted text
      */
-    private String escape(String input) { // helper method for formatting
+    private String escape(String input) {
         return input.replace("\\", "\\\\").replace("\"", "\\\"");
     }
 
