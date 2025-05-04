@@ -1,5 +1,7 @@
 package edu.vanier.strawberries.Models;
 
+import javafx.geometry.Point2D;
+
 import java.util.*;
 
 /**
@@ -43,6 +45,58 @@ public class Circuit {
         arrayList.remove(toBeDeleted);
     }
 
+    public void connectEntireCircuit() {
+        for(LinkedList<Component> list : arrayList) {
+            attemptConnection(list.getFirst(),null);
+        }
+    }
+
+    /**
+     * Verify and confirm the connection/disconnection of circuit components given the positions of their nodes.
+     * @param toCheck The component to connect
+     * @param node The node whose position to check
+     * @implSpec The initial call must have <b>null</b> as the node parameter.
+     */
+    public void attemptConnection(Component toCheck, Node node) {
+        if(node==null) node = toCheck.begin;
+        int srcIndex = getIndex(toCheck);
+        Point2D checkPoint = node.getPosition();
+        ArrayList<Integer> connectedComponents = new ArrayList<>(), disconnectedComponents = new ArrayList<>();
+
+        // CHECK FOR CONNECTION
+        for (LinkedList<Component> currentList : arrayList) {
+            for (Component connectedComponent : currentList) {
+                if(connectedComponent != toCheck) {
+                    int dstIndex = getIndex(connectedComponent);
+
+                    Point2D componentBegin = connectedComponent.begin.getPosition();
+                    Point2D componentEnd = connectedComponent.end.getPosition();
+
+                    if ((componentBegin.distance(checkPoint) <= 1) || (componentEnd.distance(checkPoint) <= 1)) {
+                        if(!connectedComponents.contains(dstIndex)) connectedComponents.add(dstIndex);
+                        if(!node.isConnected()) node.setConnected(true);
+                    }
+                }
+            }
+        }
+        for (int compIndex : connectedComponents) addEdge(srcIndex, compIndex);
+
+        // CHECK FOR DISCONNECTION
+        Point2D checkBegin = toCheck.begin.getPosition(),
+                checkEnd = toCheck.end.getPosition();
+        for(Component connected : arrayList.get(srcIndex)) {
+            if(connected != toCheck) {
+                Point2D compBegin = connected.begin.getPosition(),
+                        compEnd = connected.end.getPosition();
+                if ((checkBegin.distance(compBegin) > 1 && checkBegin.distance(compEnd) > 1) && (checkEnd.distance(compBegin) > 1 && checkEnd.distance(compEnd) > 1)) {
+                    removeEdge(srcIndex, getIndex(connected));
+                }
+            }
+        }
+
+        if(node == toCheck.begin) attemptConnection(toCheck, toCheck.end);
+    }
+
     /**
      * Add an edge between two connected nodes within the circuit
      * @param src The index of the first element
@@ -54,6 +108,8 @@ public class Circuit {
                   source = arrayList.get(src).getFirst();
         if(!srcList.contains(dest)) srcList.add(dest);
         if(!dstList.contains(source)) dstList.add(source);
+
+        System.out.println("added an edge between components "+src+" and "+dst);
     }
 
     /**
@@ -96,8 +152,13 @@ public class Circuit {
         ArrayList<Component> visited = new ArrayList<>();
         ArrayList<Component> beingVisited = new ArrayList<>();
 
-        beingVisited.add(circuit.arrayList.getFirst().getFirst());
-        circuit.closed = (circuit.visit(beingVisited, visited) == 1);
+        try {
+            beingVisited.add(circuit.arrayList.getFirst().getFirst());
+            circuit.closed = (circuit.visit(beingVisited, visited) == 1);
+        }
+        catch (NoSuchElementException e) {
+            System.out.println("Circuit is empty... : "+circuit.arrayList);
+        }
     }
 
     /**
