@@ -100,9 +100,6 @@ public class DrawingArea {
                 gc.setTransform(new Affine(rotateTransform));
                 gc.drawImage(img,component.begin.getX(),component.begin.getY()-(img.getHeight())/2,img.getWidth()*zoom,img.getHeight()*zoom);
 
-                gc.setFill(Color.RED);
-                gc.fillOval(component.end.getX()-4,component.end.getY()-4,8,8);
-
                 if(component.isEdit()) {
                     // SHOW IF THE COMPONENT IS BEING EDITED
                     gc.setStroke(Color.BLUE);

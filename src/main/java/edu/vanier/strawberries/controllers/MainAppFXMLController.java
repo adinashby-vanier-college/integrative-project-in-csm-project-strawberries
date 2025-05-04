@@ -3,6 +3,10 @@ package edu.vanier.strawberries.controllers;
 import edu.vanier.math.CircuitMath;
 import edu.vanier.strawberries.Models.*;
 import edu.vanier.strawberries.Models.DrawingArea;
+import edu.vanier.strawberries.Models.UndoRedo.History;
+import edu.vanier.strawberries.Models.UndoRedo.AddComponentAction;
+import edu.vanier.strawberries.Models.UndoRedo.MoveComponentAction;
+import edu.vanier.strawberries.Models.UndoRedo.RotateComponentAction;
 import edu.vanier.strawberries.ui.MainApp;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -52,6 +56,7 @@ public class MainAppFXMLController {
     private double posX,posY;
     private Node[] toMove = new Node[2];
     private Point2D mouseDownLocation,initialBegin,initialEnd;
+    private MoveComponentAction pendingMoveAction;
     public boolean diagramView;
     private String currentTheme;
 
@@ -90,11 +95,12 @@ public class MainAppFXMLController {
     MenuItem menuNew, menuOpen, menuOpenRecent, menuSave, menuSaveAs, menuQuit, menuShowToolbar, menuHideToolbar, menuThemes,
             menuFitToScreen, menuZoomIn, menuZoomOut, menuToggleGrid, menuSelect, menuWire, menuRedWire, menuBlackWire,
             menuDefaultColorWire, menuChooseColorWire, menuResistor, menuSwitch, menuBattery, menuCapacitor, menuLightbulb,
-            menuYellow, menuRed, menuGreen, menuBlue, menuColorLightbulb;
+            menuYellow, menuRed, menuGreen, menuBlue, menuColorLightbulb,menuUndo,menuRedo;
     @FXML
     MenuItem lightThemeItem, darkThemeItem, strawThemeItem;
     private DrawingTool drawingTool;
     public DrawingArea drawingArea;
+    public History history;
 
     /**
      * Initializes the application before launching the window.
@@ -106,6 +112,7 @@ public class MainAppFXMLController {
         animationRunning = false;
         diagramView = true;
         circuit = new Circuit(true);
+        history = new History();
         initUI();
         setUpKeyListeners();
         applyTheme("light-mode.css");
@@ -369,44 +376,70 @@ public class MainAppFXMLController {
             Node eventLocation = new Node(drawingArea.snap(e.getX()), drawingArea.snap(e.getY()));
             Node tempEnd = Node.copyOf(eventLocation);
             switch (drawingTool.getCurrentAction()) {
-                case "place-wire" -> select(new Wire(eventLocation, tempEnd, ((drawingTool.getCurrentColor()==null) ? drawingTool.defaultWireColor : drawingTool.getCurrentColor()), 0, 0));
-                case "place-battery" -> select(new Battery(eventLocation, tempEnd, 12, diagramView));
-                case "place-capacitor" -> select(new Capacitor(eventLocation, tempEnd, 0, diagramView));
-                case "place-fuse" -> select(new Fuse(eventLocation, tempEnd,20, diagramView));
-                case "place-lightbulb" -> select(new Lightbulb(eventLocation, tempEnd,(drawingTool.getCurrentColor()==null) ? drawingTool.defaultLightbulbColor : drawingTool.getCurrentColor(),0, diagramView));
-                case "place-resistor" -> select(new Resistor(eventLocation, tempEnd, 10, diagramView));
-                case "place-switch" -> select(new Switch(eventLocation, tempEnd, false,diagramView));
+                case "place-wire" -> {
+                    Wire newWire = new Wire(eventLocation, tempEnd, ((drawingTool.getCurrentColor()==null) ? drawingTool.defaultWireColor : drawingTool.getCurrentColor()), 0, 0);
+                    history.add(new AddComponentAction(newWire));
+                    select(newWire);
+                }
+                case "place-battery" -> {
+                    Battery newBattery = new Battery(eventLocation, tempEnd, 12, diagramView);
+                    history.add(new AddComponentAction(newBattery));
+                    select(newBattery);
+                }
+                case "place-capacitor" -> {
+                    Capacitor newCapacitor = new Capacitor(eventLocation, tempEnd, 0, diagramView);
+                    history.add(new AddComponentAction(newCapacitor));
+                    select(newCapacitor);
+                }
+                case "place-fuse" -> {
+                    Fuse newFuse = new Fuse(eventLocation, tempEnd,20, diagramView);
+                    history.add(new AddComponentAction(newFuse));
+                    select(newFuse);
+                }
+                case "place-lightbulb" -> {
+                    Lightbulb newLightbulb = new Lightbulb(eventLocation, tempEnd,(drawingTool.getCurrentColor()==null) ? drawingTool.defaultLightbulbColor : drawingTool.getCurrentColor(),0, diagramView);
+                    history.add(new AddComponentAction(newLightbulb));
+                    select(newLightbulb);
+                }
+                case "place-resistor" -> {
+                    Resistor newResistor = new Resistor(eventLocation, tempEnd, 10, diagramView);
+                    history.add(new AddComponentAction(newResistor));
+                    select(newResistor);
+                }
+                case "place-switch" -> {
+                    Switch newSwitch = new Switch(eventLocation, tempEnd, false,diagramView);
+                    history.add(new AddComponentAction(newSwitch));
+                    select(newSwitch);
+                }
                 case "select" -> {
-    if(selection != null) setCursor(Cursor.CLOSED_HAND);
-    edit(selection); 
+                    if(selection != null) setCursor(Cursor.CLOSED_HAND);
+                    edit(selection);
 
-    if (selection instanceof Resistor resistor) {
-        if (e.getClickCount() == 2) {
-            resistor.handleEdit(leftPanel);
-        } else if (e.getClickCount() == 3) {
-            resistor.showInfoBox(leftPanel); 
-        }
-    }
+                    if (selection instanceof Resistor resistor) {
+                        if (e.getClickCount() == 2) {
+                            resistor.handleEdit(leftPanel);
+                        } else if (e.getClickCount() == 3) {
+                            resistor.showInfoBox(leftPanel);
+                        }
+                    }
 
-    if (selection instanceof Battery battery && e.getClickCount() == 2) {
-        battery.handleEdit(leftPanel); 
-    }
+                    if (selection instanceof Battery battery && e.getClickCount() == 2) {
+                        battery.handleEdit(leftPanel);
+                    }
 
-    if (selection instanceof Wire wire) {
-        initialBegin = wire.begin.getPosition();
-        initialEnd = wire.end.getPosition();
-    }
+                    if (selection instanceof Wire wire) {
+                        initialBegin = wire.begin.getPosition();
+                        initialEnd = wire.end.getPosition();
+                    }
 
-    if (selection instanceof Switch switchObj) {
-        switchObj.toggle();
-    }
-}
-
+                    if (selection instanceof Switch switchObj) {
+                        switchObj.toggle();
+                    }
+                }
                 default -> {}
             }
             drawingTool.setCurrentColor(null);
             if (!Objects.equals(drawingTool.getCurrentAction(), "select")) {
-                circuit.addComponent(selection);
                 if (!(selection instanceof Wire)) {
                     selection.end.setPosition(selection.begin.getX() + selection.display.getWidth(), selection.begin.getY());
                 }
@@ -414,9 +447,10 @@ public class MainAppFXMLController {
         }
 
         if(editing != null) {
+            pendingMoveAction = new MoveComponentAction(editing);
+
             if(editing instanceof Wire wire) {
                 //find which node to move
-
                 //1. Calculate the dist from the point to either node
                 double d1 = wire.begin.getPosition().distance(e.getX(), e.getY());
                 double d2 = wire.end.getPosition().distance(e.getX(), e.getY());
@@ -480,6 +514,7 @@ public class MainAppFXMLController {
                 node.setPosition(drawingArea.snap(correctedX-editing.display.getWidth()/2),drawingArea.snap(correctedY-editing.display.getHeight()/2));
                 editing.updateEnd();
             }
+
         }
     }
 
@@ -536,7 +571,15 @@ public class MainAppFXMLController {
             }
             if(canvas.getCursor().equals(Cursor.CLOSED_HAND)) setCursor(Cursor.OPEN_HAND);
         }
-        else if(editing != null) circuit.attemptConnection(editing, null);
+        else if(editing != null) {
+            if(pendingMoveAction.hasMoved()) {
+                history.add(pendingMoveAction);
+                pendingMoveAction.setFinalPositions(editing.begin.getPosition(), editing.end.getPosition());
+            } else {
+                pendingMoveAction = null;
+            }
+            circuit.attemptConnection(editing, null);
+        }
 
         Circuit.checkForCycle(circuit);
     }
@@ -634,10 +677,14 @@ public class MainAppFXMLController {
                 case R -> drawingTool.setCurrentAction("place-resistor");
                 case DELETE,BACK_SPACE -> circuit.deleteComponent(editing);
                 case COMMA -> {
-                    if(editing!=null) editing.rotate("left");
+                    if(editing!=null) {
+                        history.add(new RotateComponentAction(editing,"left"));
+                    }
                 }
                 case PERIOD -> {
-                    if(editing!=null) editing.rotate("right");
+                    if(editing!=null) {
+                        history.add(new RotateComponentAction(editing,"right"));
+                    }
                 }
                 case P -> {
                     circuit.print();
@@ -738,7 +785,6 @@ public class MainAppFXMLController {
             String finalUsername1 = username;
             exportBtn.setOnAction(_ -> exportToJson(finalUsername1)); // if logged in, export to json file
         } else {
-            // System.out.println(e.getMessage());
             exportBtn.setOnAction(_ -> exportToTxt(circuitName)); // if not logged in, export to txt (local)
         }
         //String recentProject = MainApp.signOnLogInController.getRecent();
@@ -766,6 +812,12 @@ public class MainAppFXMLController {
         menuGreen.setOnAction(_ -> drawingTool.setCurrentColor(Color.GREEN));
         menuBlue.setOnAction(_ -> drawingTool.setCurrentColor(Color.BLUE));
         lightbulbColorPicker.setOnAction(_ -> drawingTool.setCurrentColor(lightbulbColorPicker.getValue()));
+
+        // EDIT MENU
+        menuUndo.setOnAction(_-> history.undo());
+        menuRedo.setOnAction(_-> history.redo());
+        undoBtn.setOnAction(_-> history.undo());
+        redoBtn.setOnAction(_-> history.redo());
     }
 
     /**
@@ -1008,5 +1060,6 @@ public class MainAppFXMLController {
 
         System.out.println("Circuit imported successfully from JSON.");
         System.out.println(circuit);
+        history = new History();
     }
 }

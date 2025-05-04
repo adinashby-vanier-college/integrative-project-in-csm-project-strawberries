@@ -24,6 +24,16 @@ public class Node {
     }
 
     /**
+     * Updates the position of the node, only if it is not locked
+     * @param point2D The new 2D coordinates of the node
+     */
+    public void setPosition(Point2D point2D) {
+        if(!locked && point2D != null) {
+            position = point2D;
+        }
+    }
+
+    /**
      *
      * @return The 2D coordinates of the node
      */

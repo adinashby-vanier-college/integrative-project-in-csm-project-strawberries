@@ -47,11 +47,6 @@ public class Circuit {
     }
 
     public void connectEntireCircuit() {
-        System.out.println("[DEBUG] Circuit: ");
-        for(LinkedList<Component> l : arrayList) {
-            System.out.print(l.getFirst()+"("+getIndex(l.getFirst())+")\t\t\t"+l.getFirst().begin+"\t"+l.getFirst().end);
-            System.out.println();
-        }
         for(LinkedList<Component> list : arrayList) {
             attemptConnection(list.getFirst(),null);
         }
@@ -64,7 +59,6 @@ public class Circuit {
      * @implSpec The initial call must have <b>null</b> as the node parameter.
      */
     public void attemptConnection(Component toCheck, Node node) {
-        System.out.println("[DEBUG] Checking connection for "+toCheck+"("+getIndex(toCheck)+")\t");
         if(node==null) node = toCheck.begin;
         int srcIndex = getIndex(toCheck);
         Point2D checkPoint = node.getPosition();
@@ -189,8 +183,7 @@ public class Circuit {
             comp = beingVisited.getFirst();
         }
         catch(Exception e) {
-            System.out.println("NO CYCLE FOUND.");
-            return 0;
+            return 0; // No cycle found
         }
 
         if(comp != null) {
