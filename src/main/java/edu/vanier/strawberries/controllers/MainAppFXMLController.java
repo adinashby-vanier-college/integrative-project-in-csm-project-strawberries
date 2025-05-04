@@ -860,33 +860,6 @@ public class MainAppFXMLController {
     }
 
     /**
-     * Helper method for formatting json file
-     * @param input The text to format
-     * @return The formatted text
-     */
-    private String escape(String input) {
-        return input.replace("\\", "\\\\").replace("\"", "\\\"");
-    }
-
-    /**
-     * Helper method to check if there is recent project data in json
-     * @param lines
-     * @param index
-     * @return
-     */
-    private boolean lineAboveContainsRecent(String[] lines, int index) { // helper method check if there is recent
-        for (int i = index - 1; i >= 0; i--) {
-            String trimmed = lines[i].trim();
-            if (trimmed.startsWith("\"") && trimmed.endsWith(",")) {
-                return trimmed.startsWith("\"recent\":");
-            } else if (trimmed.equals("{")) {
-                break;
-            }
-        }
-        return false;
-    }
-
-    /**
      * Exports the circuit as a text file
      * @param circuitName The name of the circuit (given by the user in {@link #circuitNameField})
      */
@@ -941,20 +914,22 @@ public class MainAppFXMLController {
             }
 
             if (line.contains("wire|")) {
-                // wire format: wire|color|x1|y1|x2|y2
+                // wire format: wire|color|x1|y1|x2|y2|current|voltage
                 // fix!! wire does not appear
                 String[] parts = line.split("\\|");
-                if (parts.length == 6) {
+                if (parts.length == 8) {
                     try {
-                        Color color = Color.web(parts[1].trim());
+                        Color colour = Color.web(parts[1].trim());
                         double x1 = Double.parseDouble(parts[2]);
                         double y1 = Double.parseDouble(parts[3]);
                         double x2 = Double.parseDouble(parts[4]);
                         double y2 = Double.parseDouble(parts[5]);
+                        double current = Double.parseDouble(parts[6]);
+                        double voltage = Double.parseDouble(parts[7]);
 
                         Node begin = new Node(x1, y1);
                         Node end = new Node(x2, y2);
-                        Wire wire = new Wire(begin, end, color, 10, 10);
+                        Wire wire = new Wire(begin, end, colour, current, voltage);
 
                         circuit.addComponent(wire);
                     } catch (Exception e) {

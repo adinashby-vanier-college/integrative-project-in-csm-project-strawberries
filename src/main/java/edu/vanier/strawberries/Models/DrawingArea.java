@@ -182,7 +182,7 @@ public class DrawingArea {
                     if (node.isConnected()) output += "1|";
                 }
                 gc.setLineWidth(3);
-                output += "wire|" + wire.getColor() + "|" + component.begin.getX() + "|" + component.begin.getY() + "|"  + component.end.getX() + "|"  + component.end.getY() + "\n";
+                output += "wire|" + wire.getColor() + "|" + component.begin.getX() + "|" + component.begin.getY() + "|"  + component.end.getX() + "|"  + component.end.getY() + "|" + component.getCurrent() + "|"  + component.getVoltage() + "\n";
             } else {
                 output += component.getType() + "|" + component.begin.getX() + "|" + component.begin.getY() + "|" + component.getAngle() + "\n";
             }
