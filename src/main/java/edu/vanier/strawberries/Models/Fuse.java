@@ -7,6 +7,7 @@ import javafx.scene.layout.Pane;
 
 import java.net.URL;
 import java.util.Objects;
+import javafx.scene.control.Alert;
 
 public class Fuse extends Component {
     private boolean blown;
@@ -110,8 +111,7 @@ public class Fuse extends Component {
     }
     
     
-    
-    public void updateState(double totalCurrent) {
+  public void updateState(double totalCurrent) {
     if (totalCurrent > maxCurrent && !blown) {
         blown = true;
         System.out.println("Fuse has blown! Max = " + maxCurrent + "A, Current = " + totalCurrent + "A");
@@ -123,14 +123,20 @@ public class Fuse extends Component {
             System.out.println("Could not load fuse_blown.png");
         }
 
-        
+        // Stop animation and refresh canvas
+        MainApp.mainAppFXMLController.drawingArea.animateCurrentFlow(false);
+        MainApp.mainAppFXMLController.drawingArea.stopElectronAnimation();
         MainApp.mainAppFXMLController.drawingArea.drawContent();
 
-        
-        MainApp.mainAppFXMLController.drawingArea.animateCurrentFlow(false);
-        MainApp.mainAppFXMLController.runStopBtn.setText("Run");
-        MainApp.mainAppFXMLController.animationRunning = false;
+        // Show alert
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Fuse Blown");
+        alert.setHeaderText("Circuit Interrupted");
+        alert.setContentText("A fuse has blown due to excessive current.\nCheck your circuit.");
+        alert.showAndWait();
     }
 }
+
+
 
 }

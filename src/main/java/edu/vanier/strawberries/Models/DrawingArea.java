@@ -214,50 +214,72 @@ public class DrawingArea {
     boolean printedValues = false;
 
     public void animateCurrentFlow(boolean start) {
-        animateCurrent = start;
-        activeTransitions.clear();
-        animatedElectrons.clear();
+    animateCurrent = start;
+    activeTransitions.clear();
+    animatedElectrons.clear();
 
-        if (!(canvas.getParent() instanceof Pane parent)) return;
+    if (!(canvas.getParent() instanceof Pane parent)) return;
 
-        if (start) {
-            int dotsPerWire = 5;
-            double speedFactor;
+    if (start) {
+        int dotsPerWire = 5;
+        double speedFactor;
 
-            CircuitMath circuitMath = new CircuitMath(circuit);
-            double totalCurrent = circuitMath.getTotalCurrent(); // get the total current
-            double totalResistance = circuitMath.getTotalResistance(); // get the total resistance
-            double totalVoltage = circuitMath.getTotalVoltage(); // get the total voltage
+        CircuitMath circuitMath = new CircuitMath(circuit);
+        double totalCurrent = circuitMath.getTotalCurrent(); // get total current
+        double totalResistance = circuitMath.getTotalResistance();
+        double totalVoltage = circuitMath.getTotalVoltage();
 
-            if (!printedValues) {
-                System.out.println("Voltage: " + totalVoltage + "V");
-                System.out.println("Resistance: " + totalResistance + "Ω");
-                System.out.println("Current: " + totalCurrent + "A");
-                printedValues = true;
-            }
+        if (!printedValues) {
+            System.out.println("Voltage: " + totalVoltage + "V");
+            System.out.println("Resistance: " + totalResistance + "Ω");
+            System.out.println("Current: " + totalCurrent + "A");
+            printedValues = true;
+        }
 
-            // Determine animation speed based on total current
-            if (totalCurrent < 100) {
-                speedFactor = 0.5;
-            } else if (totalCurrent < 600) {
-                speedFactor = 5.0;
-            } else {
-                speedFactor = 10.0;
-            }
+     
+        for (LinkedList<Component> list : circuit.arrayList) {
+            for (Component c : list) {
+                if (c instanceof Fuse fuse) {
+                    if (totalCurrent > fuse.getMaxCurrent()) {
+                        fuse.updateState(totalCurrent); 
+                        animateCurrent = false;
 
-            for (LinkedList<Component> list : circuit.arrayList) {
-                for (Component c : list) {
-                    if (c instanceof Wire wire) {
-                        for (int i = 0; i < dotsPerWire; i++) {
-                            Electron e = new Electron(wire, speedFactor);
-                            e.progress = i / (double) dotsPerWire;
-                            animatedElectrons.add(e);
-                        }
+                        
+                        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR);
+                        alert.setTitle("Fuse Blown");
+                        alert.setHeaderText("Current exceeded fuse limit!");
+                        alert.setContentText("Current: " + totalCurrent + " A\nLimit: " + fuse.getMaxCurrent() + " A\nThe fuse has blown.");
+                        alert.showAndWait();
+
+                        return; 
                     }
                 }
             }
         }
+
+      
+        if (totalCurrent < 100) {
+            speedFactor = 0.5;
+        } else if (totalCurrent < 600) {
+            speedFactor = 5.0;
+        } else {
+            speedFactor = 10.0;
+        }
+
+        for (LinkedList<Component> list : circuit.arrayList) {
+            for (Component c : list) {
+                if (c instanceof Wire wire) {
+                    for (int i = 0; i < dotsPerWire; i++) {
+                        Electron e = new Electron(wire, speedFactor);
+                        e.progress = i / (double) dotsPerWire;
+                        animatedElectrons.add(e);
+                    }
+                }
+            }
+        }
+    }
 }
+
 
     public void stopElectronAnimation() {
         if (!(canvas.getParent() instanceof Pane parent)) return;
