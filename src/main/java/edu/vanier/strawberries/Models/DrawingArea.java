@@ -258,12 +258,12 @@ public class DrawingArea {
         }
 
       
-        if (totalCurrent < 100) {
-            speedFactor = 0.5;
-        } else if (totalCurrent < 600) {
-            speedFactor = 5.0;
+        if (totalCurrent < 0.5) {
+            speedFactor = 500;
+        } else if (totalCurrent < 2 && totalCurrent > 0.5) {
+            speedFactor = 1000.0;
         } else {
-            speedFactor = 10.0;
+            speedFactor = 10000.0;
         }
 
         for (LinkedList<Component> list : circuit.arrayList) {

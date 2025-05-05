@@ -128,12 +128,7 @@ public class Fuse extends Component {
         MainApp.mainAppFXMLController.drawingArea.stopElectronAnimation();
         MainApp.mainAppFXMLController.drawingArea.drawContent();
 
-        // Show alert
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Fuse Blown");
-        alert.setHeaderText("Circuit Interrupted");
-        alert.setContentText("A fuse has blown due to excessive current.\nCheck your circuit.");
-        alert.showAndWait();
+       
     }
 }
 
