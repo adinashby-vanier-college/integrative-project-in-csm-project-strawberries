@@ -641,6 +641,12 @@ public class MainAppFXMLController {
      */
     private void setUpKeyListeners() {
         window.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
+            if (new KeyCodeCombination(KeyCode.X, KeyCombination.SHORTCUT_DOWN).match(event)) {
+                if(editing != null) {
+                    copy(editing);
+                    history.add(new RemoveComponentAction(editing));
+                }
+            }
             if (new KeyCodeCombination(KeyCode.C, KeyCombination.SHORTCUT_DOWN).match(event)) {
                 if(editing != null) {
                     copy(editing);
@@ -776,8 +782,6 @@ public class MainAppFXMLController {
         lightThemeItem.setOnAction(_ -> applyTheme("light-mode.css"));
         darkThemeItem.setOnAction(_ -> applyTheme("dark-mode.css"));
         strawThemeItem.setOnAction(_ -> applyTheme("strawberries-theme.css"));
-        menuFitToScreen.setOnAction(_ -> {
-        });
         menuZoomIn.setOnAction(zoomInBtn.getOnAction());
         menuZoomOut.setOnAction(zoomOutBtn.getOnAction());
         menuToggleGrid.setOnAction(_ -> drawingArea.toggleGrid());
@@ -820,8 +824,11 @@ public class MainAppFXMLController {
         // EDIT MENU
         menuUndo.setOnAction(_-> history.undo());
         menuRedo.setOnAction(_-> history.redo());
-        menuCut.setOnAction(_-> {});
-        menuCopy.setOnAction(_-> copy(copied.createCopy()));
+        menuCut.setOnAction(_-> {
+            copy(editing);
+            history.add(new RemoveComponentAction(editing));
+        });
+        menuCopy.setOnAction(_-> copy(editing));
         menuPaste.setOnAction(_-> paste(copied,20,20));
         menuDelete.setOnAction(_-> history.add(new RemoveComponentAction(editing)));
         menuSelect.setOnAction(_-> drawingTool.setCurrentAction("select"));

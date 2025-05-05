@@ -52,7 +52,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox fx:id="window" alignment="TOP_CENTER" nodeOrientation="LEFT_TO_RIGHT" prefHeight="400.0" prefWidth="725.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1">
+<VBox fx:id="window" alignment="TOP_CENTER" nodeOrientation="LEFT_TO_RIGHT" prefHeight="400.0" prefWidth="725.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
     <MenuBar fx:id="menuBar" prefHeight="25.0" prefWidth="705.0" VBox.vgrow="NEVER">
         <Menu fx:id="menuFile" mnemonicParsing="false" text="File">
             <MenuItem fx:id="menuNew" mnemonicParsing="false" text="New" />
@@ -73,7 +73,6 @@
                     <MenuItem fx:id="darkThemeItem" text="Dark Theme" />
                     <MenuItem fx:id="strawThemeItem" text="Strawberry Theme" />
                 </Menu>
-                <MenuItem fx:id="menuFitToScreen" mnemonicParsing="false" text="Fit to screen" />
                 <MenuItem fx:id="menuZoomIn" mnemonicParsing="false" text="Zoom in" />
                 <MenuItem fx:id="menuZoomOut" mnemonicParsing="false" text="Zoom out" />
             </Menu>
@@ -128,12 +127,10 @@
             <MenuItem fx:id="menuDelete" mnemonicParsing="false" text="Delete" />
             <SeparatorMenuItem mnemonicParsing="false" />
             <MenuItem fx:id="menuSelect" mnemonicParsing="false" onAction="#menuSelectBtnPressed" text="Select" />
-            <MenuItem fx:id="menuSelectAll" mnemonicParsing="false" text="Select All" />
             <MenuItem fx:id="menuUnselectAll" mnemonicParsing="false" text="Unselect All" />
         </Menu>
         <Menu fx:id="menuHelp" mnemonicParsing="false" text="Help">
             <MenuItem fx:id="menuHowToUse" mnemonicParsing="false" text="How to use" />
-            <MenuItem fx:id="menuFAQ" mnemonicParsing="false" text="FAQ" />
         </Menu>
     </MenuBar>
     <SplitPane fx:id="splitPane" dividerPositions="0.7372060857538036" prefHeight="400.0" prefWidth="840.0">
