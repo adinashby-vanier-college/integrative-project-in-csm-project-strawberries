@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestMath {
 
     @Test
+   // tests the math for resistance in a circuit
     public void testSeriesCircuitCalculation() {
         Circuit circuit = new Circuit(false);
 
@@ -29,6 +30,7 @@ public class TestMath {
     }
 
     @Test
+    //tesitn gout the short circuit logic
     public void testShortCircuitDetected() {
         Circuit circuit = new Circuit(false);
       Battery battery = Battery.createForTest(new Node(0, 0), new Node(50, 0), 12);
@@ -45,6 +47,7 @@ public class TestMath {
     
   
 @Test
+//testing out if the fuse logic works
 public void testFuseBlowsWhenOverloaded() {
     Circuit circuit = new Circuit(false);
 
