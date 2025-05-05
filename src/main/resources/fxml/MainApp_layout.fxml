@@ -176,7 +176,6 @@
                 </MenuButton>
                 <Label layoutX="15.0" layoutY="85.0" text="Default Wire Color:" />
                 <ColorPicker fx:id="defaultWireColorPicker" prefHeight="32.0" prefWidth="125.0" />
-                <CheckBox fx:id="polarityCheckBox" mnemonicParsing="false" text="Show component polarity" />
                 <Button fx:id="moreInformationBtn" layoutX="15.0" layoutY="50.0" mnemonicParsing="false" text="More information" />
                 <Label layoutX="15.0" layoutY="147.0" text="Simulation controls:">
                     <font>

@@ -294,10 +294,17 @@ public class MainAppFXMLController {
             int index = 1;
             for (Component c : drawingArea.circuit.toArrayList()) {
                 if (!(c instanceof Wire)) {
-                    double v = c.getVoltage();
-                    if (!Double.isNaN(v)) {
-                        String label = c.getType() + " " + index;
+                    double v;
+                    if (c instanceof Battery) {
+                        v = ((Battery) c).getPotential();
+                    } else {
+                        v = c.getVoltage();
+                    }
+                    // continue below
+                    if (!Double.isNaN(v)) { // if voltage value is not null
+                        String label = c.getType() + " (" + index + ")";
                         voltage.getData().add(new XYChart.Data<>(label, v));
+                        System.out.println(label + ": " + v); // debug
                     }
                     index++;
                 }
@@ -616,44 +623,6 @@ public class MainAppFXMLController {
             component.markAsSelected(false);
             selection = null;
         }
-    }
-
-    /**
-     * TODO INSERT JAVADOC HERE
-     * @param drawingArea
-     * @return
-     */
-    private static LineChart<Number, Number> getChart(DrawingArea drawingArea) {
-        final NumberAxis xAxis = new NumberAxis();
-        final NumberAxis yAxis = new NumberAxis();
-        xAxis.setLabel("Loop Position");
-        yAxis.setLabel("Potential Difference (V)");
-        xAxis.setTickLabelsVisible(false);
-        xAxis.setTickMarkVisible(false);
-        xAxis.setMinorTickVisible(false);
-
-        // Creating the chart
-        final LineChart<Number, Number> lineChart = new LineChart<>(xAxis, yAxis);
-        lineChart.setTitle("Potential Difference in Kirchhoff's Loop");
-        lineChart.setLegendVisible(false);
-
-        XYChart.Series<Number, Number> series = new XYChart.Series<>();
-
-        // constant Voltage
-        edu.vanier.math.CircuitMath maths = new edu.vanier.math.CircuitMath(drawingArea.circuit);
-
-        List<Component> path = maths.getTraversalPath();
-        series.getData().add(new XYChart.Data<>(0, maths.getTotalVoltage()));
-        int i = 1;
-        for (Component c : path) {
-            if (c instanceof Battery b) {
-                series.getData().add(new XYChart.Data<>(i, b.getPotential()));
-            }
-            i++;
-        }
-
-        lineChart.getData().add(series);
-        return lineChart;
     }
 
     @FXML
