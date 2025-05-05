@@ -117,12 +117,11 @@ public class DrawingArea {
                 gc.restore();
 
                 if (component instanceof Lightbulb lightbulb && lightbulb.isOn()) {
-                    double haloX = lightbulb.getCenter().getX() - 20;
-                    double haloY = lightbulb.getCenter().getY() - 20;
+                    double offsetX = 20,
+                           offsetY = lightbulb.diagramView ? 20 : 40;
 
-                    if (!lightbulb.diagramView) {
-                        haloY -= 50;
-                    }
+                    double haloX = lightbulb.getCenter().getX() - offsetX;
+                    double haloY = lightbulb.getCenter().getY() - offsetY;
 
                     gc.setFill(lightbulb.getColor().deriveColor(0, 1, 1, 0.5));
                     gc.fillOval(haloX, haloY, 40, 40);
