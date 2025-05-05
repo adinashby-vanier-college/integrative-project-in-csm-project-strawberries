@@ -3,7 +3,6 @@ package edu.vanier.strawberries.Models;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
-import java.net.URL;
 import java.util.Objects;
 
 public class Lightbulb extends Component {
