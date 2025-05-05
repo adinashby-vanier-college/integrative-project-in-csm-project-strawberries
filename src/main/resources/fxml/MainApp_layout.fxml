@@ -35,7 +35,6 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ColorPicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
@@ -53,7 +52,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<VBox fx:id="window" alignment="TOP_CENTER" nodeOrientation="LEFT_TO_RIGHT" prefHeight="400.0" prefWidth="725.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1">
+<VBox fx:id="window" alignment="TOP_CENTER" nodeOrientation="LEFT_TO_RIGHT" prefHeight="400.0" prefWidth="725.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1">
     <MenuBar fx:id="menuBar" prefHeight="25.0" prefWidth="705.0" VBox.vgrow="NEVER">
         <Menu fx:id="menuFile" mnemonicParsing="false" text="File">
             <MenuItem fx:id="menuNew" mnemonicParsing="false" text="New" />
@@ -151,7 +150,7 @@
                             <Button fx:id="pasteBtn" layoutX="140.0" layoutY="10.0" minWidth="50.0" mnemonicParsing="false" text="Paste" />
                             <Button fx:id="addWireBtn" layoutX="274.0" layoutY="10.0" minWidth="70.0" mnemonicParsing="false" text="Add wire" />
                             <Button fx:id="addResistorBtn" layoutX="319.0" layoutY="10.0" minWidth="90.0" mnemonicParsing="false" text="Add resistor" />
-                            <Button fx:id="addCapacitorBtn" layoutX="364.0" layoutY="10.0" minWidth="100.0" mnemonicParsing="false" text="Add capacitor" />
+                            <Button fx:id="addFuseBtn" layoutX="364.0" layoutY="10.0" minWidth="100.0" mnemonicParsing="false" text="Add fuse" />
                             <Button fx:id="addBatteryBtn" layoutX="409.0" layoutY="10.0" minWidth="90.0" mnemonicParsing="false" text="Add battery" />
                             <Button fx:id="addSwitchBtn" layoutX="454.0" layoutY="10.0" minWidth="80.0" mnemonicParsing="false" text="Add switch" />
                         </HBox>

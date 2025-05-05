@@ -68,7 +68,7 @@ public class MainAppFXMLController {
     @FXML
     HBox toolbarHBox;
     @FXML
-    Button zoomInBtn,zoomOutBtn,undoBtn,redoBtn,copyBtn,pasteBtn,addWireBtn,addResistorBtn,addCapacitorBtn,addBatteryBtn,addSwitchBtn;
+    Button zoomInBtn,zoomOutBtn,undoBtn,redoBtn,copyBtn,pasteBtn,addWireBtn,addResistorBtn,addFuseBtn,addBatteryBtn,addSwitchBtn;
     @FXML
     Canvas canvas;
     @FXML
@@ -218,7 +218,7 @@ public class MainAppFXMLController {
         addWireBtn.setOnAction(_ -> drawingTool.setCurrentAction("place-wire"));
         addResistorBtn.setOnAction(_ -> drawingTool.setCurrentAction("place-resistor"));
         addBatteryBtn.setOnAction(_ -> drawingTool.setCurrentAction("place-battery"));
-        addCapacitorBtn.setOnAction(_ -> drawingTool.setCurrentAction("place-capacitor"));
+        addFuseBtn.setOnAction(_ -> drawingTool.setCurrentAction("place-fuse"));
         addSwitchBtn.setOnAction(_ -> drawingTool.setCurrentAction("place-switch"));
 
         // view
