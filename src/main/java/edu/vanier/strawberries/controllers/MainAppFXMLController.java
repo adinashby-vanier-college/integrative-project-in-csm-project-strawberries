@@ -93,7 +93,7 @@ public class MainAppFXMLController {
     MenuItem menuNew, menuOpen, menuOpenRecent, menuSave, menuSaveAs, menuQuit, menuShowToolbar, menuHideToolbar, menuThemes,
             menuFitToScreen, menuZoomIn, menuZoomOut, menuToggleGrid, menuSelect, menuWire, menuRedWire, menuBlackWire,
             menuDefaultColorWire, menuChooseColorWire, menuResistor, menuSwitch, menuBattery, menuCapacitor, menuLightbulb,
-            menuYellow, menuRed, menuGreen, menuBlue, menuColorLightbulb,menuUndo,menuRedo;
+            menuYellow, menuRed, menuGreen, menuBlue, menuColorLightbulb,menuUndo,menuRedo,menuCut,menuCopy,menuPaste;
     @FXML
     MenuItem lightThemeItem, darkThemeItem, strawThemeItem;
     private DrawingTool drawingTool;
@@ -211,6 +211,10 @@ public class MainAppFXMLController {
         // SET BUTTON ACTIONS
         zoomInBtn.setOnAction(_ -> drawingArea.zoomIn());
         zoomOutBtn.setOnAction(_ -> drawingArea.zoomOut());
+        undoBtn.setOnAction(_-> history.undo());
+        redoBtn.setOnAction(_-> history.redo());
+        copyBtn.setOnAction(_-> copy(editing));
+        pasteBtn.setOnAction(_-> paste(copied.createCopy(), 20,20));
         addWireBtn.setOnAction(_ -> drawingTool.setCurrentAction("place-wire"));
         addResistorBtn.setOnAction(_ -> drawingTool.setCurrentAction("place-resistor"));
         addBatteryBtn.setOnAction(_ -> drawingTool.setCurrentAction("place-battery"));
@@ -665,16 +669,13 @@ public class MainAppFXMLController {
         window.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
             if (new KeyCodeCombination(KeyCode.C, KeyCombination.SHORTCUT_DOWN).match(event)) {
                 if(editing != null) {
-                    copied = editing;
-                    System.out.println("copying "+copied);
+                    copy(editing);
                 }
             }
             else if(new KeyCodeCombination(KeyCode.V, KeyCombination.SHORTCUT_DOWN).match(event)) {
                 edit(null);
                 Component tempCopy = copied.createCopy();
-                tempCopy.setAsCopy(true);
                 paste(tempCopy,drawingArea.snap(posX),drawingArea.snap(posY));
-                System.out.println("Pasted element: "+copied);
             }
             else {
                 switch (event.getCode()) {
@@ -706,11 +707,12 @@ public class MainAppFXMLController {
         });
     }
 
+    private void copy(Component component) {
+        copied = component;
+    }
+
     private void paste(Component component, double mouseX, double mouseY) {
-        System.out.println("attempting to paste "+component+" at "+mouseX+","+mouseY);
-        System.out.println("[DEBUG] copy position: "+component.begin.getPosition());
         component.setCenterPosition(mouseX,mouseY);
-        System.out.println("[DEBUG] paste position: "+component.begin.getPosition());
         history.add(new AddComponentAction(component));
         edit(component);
     }
@@ -844,8 +846,9 @@ public class MainAppFXMLController {
         // EDIT MENU
         menuUndo.setOnAction(_-> history.undo());
         menuRedo.setOnAction(_-> history.redo());
-        undoBtn.setOnAction(_-> history.undo());
-        redoBtn.setOnAction(_-> history.redo());
+        menuCut.setOnAction(_-> {});
+        menuCopy.setOnAction(_-> copy(copied.createCopy()));
+        menuPaste.setOnAction(_-> paste(copied,20,20));
     }
 
     /**

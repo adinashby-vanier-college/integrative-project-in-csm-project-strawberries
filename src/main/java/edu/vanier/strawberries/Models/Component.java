@@ -28,7 +28,6 @@ public abstract class Component extends StackPane {
     protected double resistance;
     protected double current;
     protected double voltage;
-    public boolean isCopy;
 
     public Component(Node begin, Node end, boolean diagramView) {
         this.begin = begin;
@@ -180,7 +179,6 @@ public abstract class Component extends StackPane {
      * @param y The y position of the center
      */
     public void setCenterPosition(double x, double y) {
-        System.out.println("[DEBUG] setting center to: "+x+" , "+y);
         if(this instanceof Wire) {
             double width = Math.abs(begin.getX() - end.getX()),
                    height = Math.abs(begin.getY() - end.getY());
@@ -203,14 +201,6 @@ public abstract class Component extends StackPane {
                 }
             }
         }
-    }
-
-    /**
-     * Determines if the component was added manually or as a copy of another
-     * @param isCopy determines if the element is a copy of another, before it is placed down
-     */
-    public void setAsCopy(boolean isCopy) {
-        this.isCopy = true;
     }
 
     /**

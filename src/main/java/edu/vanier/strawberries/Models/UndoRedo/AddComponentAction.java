@@ -7,11 +7,6 @@ public class AddComponentAction implements Action {
 
     public AddComponentAction(Component component) {
         this.component = component;
-
-        if(component.isCopy) {
-            //
-        }
-
         hist.actions.push(this);
         execute(false);
     }
