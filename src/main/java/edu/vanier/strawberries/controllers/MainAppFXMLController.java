@@ -41,6 +41,7 @@ import javax.swing.*;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * FXML controller class for the primary stage scene.
@@ -218,11 +219,18 @@ public class MainAppFXMLController {
         addSwitchBtn.setOnAction(_ -> drawingTool.setCurrentAction("place-switch"));
 
         // view
-        switchView(true);
+        AtomicBoolean diagramView = new AtomicBoolean(true);
+        switchView(diagramView.get());
         MenuItem diagramItem = viewMenuBtn.getItems().get(0);
         MenuItem realisticItem = viewMenuBtn.getItems().get(1);
-        diagramItem.setOnAction(_ -> switchView(true));
-        realisticItem.setOnAction(_ -> switchView(false));
+        diagramItem.setOnAction(_ -> {
+            diagramView.set(true);
+            switchView(diagramView.get());
+        });
+        realisticItem.setOnAction(_ -> {
+            diagramView.set(false);
+            switchView(diagramView.get());
+        });
         viewMenuBtn.setOnAction(_ -> switchView(true));
 
         // menu buttons
@@ -791,7 +799,7 @@ public class MainAppFXMLController {
         //menuOpenRecent.setOnAction(_->openRecent(recentProject));
         String finalUsername = username;
         menuOpenRecent.setOnAction(_ -> {
-            importFromJson(finalUsername, drawingArea);
+            importFromJson(finalUsername, drawingArea, diagramView);
             update();
         });
 
@@ -945,7 +953,7 @@ public class MainAppFXMLController {
      * @param username
      * @param drawingArea
      */
-    public void importFromJson(String username, DrawingArea drawingArea) {
+    public void importFromJson(String username, DrawingArea drawingArea, boolean diagramView) {
         File jsonFile = new File("src/main/resources/users.json");
 
         if (!jsonFile.exists()) {
@@ -1000,12 +1008,13 @@ public class MainAppFXMLController {
             } else if (line.contains("|")) {
                 // component format: type|x|y|angle
                 String[] parts = line.split("\\|");
-                if (parts.length == 4) {
+                if (parts.length == 5) {
                     try {
                         String type = parts[0];
                         double x = Double.parseDouble(parts[1]);
                         double y = Double.parseDouble(parts[2]);
                         int angle = (int) Double.parseDouble(parts[3]);
+                        double extraInfo = (int) Double.parseDouble(parts[4]); // extra value, depends on component (like resistance, storedEnergy)
 
                         Component component = null;
                         Node begin = new Node(x, y);
@@ -1013,22 +1022,22 @@ public class MainAppFXMLController {
 
                         switch (type.toLowerCase()) {
                             case "resistor":
-                                component = new Resistor(begin, end, 100.0, false);
+                                component = new Resistor(begin, end, extraInfo, diagramView);
                                 break;
                             case "battery":
-                                component = new Battery(begin, end, 5.0, false);
+                                component = new Battery(begin, end, extraInfo, diagramView);
                                 break;
                             case "capacitor":
-                                component = new Capacitor(begin, end, 10, true);
+                                component = new Capacitor(begin, end, extraInfo, diagramView);
                                 break;
                             case "lightbulb":
-                                component = new Lightbulb(begin, end, Color.web("BLACK"), 10, true);
+                                component = new Lightbulb(begin, end, Color.web("BLACK"), extraInfo, diagramView);
                                 break;
                             case "fuse":
-                                component = new Fuse(begin, end, 10, true);
+                                component = new Fuse(begin, end, extraInfo, diagramView);
                                 break;
                             case "switch":
-                                component = new Switch(begin, end, true, true);
+                                component = new Switch(begin, end, true, diagramView);
                                 break;
                             default:
                                 System.out.println("[DEBUG] Unknown component type: " + type);

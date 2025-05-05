@@ -165,28 +165,40 @@ public class DrawingArea {
 
 
     public String exportCircuit(String circuitName) {
-        String output = "";
+        StringBuilder output = new StringBuilder();
         if (circuitName != null) {
-            output = circuitName + ".txt\n";
+            output = new StringBuilder(circuitName + ".txt\n");
         }
-        output = "unnamedCircuit.txt\n";
+        output = new StringBuilder("unnamedCircuit.txt\n");
         // go through each component and add to final output
         for(Component component : circuit.toArrayList()) {
             assert component != null;
             if (component instanceof Wire wire) {
                 Node[] nodes = {wire.begin, wire.end};
                 for (Node node : nodes) {
-                    if (node.isConnected()) output += "1|";
+                    if (node.isConnected()) output.append("1|");
                 }
                 gc.setLineWidth(3);
-                output += "wire|" + wire.getColor() + "|" + component.begin.getX() + "|" + component.begin.getY() + "|"  + component.end.getX() + "|"  + component.end.getY() + "|" + component.getCurrent() + "|"  + component.getVoltage() + "\n";
+                output.append("wire|").append(wire.getColor()).append("|").append(component.begin.getX()).append("|").append(component.begin.getY()).append("|").append(component.end.getX()).append("|").append(component.end.getY()).append("|").append(component.getCurrent()).append("|").append(component.getVoltage()).append("\n");
             } else {
-                output += component.getType() + "|" + component.begin.getX() + "|" + component.begin.getY() + "|" + component.getAngle() + "\n";
+                if (component instanceof Resistor resistor) {
+                    output.append(component.getType()).append("|").append(component.begin.getX()).append("|").append(component.begin.getY()).append("|").append(component.getAngle()).append("|").append(resistor.getResistance()).append("\n");
+                } else if (component instanceof Battery battery) {
+                    output.append(component.getType()).append("|").append(component.begin.getX()).append("|").append(component.begin.getY()).append("|").append(component.getAngle()).append("|").append(battery.getPotential()).append("\n");
+                } else if (component instanceof Capacitor capacitor) {
+                    output.append(component.getType()).append("|").append(component.begin.getX()).append("|").append(component.begin.getY()).append("|").append(component.getAngle()).append("|").append(capacitor.getStoredEnergy()).append("\n");
+                } else if (component instanceof Lightbulb lightbulb) {
+                    output.append(component.getType()).append("|").append(component.begin.getX()).append("|").append(component.begin.getY()).append("|").append(component.getAngle()).append("|").append(lightbulb.getResistance()).append("\n");
+                } else if (component instanceof Fuse fuse) {
+                    output.append(component.getType()).append("|").append(component.begin.getX()).append("|").append(component.begin.getY()).append("|").append(component.getAngle()).append("|").append(fuse.getMaxCurrent()).append("\n");
+                } else if (component instanceof Switch switchh) {
+                    output.append(component.getType()).append("|").append(component.begin.getX()).append("|").append(component.begin.getY()).append("|").append(component.getAngle()).append("|").append(switchh.getCurrent()).append("\n"); // curent not used, but it is here to not break formatting
+                }
             }
         }
         // remove duplicate lines
         StringBuilder builder = new StringBuilder();
-        for (String line: new LinkedHashSet<String>(Arrays.asList(output.split("\n"))) ) {
+        for (String line: new LinkedHashSet<String>(Arrays.asList(output.toString().split("\n"))) ) {
             builder.append(line).append("\n");
         }
         String result = builder.toString();
