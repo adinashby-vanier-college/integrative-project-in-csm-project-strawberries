@@ -165,11 +165,12 @@ public class DrawingArea {
 
 
     public String exportCircuit(String circuitName) {
-        StringBuilder output = new StringBuilder();
+        StringBuilder output;
         if (circuitName != null) {
             output = new StringBuilder(circuitName + ".txt\n");
+        } else {
+            output = new StringBuilder("unnamedCircuit.txt\n");
         }
-        output = new StringBuilder("unnamedCircuit.txt\n");
         // go through each component and add to final output
         for(Component component : circuit.toArrayList()) {
             assert component != null;
@@ -181,18 +182,21 @@ public class DrawingArea {
                 gc.setLineWidth(3);
                 output.append("wire|").append(wire.getColor()).append("|").append(component.begin.getX()).append("|").append(component.begin.getY()).append("|").append(component.end.getX()).append("|").append(component.end.getY()).append("|").append(component.getCurrent()).append("|").append(component.getVoltage()).append("\n");
             } else {
-                if (component instanceof Resistor resistor) {
-                    output.append(component.getType()).append("|").append(component.begin.getX()).append("|").append(component.begin.getY()).append("|").append(component.getAngle()).append("|").append(resistor.getResistance()).append("\n");
-                } else if (component instanceof Battery battery) {
-                    output.append(component.getType()).append("|").append(component.begin.getX()).append("|").append(component.begin.getY()).append("|").append(component.getAngle()).append("|").append(battery.getPotential()).append("\n");
-                } else if (component instanceof Capacitor capacitor) {
-                    output.append(component.getType()).append("|").append(component.begin.getX()).append("|").append(component.begin.getY()).append("|").append(component.getAngle()).append("|").append(capacitor.getStoredEnergy()).append("\n");
-                } else if (component instanceof Lightbulb lightbulb) {
-                    output.append(component.getType()).append("|").append(component.begin.getX()).append("|").append(component.begin.getY()).append("|").append(component.getAngle()).append("|").append(lightbulb.getResistance()).append("\n");
-                } else if (component instanceof Fuse fuse) {
-                    output.append(component.getType()).append("|").append(component.begin.getX()).append("|").append(component.begin.getY()).append("|").append(component.getAngle()).append("|").append(fuse.getMaxCurrent()).append("\n");
-                } else if (component instanceof Switch switchh) {
-                    output.append(component.getType()).append("|").append(component.begin.getX()).append("|").append(component.begin.getY()).append("|").append(component.getAngle()).append("|").append(switchh.getCurrent()).append("\n"); // curent not used, but it is here to not break formatting
+                switch (component) {
+                    case Resistor resistor ->
+                            output.append(component.getType()).append("|").append(component.begin.getX()).append("|").append(component.begin.getY()).append("|").append(component.getAngle()).append("|").append(resistor.getResistance()).append("\n");
+                    case Battery battery ->
+                            output.append(component.getType()).append("|").append(component.begin.getX()).append("|").append(component.begin.getY()).append("|").append(component.getAngle()).append("|").append(battery.getPotential()).append("\n");
+                    case Capacitor capacitor ->
+                            output.append(component.getType()).append("|").append(component.begin.getX()).append("|").append(component.begin.getY()).append("|").append(component.getAngle()).append("|").append(capacitor.getStoredEnergy()).append("\n");
+                    case Lightbulb lightbulb ->
+                            output.append(component.getType()).append("|").append(component.begin.getX()).append("|").append(component.begin.getY()).append("|").append(component.getAngle()).append("|").append(lightbulb.getResistance()).append("\n");
+                    case Fuse fuse ->
+                            output.append(component.getType()).append("|").append(component.begin.getX()).append("|").append(component.begin.getY()).append("|").append(component.getAngle()).append("|").append(fuse.getMaxCurrent()).append("\n");
+                    case Switch switchh ->
+                            output.append(component.getType()).append("|").append(component.begin.getX()).append("|").append(component.begin.getY()).append("|").append(component.getAngle()).append("|").append(switchh.getCurrent()).append("\n"); // curent not used, but it is here to not break formatting
+                    default -> {
+                    }
                 }
             }
         }

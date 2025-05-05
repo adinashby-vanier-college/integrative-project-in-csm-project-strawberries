@@ -15,9 +15,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.XYChart;
+import javafx.scene.chart.*;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -38,10 +36,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * FXML controller class for the primary stage scene.
@@ -268,63 +268,59 @@ public class MainAppFXMLController {
             codeStage.setWidth(600);
 
             edu.vanier.math.CircuitMath maths = new edu.vanier.math.CircuitMath(drawingArea.circuit);
-            // Create text display
+            // text display
             TextFlow infoText = new TextFlow(
                     new Text("Total Resistance: " + maths.getTotalResistance() + " Ω\nTotal Voltage:" + maths.getTotalVoltage() + " V\nTotal Current:" + maths.getTotalCurrent() + " A\n")
             );
             infoText.setTextAlignment(TextAlignment.LEFT);
 
-            // Graph title
-            Label graphTitle = new Label("Kirchhoff's Loop Rule Graph");
+            // title
+            Label graphTitle = new Label("Voltage Across Components");
             graphTitle.setStyle("-fx-font-weight: bold; -fx-font-size: 14px;");
 
-            // Graph
-            // Define axes
-            NumberAxis xAxis = new NumberAxis();
-            xAxis.setLabel("Resistance (Ω)");
+            // GRAPH
+            // axes
+            CategoryAxis xAxis = new CategoryAxis();
+            xAxis.setLabel("Component");
 
             NumberAxis yAxis = new NumberAxis();
-            yAxis.setLabel("Current (A)");
+            yAxis.setLabel("Voltage (V)");
 
-            // Create chart
-            LineChart<Number, Number> lineChart = new LineChart<>(xAxis, yAxis);
-            lineChart.setTitle("Current vs Resistance");
+            // create graph
+            BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
+            barChart.setTitle("Voltage per Component");
 
-            // Series for data
-            XYChart.Series<Number, Number> series = new XYChart.Series<>();
-            series.setName("Components");
+            // voltage data
+            XYChart.Series<String, Number> voltage = new XYChart.Series<>();
+            voltage.setName("Voltage");
 
-            // Add data points from circuit
+            // add data points from circuit
+            int index = 1;
             for (Component c : drawingArea.circuit.toArrayList()) {
-                double r = c.getResistance();
-                double i = c.getCurrent();
-                // Only plot components with valid values
-                if (!Double.isNaN(r) && !Double.isNaN(i)) {
-                    series.getData().add(new XYChart.Data<>(r, i));
+                if (!(c instanceof Wire)) {
+                    double v = c.getVoltage();
+                    if (!Double.isNaN(v)) {
+                        String label = c.getType() + " " + index;
+                        voltage.getData().add(new XYChart.Data<>(label, v));
+                    }
+                    index++;
                 }
             }
 
-            lineChart.getData().add(series);
-            lineChart.setLegendVisible(false);
+            barChart.getData().add(voltage);
+            barChart.setLegendVisible(false);
 
-            // Close button
+            // close btn
             Button closeButton = new Button("Close");
             closeButton.setOnAction(_ -> codeStage.close());
 
-            // VBox layout
-            VBox content = new VBox(10, infoText, graphTitle, lineChart, closeButton);
+            // layout using VBox
+            VBox content = new VBox(10, infoText, graphTitle, barChart, closeButton);
             content.setPadding(new Insets(10));
             content.setAlignment(Pos.CENTER);
 
             Scene scene = new Scene(content, 600, 500);
             codeStage.setScene(scene);
-            codeStage.show();
-
-            // Animation
-            VBox bottomContainer = new VBox(closeButton);
-            bottomContainer.setAlignment(Pos.CENTER);
-            bottomContainer.setSpacing(10);
-            content.getChildren().add(bottomContainer);
             codeStage.show();
         });
         runStopBtn.setText("Run");
@@ -773,8 +769,11 @@ public class MainAppFXMLController {
         menuOpen.setOnAction(_->{});
         menuOpenRecent.setOnAction(_->{});
         menuSave.setOnAction(_->{});
-        String circuitName = circuitNameField.getText();
-        menuSaveAs.setOnAction(_->exportToTxt(circuitName));
+        AtomicReference<String> circuitName = new AtomicReference<>(circuitNameField.getText());
+        menuSaveAs.setOnAction(_->{
+            circuitName.set(circuitNameField.getText()); // update value
+            exportToTxt(circuitName.get());
+        });
         menuQuit.setOnAction(_->quit());
 
         // SETTINGS & VIEW MENU
@@ -793,7 +792,10 @@ public class MainAppFXMLController {
             String finalUsername1 = username;
             exportBtn.setOnAction(_ -> exportToJson(finalUsername1)); // if logged in, export to json file
         } else {
-            exportBtn.setOnAction(_ -> exportToTxt(circuitName)); // if not logged in, export to txt (local)
+            exportBtn.setOnAction(_ -> {
+                circuitName.set(circuitNameField.getText()); // update value
+                exportToTxt(circuitName.get());
+            }); // if not logged in, export to txt (local)
         }
         //String recentProject = MainApp.signOnLogInController.getRecent();
         //menuOpenRecent.setOnAction(_->openRecent(recentProject));
@@ -934,6 +936,9 @@ public class MainAppFXMLController {
         String info = drawingArea.exportCircuit(circuitName); // get drawingArea to put in txt
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Save Circuit as TXT");
+        // make sure its txt
+        FileNameExtensionFilter txtFilter = new FileNameExtensionFilter("Text Files (*.txt)", "txt");
+        fileChooser.setFileFilter(txtFilter);
         int userSelection = fileChooser.showSaveDialog(null); // file dialog
 
         if (userSelection == JFileChooser.APPROVE_OPTION) {
