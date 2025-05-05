@@ -36,7 +36,7 @@ public class Fuse extends Component {
 
     public static Fuse createForTest(Node begin, Node end, double maxCurrent) {
     Fuse fuse = new Fuse(begin, end, maxCurrent, true);
-   // fuse.display = new Image(1, 1); // Dummy image to prevent NPEs
+   
     return fuse;
 }
 
@@ -53,12 +53,11 @@ public class Fuse extends Component {
         return maxCurrent;
     }
 
-    // Call this during simulation to update fuse status
     public void updateState(double totalCurrent) {
         if (totalCurrent > maxCurrent && !blown) {
             blown = true;
             System.out.println("Fuse has blown! Max = " + maxCurrent + "A, Current = " + totalCurrent + "A");
-            // Optional: change appearance
+          
             try {
                 URL blownImg = getClass().getResource("/images/fuse_blown.png");
                 display = new Image(Objects.requireNonNull(blownImg).toExternalForm());

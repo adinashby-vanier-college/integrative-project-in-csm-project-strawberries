@@ -1,6 +1,6 @@
 package edu.vanier.strawberries.Models;
 
-import javafx.geometry.Bounds;
+
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -12,6 +12,7 @@ import java.util.Objects;
 
 public class Resistor extends Component {
 
+    //contructor
    public Resistor(Node begin, Node end, double resistance, boolean skipUI, boolean diagramView) {
         super(begin, end, diagramView);
         this.resistance = resistance;
@@ -30,7 +31,7 @@ public class Resistor extends Component {
                 URL imgUrl = getClass().getResource("/images/resistor_real.png");
                 IMAGE_DISPLAY = new Image(Objects.requireNonNull(imgUrl).toExternalForm());
             } catch (NullPointerException e) {
-                System.out.println("Could not load resistor_real.png");
+                System.out.println("Could not load resistor_real");
                 IMAGE_DISPLAY = null;
             }
         }
