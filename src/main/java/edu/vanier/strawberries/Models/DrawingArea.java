@@ -21,7 +21,6 @@ import java.util.*;
 import javafx.scene.paint.Color;
 
 public class DrawingArea {
-
     public DrawingTool drawingTool = new DrawingTool();
     private Component selection;
     public Circuit circuit;
@@ -45,8 +44,7 @@ public class DrawingArea {
     }
 
     /**
-     * Method called every frame. Draws the elements to be displayed in the
-     * canvas, such as circuit components
+     * Method called every frame. Draws the elements to be displayed in the canvas, such as circuit components
      */
     public void drawContent() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -97,14 +95,20 @@ public class DrawingArea {
                     gc.fillOval(wire.begin.getX() - 5, wire.begin.getY() - 5, 10, 10);
                     gc.fillOval(wire.end.getX() - 5, wire.end.getY() - 5, 10, 10);
                 }
-            } else {
+            }
+            else {
                 Image img = component.display;
                 Rotate rotateTransform = new Rotate(component.getAngle(), component.begin.getX(), component.begin.getY());
                 gc.save();
                 gc.setTransform(new Affine(rotateTransform));
-                gc.drawImage(img, component.begin.getX(), component.begin.getY() - (img.getHeight()) / 2, img.getWidth() * zoom, img.getHeight() * zoom);
 
-                if (component.isEdit()) {
+                if(!component.diagramView && component instanceof Lightbulb lightbulb) {
+                    gc.drawImage(img, component.begin.getX(), component.begin.getY() - (img.getHeight()), img.getWidth() * zoom, img.getHeight() * zoom);
+                }
+                else {
+                    gc.drawImage(img, component.begin.getX(), component.begin.getY() - (img.getHeight()) / 2, img.getWidth() * zoom, img.getHeight() * zoom);
+                }
+                if(component.isEdit()) {
                     // SHOW IF THE COMPONENT IS BEING EDITED
                     gc.setStroke(Color.BLUE);
                     gc.setLineWidth(1.2);
@@ -129,9 +133,7 @@ public class DrawingArea {
     }
 
     /**
-     * Allows the component nodes to snap to the closed grid intersection when
-     * dragging
-     *
+     * Allows the component nodes to snap to the closed grid intersection when dragging
      * @param pos the un-snapped position of the node
      * @return The updated, snapped position relative to the grid.
      */
@@ -150,7 +152,6 @@ public class DrawingArea {
      * INSERT JAVADOC COMMENT HERE
      */
     private static class Electron {
-
         private final Wire wire;
         private double progress;
         private final double speedFactor;

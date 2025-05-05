@@ -91,9 +91,10 @@ public class MainAppFXMLController {
     Text circuitStateText;
     @FXML
     MenuItem menuNew, menuOpen, menuOpenRecent, menuSave, menuSaveAs, menuQuit, menuShowToolbar, menuHideToolbar, menuThemes,
-            menuFitToScreen, menuZoomIn, menuZoomOut, menuToggleGrid, menuSelect, menuWire, menuRedWire, menuBlackWire,
+            menuFitToScreen, menuZoomIn, menuZoomOut, menuToggleGrid, menuWire, menuRedWire, menuBlackWire,
             menuDefaultColorWire, menuChooseColorWire, menuResistor, menuSwitch, menuBattery, menuCapacitor, menuLightbulb,
-            menuYellow, menuRed, menuGreen, menuBlue, menuColorLightbulb,menuUndo,menuRedo,menuCut,menuCopy,menuPaste;
+            menuYellow, menuRed, menuGreen, menuBlue, menuColorLightbulb,menuUndo,menuRedo,menuCut,menuCopy,menuPaste, menuDelete,
+            menuSelect, menuUnselectAll;
     @FXML
     MenuItem lightThemeItem, darkThemeItem, strawThemeItem;
     private DrawingTool drawingTool;
@@ -822,6 +823,9 @@ public class MainAppFXMLController {
         menuCut.setOnAction(_-> {});
         menuCopy.setOnAction(_-> copy(copied.createCopy()));
         menuPaste.setOnAction(_-> paste(copied,20,20));
+        menuDelete.setOnAction(_-> history.add(new RemoveComponentAction(editing)));
+        menuSelect.setOnAction(_-> drawingTool.setCurrentAction("select"));
+        menuUnselectAll.setOnAction(_-> select(null));
     }
 
     /**

@@ -258,5 +258,4 @@ public class Circuit {
         return -1; // Component not found
     }
 
-
 }

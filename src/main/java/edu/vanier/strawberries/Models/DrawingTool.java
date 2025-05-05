@@ -34,8 +34,12 @@ public class DrawingTool {
                     Image pencil =  new Image(String.valueOf(getClass().getResource("/images/pencil.png")));
                     updatedCursor = new ImageCursor(pencil);
                 }
-                case "battery","capacitor","fuse","lightbulb","resistor" -> {
+                case "battery","capacitor","fuse","resistor" -> {
                     Image img = new Image(String.valueOf(getClass().getResource("/images/"+component_placed+"_diagram.png")));
+                    updatedCursor = new ImageCursor(img, -img.getWidth(),img.getHeight()/2);
+                }
+                case "lightbulb" -> {
+                    Image img = new Image(String.valueOf(getClass().getResource("/images/lightbulb-off_diagram.png")));
                     updatedCursor = new ImageCursor(img, -img.getWidth(),img.getHeight()/2);
                 }
                 case "switch" -> {
