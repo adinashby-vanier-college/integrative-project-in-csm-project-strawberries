@@ -3,10 +3,7 @@ package edu.vanier.strawberries.controllers;
 import edu.vanier.math.CircuitMath;
 import edu.vanier.strawberries.Models.*;
 import edu.vanier.strawberries.Models.DrawingArea;
-import edu.vanier.strawberries.Models.UndoRedo.History;
-import edu.vanier.strawberries.Models.UndoRedo.AddComponentAction;
-import edu.vanier.strawberries.Models.UndoRedo.MoveComponentAction;
-import edu.vanier.strawberries.Models.UndoRedo.RotateComponentAction;
+import edu.vanier.strawberries.Models.UndoRedo.*;
 import edu.vanier.strawberries.ui.MainApp;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -23,8 +20,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -58,6 +54,7 @@ public class MainAppFXMLController {
     private Node[] toMove = new Node[2];
     private Point2D mouseDownLocation,initialBegin,initialEnd;
     private MoveComponentAction pendingMoveAction;
+    private Component copied;
     public boolean diagramView;
     private String currentTheme;
 
@@ -137,9 +134,11 @@ public class MainAppFXMLController {
             for (LinkedList<Component> list : circuit.arrayList) {
                 for (Component current : list) {
                     if (current instanceof Wire wire && checkLineCollision(mouseAt, wire)) {
-                        select(current);
+                        if(selection==null || (!current.begin.equals(selection.begin) && !current.end.equals(selection.end))) select(current);
                     } else if (!(current instanceof Wire) && checkComponentCollision(mouseAt, current)) {
-                        select(current);
+                        if(selection==null || (!current.begin.equals(selection.begin) && !current.end.equals(selection.end))) {
+                            select(current);
+                        }
                     } else {
                         unselect(current);
                     }
@@ -254,13 +253,6 @@ public class MainAppFXMLController {
             drawingTool.defaultWireColor = pickedColor;
         });
 
-        polarityCheckBox.setOnAction(_ -> {
-            if (polarityCheckBox.isSelected()) {
-                System.out.println("Clicked");
-            } else {
-                System.out.println("Un-clicked");
-            }
-        });
         moreInformationBtn.setOnAction(_ -> {
             Stage codeStage = new Stage();
             codeStage.setTitle("More information");
@@ -469,12 +461,16 @@ public class MainAppFXMLController {
                     toMove[0] = wire.end;
                     wire.begin.lock();
                 } else {
+                    wire.begin.unlock();
+                    wire.end.unlock();
                     toMove[0] = wire.begin;
                     toMove[1] = wire.end;
                 }
             }
             else {
                 //Images
+                editing.begin.unlock();
+                editing.end.unlock();
                 if(editing.getAngle()==0 || editing.getAngle()==180) toMove[0] = (editing.begin.getX() < editing.end.getX() ? editing.begin : editing.end);
                 else toMove[0] = (editing.begin.getY() < editing.end.getY() ? editing.begin : editing.end);
             }
@@ -667,34 +663,56 @@ public class MainAppFXMLController {
      */
     private void setUpKeyListeners() {
         window.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
-            switch(event.getCode()) {
-                case S,ESCAPE -> {
-                    unselect(selection);
-                    drawingTool.setCurrentAction("select");
-                    setCursor(Cursor.DEFAULT);
+            if (new KeyCodeCombination(KeyCode.C, KeyCombination.SHORTCUT_DOWN).match(event)) {
+                if(editing != null) {
+                    copied = editing;
+                    System.out.println("copying "+copied);
                 }
-                case W -> drawingTool.setCurrentAction("place-wire");
-                case B -> drawingTool.setCurrentAction("place-battery");
-                case C -> drawingTool.setCurrentAction("place-capacitor");
-                case L -> drawingTool.setCurrentAction("place-lightbulb");
-                case T -> drawingTool.setCurrentAction("place-switch");
-                case R -> drawingTool.setCurrentAction("place-resistor");
-                case DELETE,BACK_SPACE -> circuit.deleteComponent(editing);
-                case COMMA -> {
-                    if(editing!=null) {
-                        history.add(new RotateComponentAction(editing,"left"));
+            }
+            else if(new KeyCodeCombination(KeyCode.V, KeyCombination.SHORTCUT_DOWN).match(event)) {
+                edit(null);
+                Component tempCopy = copied.createCopy();
+                tempCopy.setAsCopy(true);
+                paste(tempCopy,drawingArea.snap(posX),drawingArea.snap(posY));
+                System.out.println("Pasted element: "+copied);
+            }
+            else {
+                switch (event.getCode()) {
+                    case S, ESCAPE -> {
+                        unselect(selection);
+                        drawingTool.setCurrentAction("select");
+                        setCursor(Cursor.DEFAULT);
                     }
-                }
-                case PERIOD -> {
-                    if(editing!=null) {
-                        history.add(new RotateComponentAction(editing,"right"));
+                    case W -> drawingTool.setCurrentAction("place-wire");
+                    case B -> drawingTool.setCurrentAction("place-battery");
+                    case C -> drawingTool.setCurrentAction("place-capacitor");
+                    case L -> drawingTool.setCurrentAction("place-lightbulb");
+                    case T -> drawingTool.setCurrentAction("place-switch");
+                    case R -> drawingTool.setCurrentAction("place-resistor");
+                    case DELETE, BACK_SPACE -> history.add(new RemoveComponentAction(editing));
+                    case COMMA -> {
+                        if (editing != null) {
+                            history.add(new RotateComponentAction(editing, "left"));
+                        }
                     }
-                }
-                case P -> {
-                    circuit.print();
+                    case PERIOD -> {
+                        if (editing != null) {
+                            history.add(new RotateComponentAction(editing, "right"));
+                        }
+                    }
+                    case P -> circuit.print();
                 }
             }
         });
+    }
+
+    private void paste(Component component, double mouseX, double mouseY) {
+        System.out.println("attempting to paste "+component+" at "+mouseX+","+mouseY);
+        System.out.println("[DEBUG] copy position: "+component.begin.getPosition());
+        component.setCenterPosition(mouseX,mouseY);
+        System.out.println("[DEBUG] paste position: "+component.begin.getPosition());
+        history.add(new AddComponentAction(component));
+        edit(component);
     }
 
     /**

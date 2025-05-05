@@ -32,4 +32,15 @@ public class Wire extends Component {
         this.color = color;
     }
 
+    /**
+     * Creates a new Component of the same type and properties as the current (calling) component
+     *
+     * @return a new instance of Component
+     */
+    @Override
+    public Component createCopy() {
+        begin.lock();
+        end.lock();
+        return new Wire(Node.copyOf(begin),Node.copyOf(end),color,current,voltage);
+    }
 }

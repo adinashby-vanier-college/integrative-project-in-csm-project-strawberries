@@ -177,4 +177,14 @@ public class Resistor extends Component {
         }
         return false;
     }
+
+    /**
+     * Creates a new Component of the same type and properties as the current (calling) component
+     *
+     * @return a new instance of Component
+     */
+    @Override
+    public Component createCopy() {
+        return new Resistor(Node.copyOf(begin),Node.copyOf(end),resistance,diagramView);
+    }
 }

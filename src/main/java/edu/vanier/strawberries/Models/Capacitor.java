@@ -41,4 +41,14 @@ public class Capacitor extends Component {
         return storedEnergy == capacity;
     }
 
+
+    /**
+     * Creates a new Component of the same type and properties as the current (calling) component
+     *
+     * @return a new instance of Component
+     */
+    @Override
+    public Component createCopy() {
+        return new Capacitor(Node.copyOf(begin),Node.copyOf(end),storedEnergy,diagramView);
+    }
 }

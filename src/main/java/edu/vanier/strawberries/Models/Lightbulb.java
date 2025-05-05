@@ -63,4 +63,13 @@ public class Lightbulb extends Component {
         this.color = color;
     }
 
+    /**
+     * Creates a new Component of the same type and properties as the current (calling) component
+     *
+     * @return a new instance of Component
+     */
+    @Override
+    public Component createCopy() {
+        return new Lightbulb(Node.copyOf(begin),Node.copyOf(end),color,resistance,diagramView);
+    }
 }

@@ -163,4 +163,9 @@ public class Battery extends Component {
         alert.setContentText(msg);
         alert.showAndWait();
     }
+
+    @Override
+    public Component createCopy() {
+        return new Battery(Node.copyOf(begin),Node.copyOf(end),potential,diagramView);
+    }
 }

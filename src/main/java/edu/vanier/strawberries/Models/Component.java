@@ -28,6 +28,7 @@ public abstract class Component extends StackPane {
     protected double resistance;
     protected double current;
     protected double voltage;
+    public boolean isCopy;
 
     public Component(Node begin, Node end, boolean diagramView) {
         this.begin = begin;
@@ -173,23 +174,50 @@ public abstract class Component extends StackPane {
         return new Point2D(x,y);
     }
 
-    public Node[] getNodes() {
-        return new Node[]{begin, end};
-    }
-
-
-    public boolean sharesNode(Component other) {
-        for (Node nodeA : this.getNodes()) {
-            for (Node nodeB : other.getNodes()) {
-                if (nodeA.getX() == nodeB.getX() && nodeA.getY() == nodeB.getY()) {
-                    System.out.println("Shared node between " + this + " and " + other +
-                            " at (" + nodeA.getX() + ", " + nodeA.getY() + ")");
-                    return true;
+    /**
+     * Set the center position of the element without having to individually place its Nodes
+     * @param x The x position of the center
+     * @param y The y position of the center
+     */
+    public void setCenterPosition(double x, double y) {
+        System.out.println("[DEBUG] setting center to: "+x+" , "+y);
+        if(this instanceof Wire) {
+            double width = Math.abs(begin.getX() - end.getX()),
+                   height = Math.abs(begin.getY() - end.getY());
+            int multiplierX = (begin.getX() < end.getX()) ? -1 : 1,
+                multiplierY = (begin.getY() < end.getY()) ? -1 : 1;
+            begin.setPosition(x + (multiplierX*width/2),y+(multiplierY*height/2));
+            end.setPosition(x-(multiplierX*width/2),y-(multiplierY*height/2));
+        }
+        else {
+            switch((int) angle) {
+                case 0,180 -> {
+                    int multiplier = (begin.getX() < end.getX()) ? -1 : 1;
+                    begin.setPosition(x + multiplier*(getWidth()), y);
+                    end.setPosition(x - multiplier*(getWidth()),y);
+                }
+                case 90,270 -> {
+                    int multiplier = (begin.getY() < end.getY()) ? -1 : 1;
+                    begin.setPosition(x,y + multiplier*(getWidth()));
+                    end.setPosition(x,y - multiplier*(getWidth()));
                 }
             }
         }
-        return false;
     }
+
+    /**
+     * Determines if the component was added manually or as a copy of another
+     * @param isCopy determines if the element is a copy of another, before it is placed down
+     */
+    public void setAsCopy(boolean isCopy) {
+        this.isCopy = true;
+    }
+
+    /**
+     * Creates a new Component of the same type and properties as the current (calling) component
+     * @return a new instance of Component
+     */
+    abstract public Component createCopy();
     
 }
 
