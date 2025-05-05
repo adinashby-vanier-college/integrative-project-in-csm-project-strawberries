@@ -182,6 +182,12 @@ public class CircuitMath {
         fuse.setVoltage(0);
     }
 }
+         if (c instanceof Lightbulb lightbulb) {
+    lightbulb.setCurrent(totalCurrent);
+    lightbulb.setVoltage(lightbulb.getResistance() * totalCurrent);
+    lightbulb.turnOn(totalCurrent > 0);
+}
+
 
 
             
