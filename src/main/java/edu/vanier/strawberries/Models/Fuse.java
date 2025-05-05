@@ -1,17 +1,20 @@
 package edu.vanier.strawberries.Models;
 
-import edu.vanier.strawberries.ui.MainApp;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 
 import java.net.URL;
 import java.util.Objects;
-import javafx.scene.control.Alert;
 
 public class Fuse extends Component {
     private boolean blown;
     private double maxCurrent;
+
+    private static Image DIAGRAM_DISPLAY;
+    private static Image IMAGE_DISPLAY;
+    private static Image DIAGRAM_DISPLAY_BLOWN;
+    private static Image IMAGE_DISPLAY_BLOWN;
 
     public Fuse(Node begin, Node end, double maxCurrent, boolean diagramView) {
         super(begin, end, diagramView);
@@ -33,31 +36,68 @@ public class Fuse extends Component {
             System.out.println("Could not load fuse real image");
         }
 
+        try {
+            URL imgUrl = getClass().getResource("/images/fuse_blown.png");
+            DIAGRAM_DISPLAY_BLOWN = new Image(Objects.requireNonNull(imgUrl).toExternalForm());
+        } catch (Exception e) {
+            System.out.println("Could not load fuse diagram blown image");
+        }
+
+        try {
+            URL imgUrl = getClass().getResource("/images/fuse_real_blown.png");
+            IMAGE_DISPLAY_BLOWN = new Image(Objects.requireNonNull(imgUrl).toExternalForm());
+        } catch (Exception e) {
+            System.out.println("Could not load fuse real blown image");
+        }
+
+        // Set the initial display based on view mode
         display = diagramView ? DIAGRAM_DISPLAY : IMAGE_DISPLAY;
     }
 
     public static Fuse createForTest(Node begin, Node end, double maxCurrent) {
-    Fuse fuse = new Fuse(begin, end, maxCurrent, true);
-   
-    return fuse;
-}
-
-    
-    public boolean isBlown() {
-        return blown;
+        return new Fuse(begin, end, maxCurrent, true);
     }
 
-    public void setMaxCurrent(double maxCurrent) {
-        this.maxCurrent = maxCurrent;
+    public boolean isBlown() {
+        return blown;
     }
 
     public double getMaxCurrent() {
         return maxCurrent;
     }
 
-  
+    public void setMaxCurrent(double maxCurrent) {
+        this.maxCurrent = maxCurrent;
+    }
 
-    // UI-based editing of max current
+    public void updateState(double totalCurrent) {
+        if (totalCurrent > maxCurrent && !blown) {
+            blown = true;
+            System.out.println("Fuse has blown! Max = " + maxCurrent + "A, Current = " + totalCurrent + "A");
+
+            if (diagramView) {
+                display = DIAGRAM_DISPLAY_BLOWN;
+            } else {
+                display = IMAGE_DISPLAY_BLOWN;
+            }
+        }
+    }
+
+    @Override
+    public void switchDisplay(boolean isDiagram) {
+        this.diagramView = isDiagram;
+        if (blown) {
+            display = isDiagram ? DIAGRAM_DISPLAY_BLOWN : IMAGE_DISPLAY_BLOWN;
+        } else {
+            display = isDiagram ? DIAGRAM_DISPLAY : IMAGE_DISPLAY;
+        }
+    }
+
+    @Override
+    public Component createCopy() {
+        return new Fuse(Node.copyOf(begin), Node.copyOf(end), maxCurrent, diagramView);
+    }
+
     public void handleEdit(Pane parentPane) {
         TextField inputField = new TextField(String.valueOf(maxCurrent));
         inputField.setPrefWidth(60);
@@ -99,39 +139,4 @@ public class Fuse extends Component {
 
         parentPane.getChildren().remove(inputField);
     }
-
-    /**
-     * Creates a new Component of the same type and properties as the current (calling) component
-     *
-     * @return a new instance of Component
-     */
-    @Override
-    public Component createCopy() {
-        return new Fuse(Node.copyOf(begin),Node.copyOf(end),maxCurrent,diagramView);
-    }
-    
-    
-  public void updateState(double totalCurrent) {
-    if (totalCurrent > maxCurrent && !blown) {
-        blown = true;
-        System.out.println("Fuse has blown! Max = " + maxCurrent + "A, Current = " + totalCurrent + "A");
-
-        try {
-            URL blownImg = getClass().getResource("/images/fuse_blown.png");
-            display = new Image(Objects.requireNonNull(blownImg).toExternalForm());
-        } catch (Exception e) {
-            System.out.println("Could not load fuse_blown.png");
-        }
-
-        // Stop animation and refresh canvas
-        MainApp.mainAppFXMLController.drawingArea.animateCurrentFlow(false);
-        MainApp.mainAppFXMLController.drawingArea.stopElectronAnimation();
-        MainApp.mainAppFXMLController.drawingArea.drawContent();
-
-       
-    }
-}
-
-
-
 }
