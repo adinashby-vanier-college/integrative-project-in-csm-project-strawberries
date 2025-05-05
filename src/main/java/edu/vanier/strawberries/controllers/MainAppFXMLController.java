@@ -76,7 +76,7 @@ public class MainAppFXMLController {
     @FXML
     TextField circuitNameField;
     @FXML
-    Button exportBtn,moreInformationBtn,runStopBtn,resetBtn,clearBtn;
+    public Button exportBtn,moreInformationBtn,runStopBtn,resetBtn,clearBtn;
     @FXML
     Label runStopLabel;
     @FXML
@@ -442,6 +442,10 @@ public class MainAppFXMLController {
                     if (selection instanceof Switch switchObj) {
                         switchObj.toggle();
                     }
+                    if (selection instanceof Fuse fuse && e.getClickCount() == 2) {
+                        fuse.handleEdit(leftPanel);
+                    }
+
                 }
                 default -> {}
             }

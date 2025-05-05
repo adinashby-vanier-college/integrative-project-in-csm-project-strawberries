@@ -1,5 +1,6 @@
 package edu.vanier.strawberries.Models;
 
+import edu.vanier.strawberries.ui.MainApp;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
@@ -53,19 +54,7 @@ public class Fuse extends Component {
         return maxCurrent;
     }
 
-    public void updateState(double totalCurrent) {
-        if (totalCurrent > maxCurrent && !blown) {
-            blown = true;
-            System.out.println("Fuse has blown! Max = " + maxCurrent + "A, Current = " + totalCurrent + "A");
-          
-            try {
-                URL blownImg = getClass().getResource("/images/fuse_blown.png");
-                display = new Image(Objects.requireNonNull(blownImg).toExternalForm());
-            } catch (Exception e) {
-                System.out.println("Could not load fuse_blown.png");
-            }
-        }
-    }
+  
 
     // UI-based editing of max current
     public void handleEdit(Pane parentPane) {
@@ -119,4 +108,29 @@ public class Fuse extends Component {
     public Component createCopy() {
         return new Fuse(Node.copyOf(begin),Node.copyOf(end),maxCurrent,diagramView);
     }
+    
+    
+    
+    public void updateState(double totalCurrent) {
+    if (totalCurrent > maxCurrent && !blown) {
+        blown = true;
+        System.out.println("Fuse has blown! Max = " + maxCurrent + "A, Current = " + totalCurrent + "A");
+
+        try {
+            URL blownImg = getClass().getResource("/images/fuse_blown.png");
+            display = new Image(Objects.requireNonNull(blownImg).toExternalForm());
+        } catch (Exception e) {
+            System.out.println("Could not load fuse_blown.png");
+        }
+
+        
+        MainApp.mainAppFXMLController.drawingArea.drawContent();
+
+        
+        MainApp.mainAppFXMLController.drawingArea.animateCurrentFlow(false);
+        MainApp.mainAppFXMLController.runStopBtn.setText("Run");
+        MainApp.mainAppFXMLController.animationRunning = false;
+    }
+}
+
 }
