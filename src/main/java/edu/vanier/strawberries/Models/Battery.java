@@ -54,6 +54,9 @@ public class Battery extends Component {
 
         display = diagramView ? DIAGRAM_DISPLAY : IMAGE_DISPLAY;
     }
+public static Battery createForTest(Node begin, Node end, double potential) {
+    return new Battery(begin, end, potential, false, true); // diagramView = false, skipUI = true
+}
 
     /**
      *

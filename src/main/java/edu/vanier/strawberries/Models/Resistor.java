@@ -12,7 +12,7 @@ import java.util.Objects;
 
 public class Resistor extends Component {
 
-    public Resistor(Node begin, Node end, double resistance, boolean skipUI, boolean diagramView) {
+   public Resistor(Node begin, Node end, double resistance, boolean skipUI, boolean diagramView) {
         super(begin, end, diagramView);
         this.resistance = resistance;
         this.current = 0;
@@ -22,51 +22,39 @@ public class Resistor extends Component {
                 URL imgUrl = getClass().getResource("/images/resistor_diagram.png");
                 DIAGRAM_DISPLAY = new Image(Objects.requireNonNull(imgUrl).toExternalForm());
             } catch (NullPointerException e) {
-                System.out.println("Could not load resistor image");
+                System.out.println("Could not load resistor_diagram.png");
                 DIAGRAM_DISPLAY = null;
             }
+
+            try {
+                URL imgUrl = getClass().getResource("/images/resistor_real.png");
+                IMAGE_DISPLAY = new Image(Objects.requireNonNull(imgUrl).toExternalForm());
+            } catch (NullPointerException e) {
+                System.out.println("Could not load resistor_real.png");
+                IMAGE_DISPLAY = null;
+            }
         }
 
         display = diagramView ? DIAGRAM_DISPLAY : IMAGE_DISPLAY;
 
-        this.setOnMouseClicked(e -> {
-            if (e.getClickCount() == 2 && this.getParent() instanceof Pane parentPane) {
-                showInfoBox(parentPane);
-            }
-        });
+        if (!skipUI) {
+            this.setOnMouseClicked(e -> {
+                if (e.getClickCount() == 1 && this.getParent() instanceof Pane pane) {
+                    handleEdit(pane);
+                } else if (e.getClickCount() == 2 && this.getParent() instanceof Pane pane) {
+                    showInfoBox(pane);
+                }
+            });
+        }
     }
 
-    /**
-     * Main constructor of the {@link Resistor} class
-     * @param begin The "begin" node
-     * @param end The temporary "end" node
-     * @param resistance The resistance of the resistor
-     * @param diagramView true if it should be displayed as a diagram
-     */
+    // Convenience constructor for real app usage (UI enabled)
     public Resistor(Node begin, Node end, double resistance, boolean diagramView) {
-        super(begin, end, diagramView);
-        this.resistance = resistance;
-        this.current = 0;
+        this(begin, end, resistance, false, diagramView);
+    }
 
-        try {
-            URL imgUrl = getClass().getResource("/images/resistor_diagram.png");
-            DIAGRAM_DISPLAY = new Image(Objects.requireNonNull(imgUrl).toExternalForm());
-        } catch (NullPointerException e) {
-            System.out.println("Could not load resistor image");
-            DIAGRAM_DISPLAY = null;
-        }
-
-        try {
-            URL imgUrl = getClass().getResource("/images/resistor_real.png");
-            IMAGE_DISPLAY = new Image(Objects.requireNonNull(imgUrl).toExternalForm());
-        } catch (NullPointerException e) {
-            System.out.println("Could not load resistor image");
-            IMAGE_DISPLAY = null;
-        }
-
-        display = diagramView ? DIAGRAM_DISPLAY : IMAGE_DISPLAY;
-
-  
+     public static Resistor createForTest(Node begin, Node end, double resistance) {
+        return new Resistor(begin, end, resistance, true, false);
     }
 
     /**

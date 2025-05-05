@@ -45,7 +45,10 @@ dependencies {
     implementation group: 'org.kordamp.ikonli', name: 'ikonli-javafx', version: '12.3.1'    
     implementation 'org.kordamp.ikonli:ikonli-materialdesign2-pack:12.3.1'
 
-    testImplementation 'junit:junit:4.13.2'
+    // JUnit 5 dependencies
+testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
+testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
+
 
 
 
@@ -61,4 +64,7 @@ application {
    // TODO: Specify the fully-qualified name of the class 
    //       that contains the main method to be executed.
    mainClass = 'edu.vanier.Launcher'   
+}
+test {
+    useJUnitPlatform()
 }

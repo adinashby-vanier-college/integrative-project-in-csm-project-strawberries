@@ -106,8 +106,10 @@ public abstract class Component extends StackPane {
 
     public void updateEnd() {
         if(!(this instanceof Wire)) {
-            double newX = begin.getX() + (display.getWidth() * Math.round(Math.cos(Math.toRadians(angle))));
-            double newY = begin.getY() + (display.getWidth() * Math.round(Math.sin(Math.toRadians(angle))));
+            double width = (display != null) ? display.getWidth() : 40; 
+double newX = begin.getX() + (width * Math.round(Math.cos(Math.toRadians(angle))));
+double newY = begin.getY() + (width * Math.round(Math.sin(Math.toRadians(angle))));
+
             end.setPosition(newX, newY);
         }
     }

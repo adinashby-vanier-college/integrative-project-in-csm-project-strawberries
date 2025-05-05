@@ -34,6 +34,13 @@ public class Fuse extends Component {
         display = diagramView ? DIAGRAM_DISPLAY : IMAGE_DISPLAY;
     }
 
+    public static Fuse createForTest(Node begin, Node end, double maxCurrent) {
+    Fuse fuse = new Fuse(begin, end, maxCurrent, true);
+   // fuse.display = new Image(1, 1); // Dummy image to prevent NPEs
+    return fuse;
+}
+
+    
     public boolean isBlown() {
         return blown;
     }
