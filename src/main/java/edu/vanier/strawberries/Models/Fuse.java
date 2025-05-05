@@ -70,18 +70,31 @@ public class Fuse extends Component {
         this.maxCurrent = maxCurrent;
     }
 
-    public void updateState(double totalCurrent) {
-        if (totalCurrent > maxCurrent && !blown) {
+  public void updateState(double totalCurrent) {
+    if (totalCurrent > maxCurrent) {
+        if (!blown) {
             blown = true;
             System.out.println("Fuse has blown! Max = " + maxCurrent + "A, Current = " + totalCurrent + "A");
-
-            if (diagramView) {
+            if (diagramView && DIAGRAM_DISPLAY_BLOWN != null) {
                 display = DIAGRAM_DISPLAY_BLOWN;
-            } else {
+            } else if (!diagramView && IMAGE_DISPLAY_BLOWN != null) {
                 display = IMAGE_DISPLAY_BLOWN;
             }
         }
+    } else {
+        if (blown) {
+            blown = false;
+            System.out.println("Fuse restored: Current = " + totalCurrent + "A is safe.");
+
+            if (diagramView && DIAGRAM_DISPLAY != null) {
+                display = DIAGRAM_DISPLAY;
+            } else if (!diagramView && IMAGE_DISPLAY != null) {
+                display = IMAGE_DISPLAY;
+            }
+        }
     }
+}
+
 
     @Override
     public void switchDisplay(boolean isDiagram) {
