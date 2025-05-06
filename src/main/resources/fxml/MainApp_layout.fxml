@@ -184,7 +184,6 @@
                         <Insets />
                     </VBox.margin>
                     <Button fx:id="runStopBtn" mnemonicParsing="false" text="Run/Stop" />
-                    <Button fx:id="resetBtn" mnemonicParsing="false" text="Reset" />
                     <Button fx:id="clearBtn" mnemonicParsing="false" style="-fx-background-color: ff645c;" text="Clear">
                         <font>
                             <Font name="System Bold" size="12.0" />

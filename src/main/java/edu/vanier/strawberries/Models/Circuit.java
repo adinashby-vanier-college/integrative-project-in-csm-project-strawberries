@@ -90,7 +90,7 @@ public class Circuit {
                 Point2D compBegin = connected.begin.getPosition(),
                         compEnd = connected.end.getPosition();
                 if ((checkBegin.distance(compBegin) > 1 && checkBegin.distance(compEnd) > 1) && (checkEnd.distance(compBegin) > 1 && checkEnd.distance(compEnd) > 1)) {
-                    removeEdge(srcIndex, getIndex(connected));
+                    if(getIndex(connected) != -1) removeEdge(srcIndex, getIndex(connected));
                 }
             }
         }

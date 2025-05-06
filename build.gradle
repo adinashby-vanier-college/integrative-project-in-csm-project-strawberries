@@ -3,6 +3,7 @@ plugins {
     id 'application'
     // Load and apply the required JavaFX plugin.    
     id 'org.openjfx.javafxplugin' version '0.0.14'
+    id 'java'
 }
 
 def logbackVersion = "1.4.11"
@@ -58,6 +59,11 @@ testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(22)
+    }
+}
+jar {
+    manifest {
+        attributes 'Main-Class' : 'edu.vanier.Launcher'
     }
 }
 application {       
