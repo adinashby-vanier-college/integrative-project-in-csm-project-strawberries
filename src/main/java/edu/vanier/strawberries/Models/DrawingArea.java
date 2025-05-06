@@ -21,6 +21,7 @@ import java.util.*;
 import javafx.scene.paint.Color;
 
 public class DrawingArea {
+
     public DrawingTool drawingTool = new DrawingTool();
     private Component selection;
     public Circuit circuit;
@@ -44,7 +45,8 @@ public class DrawingArea {
     }
 
     /**
-     * Method called every frame. Draws the elements to be displayed in the canvas, such as circuit components
+     * Method called every frame. Draws the elements to be displayed in the
+     * canvas, such as circuit components
      */
     public void drawContent() {
         gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -95,69 +97,67 @@ public class DrawingArea {
                     gc.fillOval(wire.begin.getX() - 5, wire.begin.getY() - 5, 10, 10);
                     gc.fillOval(wire.end.getX() - 5, wire.end.getY() - 5, 10, 10);
                 }
-            }
-            else {
+            } else {
                 Image img = component.display;
                 Rotate rotateTransform = new Rotate(component.getAngle(), component.begin.getX(), component.begin.getY());
                 gc.save();
                 gc.setTransform(new Affine(rotateTransform));
 
-
-                if(!component.diagramView && component instanceof Lightbulb lightbulb) {
+                if (!component.diagramView && component instanceof Lightbulb lightbulb) {
                     gc.drawImage(img, component.begin.getX(), component.begin.getY() - (img.getHeight()), img.getWidth() * zoom, img.getHeight() * zoom);
-                }
-                else {
+                } else {
                     gc.drawImage(img, component.begin.getX(), component.begin.getY() - (img.getHeight()) / 2, img.getWidth() * zoom, img.getHeight() * zoom);
                 }
-                if(component.isEdit()) {
+                if (component.isEdit()) {
                     // SHOW IF THE COMPONENT IS BEING EDITED
 
-                if (component.isEdit()) {
-                   
+                    if (component.isEdit()) {
 
-                    gc.setStroke(Color.BLUE);
-                    gc.setLineWidth(1.2);
-                    gc.strokeRect(component.begin.getX(), component.begin.getY() - (img.getHeight()) / 2, img.getWidth() * zoom, img.getHeight() * zoom);
+                        gc.setStroke(Color.BLUE);
+                        gc.setLineWidth(1.2);
+                        gc.strokeRect(component.begin.getX(), component.begin.getY() - (img.getHeight()) / 2, img.getWidth() * zoom, img.getHeight() * zoom);
+                    }
+                    gc.restore();
+
+                    if (component instanceof Lightbulb lightbulb && lightbulb.isOn()) {
+                        double offsetX = 20,
+                                offsetY = lightbulb.diagramView ? 20 : 40;
+
+                        double haloX = lightbulb.getCenter().getX() - offsetX;
+                        double haloY = lightbulb.getCenter().getY() - offsetY;
+
+                        gc.setFill(lightbulb.getColor().deriveColor(0, 1, 1, 0.5));
+                        gc.fillOval(haloX, haloY, 40, 40);
+                    }
+
                 }
-                gc.restore();
-
-                if (component instanceof Lightbulb lightbulb && lightbulb.isOn()) {
-                    double offsetX = 20,
-                           offsetY = lightbulb.diagramView ? 20 : 40;
-
-                    double haloX = lightbulb.getCenter().getX() - offsetX;
-                    double haloY = lightbulb.getCenter().getY() - offsetY;
-
-                    gc.setFill(lightbulb.getColor().deriveColor(0, 1, 1, 0.5));
-                    gc.fillOval(haloX, haloY, 40, 40);
-                }
-
             }
         }
     }
-    }
 
     /**
-     * Allows the component nodes to snap to the closed grid intersection when dragging
+     * Allows the component nodes to snap to the closed grid intersection when
+     * dragging
+     *
      * @param pos the un-snapped position of the node
      * @return The updated, snapped position relative to the grid.
      */
-   public double snap(double pos) {
-    double remainder = pos % squareSize;
-    if (remainder == 0) {
-        return pos;
-    } else if (remainder <= squareSize / 2.0) {
-        return pos - remainder;
-    } else {
-        return pos + (squareSize - remainder);
+    public double snap(double pos) {
+        double remainder = pos % squareSize;
+        if (remainder == 0) {
+            return pos;
+        } else if (remainder <= squareSize / 2.0) {
+            return pos - remainder;
+        } else {
+            return pos + (squareSize - remainder);
+        }
     }
-}
-
 
     /**
      * Class that handles the creation of red circles representing electrons
      */
     private static class Electron {
+
         private final Wire wire;
         private double progress;
         private final double speedFactor;
@@ -244,17 +244,16 @@ public class DrawingArea {
         }
 
         if (start) {
-            int dotsPerWire = 5;
             double speedFactor;
 
             CircuitMath circuitMath = new CircuitMath(circuit);
-            double totalCurrent = circuitMath.getTotalCurrent(); // get total current
-            double totalResistance = circuitMath.getTotalResistance();
-            double totalVoltage = circuitMath.getTotalVoltage();
+            double totalCurrent = circuitMath.getTotalCurrent(); // get the total current
+            double totalResistance = circuitMath.getTotalResistance(); // get the total resistance
+            double totalVoltage = circuitMath.getTotalVoltage(); // get the total voltage
 
             if (!printedValues) {
                 System.out.println("Voltage: " + totalVoltage + "V");
-                System.out.println("Resistance: " + totalResistance + "Ω");
+                System.out.println("Resistance: " + totalResistance + "ohms");
                 System.out.println("Current: " + totalCurrent + "A");
                 printedValues = true;
             }
@@ -278,9 +277,10 @@ public class DrawingArea {
                 }
             }
 
+            // Determine animation speed based on total current
             if (totalCurrent < 0.5) {
                 speedFactor = 500;
-            } else if (totalCurrent < 2 && totalCurrent > 0.5) {
+            } else if (totalCurrent < 2) {
                 speedFactor = 1000.0;
             } else {
                 speedFactor = 10000.0;
@@ -289,10 +289,20 @@ public class DrawingArea {
             for (LinkedList<Component> list : circuit.arrayList) {
                 for (Component c : list) {
                     if (c instanceof Wire wire) {
+                        double dx = wire.end.getX() - wire.begin.getX();
+                        double dy = wire.end.getY() - wire.begin.getY();
+                        double length = Math.sqrt(dx * dx + dy * dy);
+
+                        int minDots = 2;
+                        int maxDots = 12;
+                        double lengthFactor = 0.07; // tweak this for spacing
+
+                        int dotsPerWire = (int) Math.max(minDots, Math.min(maxDots, length * lengthFactor));
+
                         for (int i = 0; i < dotsPerWire; i++) {
-                            Electron e = new Electron(wire, speedFactor);
-                            e.progress = i / (double) dotsPerWire;
-                            animatedElectrons.add(e);
+                            Electron el = new Electron(wire, speedFactor);
+                            el.progress = i / (double) dotsPerWire;
+                            animatedElectrons.add(el);
                         }
                     }
                 }
