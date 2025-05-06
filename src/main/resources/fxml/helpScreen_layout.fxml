@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
+
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #f7d1d8;" tabClosingPolicy="UNAVAILABLE" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/22">
+  <tabs>
+    <Tab text="Creating a circuit">
+      <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+               <children>
+                  <VBox prefHeight="372.0" prefWidth="591.0" spacing="10.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Adding components">
+                           <font>
+                              <Font name="System Bold Italic" size="12.0" />
+                           </font>
+                        </Text>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="To add a component into the circuit, simply click on the Toolbal button &quot;Add ____&quot; representing the component you wish to add, then click anywhere on the drawing area to place it. Your cursor will display what component you will be placing, but its position and size may not be entirely accurate. The wire must be drawn by dragging your mouse around the screen." wrappingWidth="577.9453125" />
+                        <Text layoutX="20.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Moving components">
+                           <font>
+                              <Font name="System Bold Italic" size="12.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="20.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" text="To move components around, make sure you are using the &quot;Select&quot; tool. It is represented by the default cursor. Once a component is selected, you can move it, rotate it, copy, cut or delete it, in a very intuitive fashion, using the same keyboard shortcuts as other apps." wrappingWidth="577.9453125" />
+                        <Text layoutX="20.0" layoutY="134.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Moving components">
+                           <font>
+                              <Font name="System Bold Italic" size="12.0" />
+                           </font>
+                        </Text>
+                        <Text layoutX="20.0" layoutY="107.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Paragraph 3" wrappingWidth="577.9453125" />
+                        <Text layoutX="20.0" layoutY="165.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Paragraph 4" wrappingWidth="577.9453125" />
+                     </children>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                  </VBox>
+               </children></AnchorPane>
+      </content>
+    </Tab>
+    <Tab text="Visuals">
+      <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <VBox prefHeight="372.0" prefWidth="589.0" spacing="10.0">
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="The screen is customizeable to the user's liking in the following ways:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Text>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="1. Toggle grid">
+                           <font>
+                              <Font name="System Bold Italic" size="12.0" />
+                           </font>
+                        </Text>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="You can toggle the grid by going to Settings &gt; Toggle grid" />
+                        <Text layoutX="20.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" text="2. Toggle toolbar">
+                           <font>
+                              <Font name="System Bold Italic" size="12.0" />
+                           </font>
+                        </Text>
+                        <TextFlow prefHeight="42.0" prefWidth="569.0">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="You can toggle the toolbar on and off for a cleaner workspace by going to Settings &gt; View &gt; Show/Hide Toolbar" />
+                           </children>
+                        </TextFlow>
+                        <Text layoutX="20.0" layoutY="113.0" strokeType="OUTSIDE" strokeWidth="0.0" text="3. Themes">
+                           <font>
+                              <Font name="System Bold Italic" size="12.0" />
+                           </font>
+                        </Text>
+                        <TextFlow layoutX="20.0" layoutY="127.0" prefHeight="42.0" prefWidth="569.0">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="You can customize the look of the application with our included themes in Settings &gt; View &gt; Themes. Try our signature Strawberry theme!" />
+                           </children>
+                        </TextFlow>
+                        <Text layoutX="20.0" layoutY="192.0" strokeType="OUTSIDE" strokeWidth="0.0" text="4. Zoom in/out">
+                           <font>
+                              <Font name="System Bold Italic" size="12.0" />
+                           </font>
+                        </Text>
+                        <TextFlow layoutX="20.0" layoutY="206.0" prefHeight="42.0" prefWidth="569.0">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Zoom in and out of your circuit to get a more detailed view of what you are creating with our toolbar buttons &quot;Zoom in&quot; and &quot;Zoom out&quot;, or through the menu Settings &gt; View &gt; Zoom in/Zoom out." />
+                           </children>
+                        </TextFlow>
+                     </children>
+                  </VBox>
+               </children></AnchorPane>
+      </content>
+    </Tab>
+      <Tab text="Visuals">
+         <content>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <VBox prefHeight="372.0" prefWidth="589.0" spacing="10.0">
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="The screen is customizeable to the user's liking in the following ways:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Text>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="1. Toggle grid">
+                           <font>
+                              <Font name="System Bold Italic" size="12.0" />
+                           </font>
+                        </Text>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="You can toggle the grid by going to Settings &gt; Toggle grid" />
+                        <Text layoutX="20.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" text="2. Toggle toolbar">
+                           <font>
+                              <Font name="System Bold Italic" size="12.0" />
+                           </font>
+                        </Text>
+                        <TextFlow prefHeight="42.0" prefWidth="569.0">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="You can toggle the toolbar on and off for a cleaner workspace by going to Settings &gt; View &gt; Show/Hide Toolbar" />
+                           </children>
+                        </TextFlow>
+                        <Text layoutX="20.0" layoutY="113.0" strokeType="OUTSIDE" strokeWidth="0.0" text="3. Themes">
+                           <font>
+                              <Font name="System Bold Italic" size="12.0" />
+                           </font>
+                        </Text>
+                        <TextFlow layoutX="20.0" layoutY="127.0" prefHeight="42.0" prefWidth="569.0">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="You can customize the look of the application with our included themes in Settings &gt; View &gt; Themes. Try our signature Strawberry theme!" />
+                           </children>
+                        </TextFlow>
+                        <Text layoutX="20.0" layoutY="192.0" strokeType="OUTSIDE" strokeWidth="0.0" text="4. Zoom in/out">
+                           <font>
+                              <Font name="System Bold Italic" size="12.0" />
+                           </font>
+                        </Text>
+                        <TextFlow layoutX="20.0" layoutY="206.0" prefHeight="42.0" prefWidth="569.0">
+                           <children>
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Zoom in and out of your circuit to get a more detailed view of what you are creating with our toolbar buttons &quot;Zoom in&quot; and &quot;Zoom out&quot;, or through the menu Settings &gt; View &gt; Zoom in/Zoom out." />
+                           </children>
+                        </TextFlow>
+                     </children>
+                  </VBox>
+               </children>
+            </AnchorPane>
+         </content>
+      </Tab>
+  </tabs>
+</TabPane>

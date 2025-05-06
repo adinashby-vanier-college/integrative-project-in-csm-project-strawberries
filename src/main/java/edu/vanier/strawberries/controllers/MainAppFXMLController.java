@@ -94,7 +94,7 @@ public class MainAppFXMLController {
             menuFitToScreen, menuZoomIn, menuZoomOut, menuToggleGrid, menuWire, menuRedWire, menuBlackWire,
             menuDefaultColorWire, menuChooseColorWire, menuResistor, menuSwitch, menuBattery, menuCapacitor, menuLightbulb,
             menuYellow, menuRed, menuGreen, menuBlue, menuColorLightbulb,menuUndo,menuRedo,menuCut,menuCopy,menuPaste, menuDelete,
-            menuSelect, menuUnselectAll;
+            menuSelect, menuUnselectAll, menuHowToUse;
     @FXML
     MenuItem lightThemeItem, darkThemeItem, strawThemeItem;
     private DrawingTool drawingTool;
@@ -833,6 +833,11 @@ public class MainAppFXMLController {
         menuDelete.setOnAction(_-> history.add(new RemoveComponentAction(editing)));
         menuSelect.setOnAction(_-> drawingTool.setCurrentAction("select"));
         menuUnselectAll.setOnAction(_-> select(null));
+
+        // HELP MENU
+        menuHowToUse.setOnAction(_-> {
+            getHelpWindow();
+        });
     }
 
     /**
@@ -1080,5 +1085,18 @@ public class MainAppFXMLController {
         System.out.println("Circuit imported successfully from JSON.");
         System.out.println(circuit);
         history = new History();
+    }
+
+    private void getHelpWindow() {
+        Stage helpStage = new Stage();
+        GridPane helpGrid = new GridPane(5,5);
+
+
+
+        Scene helpScene = new Scene(helpGrid);
+        helpStage.setScene(helpScene);
+        helpStage.setAlwaysOnTop(true);
+        helpStage.show();
+        helpStage.setAlwaysOnTop(false);
     }
 }
