@@ -605,7 +605,17 @@ public class MainAppFXMLController {
      * Returns the application to the log-in page
      */
     private void quit() {
+
         MainApp.switchScene(MainApp.START_SCENE);
+        logOut();
+    }
+
+    /**
+     * Logs out the user
+     */
+    private void logOut() {
+        MainApp.loggedInUsername = null;
+        MainApp.recentProject = null;
     }
 
     /**
@@ -768,7 +778,6 @@ public class MainAppFXMLController {
         //FILE MENU
         menuNew.setOnAction(_-> {});
         menuOpen.setOnAction(_->{});
-        menuOpenRecent.setOnAction(_->{});
         menuSave.setOnAction(_->{});
         AtomicReference<String> circuitName = new AtomicReference<>(circuitNameField.getText());
         menuSaveAs.setOnAction(_->{

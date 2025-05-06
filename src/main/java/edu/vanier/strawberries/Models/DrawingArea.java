@@ -99,23 +99,24 @@ public class DrawingArea {
                 } else {
                     gc.drawImage(img, component.begin.getX(), component.begin.getY() - (img.getHeight()) / 2, img.getWidth() * zoom, img.getHeight() * zoom);
                 }
+
+                if (component instanceof Lightbulb lightbulb && lightbulb.isOn()) {
+                    double offsetX = 20,
+                            offsetY = lightbulb.diagramView ? 20 : 40;
+
+                    double haloX = lightbulb.getCenter().getX() - offsetX;
+                    double haloY = lightbulb.getCenter().getY() - offsetY;
+
+                    gc.setFill(lightbulb.getColor().deriveColor(0, 1, 1, 0.5));
+                    gc.fillOval(haloX, haloY, 40, 40);
+                }
+
                 if (component.isEdit()) {
                     // SHOW IF THE COMPONENT IS BEING EDITED
                     gc.setStroke(Color.BLUE);
                     gc.setLineWidth(1.2);
                     gc.strokeRect(component.begin.getX(), component.begin.getY() - (img.getHeight()) / 2, img.getWidth() * zoom, img.getHeight() * zoom);
                     gc.restore();
-
-                    if (component instanceof Lightbulb lightbulb && lightbulb.isOn()) {
-                        double offsetX = 20,
-                                offsetY = lightbulb.diagramView ? 20 : 40;
-
-                        double haloX = lightbulb.getCenter().getX() - offsetX;
-                        double haloY = lightbulb.getCenter().getY() - offsetY;
-
-                        gc.setFill(lightbulb.getColor().deriveColor(0, 1, 1, 0.5));
-                        gc.fillOval(haloX, haloY, 40, 40);
-                    }
 
                 }
             }
