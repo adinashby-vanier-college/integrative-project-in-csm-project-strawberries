@@ -310,18 +310,6 @@ public class DrawingArea {
         }
     }
 
-    public void stopElectronAnimation() {
-        if (!(canvas.getParent() instanceof Pane parent)) {
-            return;
-        }
-
-        for (PathTransition transition : activeTransitions) {
-            transition.stop();
-            parent.getChildren().remove(transition.getNode()); // remove the moving dot
-        }
-        activeTransitions.clear(); // Clear the active transitions
-    }
-
     public void setZoom(double newZoom) {
         this.zoom = newZoom;
         squareSize = 20 * newZoom; // Adjust square size based on zoom
