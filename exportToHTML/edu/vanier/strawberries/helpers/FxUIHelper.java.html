@@ -1,0 +1,74 @@
+<html>
+<head>
+<title>FxUIHelper.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #5f826b; font-style: italic;}
+.s4 { color: #67a37c; font-style: italic;}
+.s5 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+FxUIHelper.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">edu</span><span class="s2">.</span><span class="s1">vanier</span><span class="s2">.</span><span class="s1">strawberries</span><span class="s2">.</span><span class="s1">helpers</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">io</span><span class="s2">.</span><span class="s1">IOException</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">fxml</span><span class="s2">.</span><span class="s1">FXMLLoader</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">Parent</span><span class="s2">;</span>
+
+<span class="s3">/**</span>
+ <span class="s3">*</span>
+ <span class="s3">* </span><span class="s4">@author </span><span class="s3">frostybee</span>
+ <span class="s3">*/</span>
+<span class="s0">public class </span><span class="s1">FxUIHelper </span><span class="s2">{</span>
+
+    <span class="s3">/**</span>
+     <span class="s3">* Load an FXML file.</span>
+     <span class="s3">*</span>
+     <span class="s3">* This method should be used if the FXML controller is specified in the</span>
+     <span class="s3">* FXML file itself, or the FXML file to be loaded doesn't require a</span>
+     <span class="s3">* controller.</span>
+     <span class="s3">*</span>
+     <span class="s3">* </span><span class="s4">@param </span><span class="s3">fxmFileName The FXML file name to be loaded (without the .fxml</span>
+     <span class="s3">* extension).</span>
+     <span class="s3">* </span><span class="s4">@return </span><span class="s3">The Parent node corresponding to the loaded FXML file, which can</span>
+     <span class="s3">* be used as the root of a scene.</span>
+     <span class="s3">* </span><span class="s4">@throws </span><span class="s3">IOException If an error occurs during the loading of the FXML</span>
+     <span class="s3">* file.</span>
+     <span class="s3">*/</span>
+    <span class="s0">public static </span><span class="s1">Parent loadFXML</span><span class="s2">(</span><span class="s1">String fxmFileName</span><span class="s2">) </span><span class="s0">throws </span><span class="s1">IOException </span><span class="s2">{</span>
+        <span class="s0">return </span><span class="s1">loadFXML</span><span class="s2">(</span><span class="s1">fxmFileName</span><span class="s2">, </span><span class="s0">null</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s3">/**</span>
+     <span class="s3">* Loads the specified FXML file and sets the supplied FXML controller.</span>
+     <span class="s3">*</span>
+     <span class="s3">* </span><span class="s4">@param </span><span class="s3">fxmFileName The the FXML file name to be loaded (without the .fxml</span>
+     <span class="s3">* extension).</span>
+     <span class="s3">* </span><span class="s4">@param </span><span class="s3">fxmlController The instance of an FXML controller to be associated</span>
+     <span class="s3">* with the FXML file.</span>
+     <span class="s3">* </span><span class="s4">@return </span><span class="s3">The Parent node corresponding to the loaded FXML file, which can</span>
+     <span class="s3">* be used as the root of a scene.</span>
+     <span class="s3">* </span><span class="s4">@throws </span><span class="s3">IOException If an error occurs during the loading of the FXML</span>
+     <span class="s3">* file.</span>
+     <span class="s3">*/</span>
+    <span class="s0">public static </span><span class="s1">Parent loadFXML</span><span class="s2">(</span><span class="s1">String fxmFileName</span><span class="s2">, </span><span class="s1">Object fxmlController</span><span class="s2">)</span>
+            <span class="s0">throws </span><span class="s1">IOException </span><span class="s2">{</span>
+        <span class="s1">FXMLLoader fxmlLoader </span><span class="s2">= </span><span class="s0">new </span><span class="s1">FXMLLoader</span><span class="s2">(</span>
+                <span class="s1">FxUIHelper</span><span class="s2">.</span><span class="s0">class</span><span class="s2">.</span><span class="s1">getResource</span><span class="s2">(</span><span class="s5">&quot;/fxml/&quot; </span><span class="s2">+ </span><span class="s1">fxmFileName </span><span class="s2">+ </span><span class="s5">&quot;.fxml&quot;</span><span class="s2">));</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">fxmlController </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) {</span>
+            <span class="s1">fxmlLoader</span><span class="s2">.</span><span class="s1">setController</span><span class="s2">(</span><span class="s1">fxmlController</span><span class="s2">);</span>
+        <span class="s2">}</span>
+        <span class="s0">return </span><span class="s1">fxmlLoader</span><span class="s2">.</span><span class="s1">load</span><span class="s2">();</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<html>
+<head>
+<title>Switch.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+.s4 { color: #7a7e85;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Switch.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">edu</span><span class="s2">.</span><span class="s1">vanier</span><span class="s2">.</span><span class="s1">strawberries</span><span class="s2">.</span><span class="s1">Models</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">image</span><span class="s2">.</span><span class="s1">Image</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">image</span><span class="s2">.</span><span class="s1">ImageView</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">transform</span><span class="s2">.</span><span class="s1">Rotate</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">net</span><span class="s2">.</span><span class="s1">URL</span><span class="s2">;</span>
+
+<span class="s0">public class </span><span class="s1">Switch </span><span class="s0">extends </span><span class="s1">Component </span><span class="s2">{</span>
+    <span class="s0">private boolean </span><span class="s1">isClosed</span><span class="s2">;</span>
+    <span class="s0">private double </span><span class="s1">mouseOffsetX</span><span class="s2">;</span>
+    <span class="s0">private double </span><span class="s1">mouseOffsetY</span><span class="s2">;</span>
+
+    <span class="s0">public </span><span class="s1">Switch</span><span class="s2">(</span><span class="s1">Node begin</span><span class="s2">, </span><span class="s1">Node end</span><span class="s2">, </span><span class="s0">boolean </span><span class="s1">isClosed</span><span class="s2">) {</span>
+        <span class="s0">super</span><span class="s2">(</span><span class="s1">begin</span><span class="s2">, </span><span class="s1">end</span><span class="s2">);</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">isClosed </span><span class="s2">= </span><span class="s1">isClosed</span><span class="s2">;</span>
+
+        <span class="s1">URL imgUrl </span><span class="s2">= </span><span class="s1">getClass</span><span class="s2">().</span><span class="s1">getResource</span><span class="s2">(</span><span class="s3">&quot;/images/open_switch_diagram.png&quot;</span><span class="s2">);</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">imgUrl </span><span class="s2">== </span><span class="s0">null</span><span class="s2">) {</span>
+            <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s3">&quot;Could not load open switch image&quot;</span><span class="s2">);</span>
+        <span class="s2">}</span>
+        <span class="s0">else </span><span class="s2">{</span>
+            <span class="s1">display </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Image</span><span class="s2">(</span><span class="s1">imgUrl</span><span class="s2">.</span><span class="s1">toExternalForm</span><span class="s2">());</span>
+            <span class="s1">enableDragAndRotate</span><span class="s2">();</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">toggle</span><span class="s2">() {</span>
+        <span class="s1">isClosed </span><span class="s2">= !</span><span class="s1">isClosed</span><span class="s2">;</span>
+        <span class="s4">// TODO: update image to show closed/open state</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">setOpen</span><span class="s2">(</span><span class="s0">boolean </span><span class="s1">open</span><span class="s2">) {</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">isClosed </span><span class="s2">= !</span><span class="s1">open</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public boolean </span><span class="s1">isClosed</span><span class="s2">() {</span>
+        <span class="s0">return </span><span class="s1">isClosed</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+<span class="s4">//    public void enableDragAndRotate() {</span>
+<span class="s4">//        this.setOnMousePressed(e -&gt; {</span>
+<span class="s4">//            mouseOffsetX = e.getSceneX() - this.getLayoutX();</span>
+<span class="s4">//            mouseOffsetY = e.getSceneY() - this.getLayoutY();</span>
+<span class="s4">//            e.consume();</span>
+<span class="s4">//        });</span>
+<span class="s4">//</span>
+<span class="s4">//        this.setOnMouseDragged(e -&gt; {</span>
+<span class="s4">//            if (e.isSecondaryButtonDown()) {</span>
+<span class="s4">//                double centerX = this.getLayoutX() + this.getBoundsInParent().getWidth() / 2;</span>
+<span class="s4">//                double centerY = this.getLayoutY() + this.getBoundsInParent().getHeight() / 2;</span>
+<span class="s4">//                double angle = Math.toDegrees(Math.atan2(e.getSceneY() - centerY, e.getSceneX() - centerX));</span>
+<span class="s4">//                this.setRotate(angle);</span>
+<span class="s4">//            } else {</span>
+<span class="s4">//                double newX = e.getSceneX() - mouseOffsetX;</span>
+<span class="s4">//                double newY = e.getSceneY() - mouseOffsetY;</span>
+<span class="s4">//                this.setLayoutX(newX);</span>
+<span class="s4">//                this.setLayoutY(newY);</span>
+<span class="s4">//                this.begin.setPosition(newX, newY);</span>
+<span class="s4">//</span>
+<span class="s4">//                double deltaX = end.getX() - begin.getX();</span>
+<span class="s4">//                double deltaY = end.getY() - begin.getY();</span>
+<span class="s4">//                this.end.setPosition(newX + deltaX, newY + deltaY);</span>
+<span class="s4">//            }</span>
+<span class="s4">//            e.consume();</span>
+<span class="s4">//        });</span>
+<span class="s4">//    }</span>
+
+    <span class="s4">// TODO: Fix the method above to have a text field pop up to input the information for the component</span>
+
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

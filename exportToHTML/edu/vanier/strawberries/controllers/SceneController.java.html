@@ -1,0 +1,101 @@
+<html>
+<head>
+<title>SceneController.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #5f826b; font-style: italic;}
+.s4 { color: #67a37c; font-style: italic;}
+.s5 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+SceneController.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">edu</span><span class="s2">.</span><span class="s1">vanier</span><span class="s2">.</span><span class="s1">strawberries</span><span class="s2">.</span><span class="s1">controllers</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">Parent</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">Scene</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">HashMap</span><span class="s2">;</span>
+
+<span class="s3">/**</span>
+ <span class="s3">* The SceneController class is responsible for managing and switching between</span>
+ <span class="s3">* different scenes in a JavaFX application. It allows adding, removing, and</span>
+ <span class="s3">* activating scenes based on their names. The main scene can be set to a new</span>
+ <span class="s3">* root whenever a scene is activated.</span>
+ <span class="s3">*</span>
+ <span class="s3">* </span><span class="s4">@author </span><span class="s3">frostybee</span>
+ <span class="s3">*/</span>
+<span class="s0">public class </span><span class="s1">SceneController </span><span class="s2">{</span>
+
+    <span class="s0">private final </span><span class="s1">HashMap</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">, </span><span class="s1">Parent</span><span class="s2">&gt; </span><span class="s1">scenesMap </span><span class="s2">= </span><span class="s0">new </span><span class="s1">HashMap</span><span class="s2">&lt;&gt;();</span>
+    <span class="s0">private final </span><span class="s1">Scene mainScene</span><span class="s2">;</span>
+
+    <span class="s3">/**</span>
+     <span class="s3">* Constructs a SceneController with a given main scene.</span>
+     <span class="s3">*</span>
+     <span class="s3">* </span><span class="s4">@param </span><span class="s3">scene the main scene of the application.</span>
+     <span class="s3">*/</span>
+    <span class="s0">public </span><span class="s1">SceneController</span><span class="s2">(</span><span class="s1">Scene scene</span><span class="s2">) {</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">mainScene </span><span class="s2">= </span><span class="s1">scene</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s3">/**</span>
+     <span class="s3">* Adds a new scene to the controller. If the scene already exists, it will</span>
+     <span class="s3">* not be added again.</span>
+     <span class="s3">*</span>
+     <span class="s3">* </span><span class="s4">@param </span><span class="s3">sceneName the name of the scene to add.</span>
+     <span class="s3">* </span><span class="s4">@param </span><span class="s3">pane the root pane of the scene to add.</span>
+     <span class="s3">*/</span>
+    <span class="s0">public void </span><span class="s1">addScene</span><span class="s2">(</span><span class="s1">String sceneName</span><span class="s2">, </span><span class="s1">Parent pane</span><span class="s2">) {</span>
+        <span class="s0">if </span><span class="s2">(!</span><span class="s1">sceneExists</span><span class="s2">(</span><span class="s1">sceneName</span><span class="s2">)) {</span>
+            <span class="s1">scenesMap</span><span class="s2">.</span><span class="s1">put</span><span class="s2">(</span><span class="s1">sceneName</span><span class="s2">, </span><span class="s1">pane</span><span class="s2">);</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s3">/**</span>
+     <span class="s3">* Removes a scene from the controller by its name. If the scene does not</span>
+     <span class="s3">* exist, nothing happens.</span>
+     <span class="s3">*</span>
+     <span class="s3">* </span><span class="s4">@param </span><span class="s3">sceneName the name of the scene to remove.</span>
+     <span class="s3">*/</span>
+    <span class="s0">public void </span><span class="s1">removeScene</span><span class="s2">(</span><span class="s1">String sceneName</span><span class="s2">) {</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">sceneExists</span><span class="s2">(</span><span class="s1">sceneName</span><span class="s2">)) {</span>
+            <span class="s1">scenesMap</span><span class="s2">.</span><span class="s1">remove</span><span class="s2">(</span><span class="s1">sceneName</span><span class="s2">);</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s3">/**</span>
+     <span class="s3">* Activates a scene by changing the root of the main scene to the specified</span>
+     <span class="s3">* scene's root.</span>
+     <span class="s3">*</span>
+     <span class="s3">* </span><span class="s4">@param </span><span class="s3">sceneName the name of the scene to activate.</span>
+     <span class="s3">* </span><span class="s4">@throws </span><span class="s3">IllegalArgumentException if the scene does not exist.</span>
+     <span class="s3">*/</span>
+    <span class="s0">public void </span><span class="s1">activateScene</span><span class="s2">(</span><span class="s1">String sceneName</span><span class="s2">) {</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">sceneExists</span><span class="s2">(</span><span class="s1">sceneName</span><span class="s2">)) {</span>
+            <span class="s1">mainScene</span><span class="s2">.</span><span class="s1">setRoot</span><span class="s2">(</span><span class="s1">scenesMap</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">sceneName</span><span class="s2">));</span>
+        <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+            <span class="s0">throw new </span><span class="s1">IllegalArgumentException</span><span class="s2">(</span><span class="s5">&quot;Unable to activate the requested scene, as it is not registered.&quot;</span><span class="s2">);</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s3">/**</span>
+     <span class="s3">* Checks if a scene with the given name exists in the controller.</span>
+     <span class="s3">*</span>
+     <span class="s3">* </span><span class="s4">@param </span><span class="s3">sceneName the name of the scene to check.</span>
+     <span class="s3">* </span><span class="s4">@return </span><span class="s3">true if the scene exists, false otherwise.</span>
+     <span class="s3">*/</span>
+    <span class="s0">public boolean </span><span class="s1">sceneExists</span><span class="s2">(</span><span class="s1">String sceneName</span><span class="s2">) {</span>
+        <span class="s0">return </span><span class="s1">scenesMap</span><span class="s2">.</span><span class="s1">containsKey</span><span class="s2">(</span><span class="s1">sceneName</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

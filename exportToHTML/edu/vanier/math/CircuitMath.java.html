@@ -1,0 +1,139 @@
+<html>
+<head>
+<title>CircuitMath.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #2aacb8;}
+.s4 { color: #7a7e85;}
+.s5 { color: #6aab73;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+CircuitMath.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">edu</span><span class="s2">.</span><span class="s1">vanier</span><span class="s2">.</span><span class="s1">math</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">edu</span><span class="s2">.</span><span class="s1">vanier</span><span class="s2">.</span><span class="s1">strawberries</span><span class="s2">.</span><span class="s1">Models</span><span class="s2">.*;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.*;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">control</span><span class="s2">.</span><span class="s1">Alert</span><span class="s2">;</span>
+
+<span class="s0">public class </span><span class="s1">CircuitMath </span><span class="s2">{</span>
+
+    <span class="s0">private final </span><span class="s1">Circuit circuit</span><span class="s2">;</span>
+    <span class="s0">private boolean</span><span class="s2">[] </span><span class="s1">visited</span><span class="s2">;</span>
+
+    <span class="s0">public </span><span class="s1">CircuitMath</span><span class="s2">(</span><span class="s1">Circuit circuit</span><span class="s2">) {</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">circuit </span><span class="s2">= </span><span class="s1">circuit</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">visited </span><span class="s2">= </span><span class="s0">new boolean</span><span class="s2">[</span><span class="s1">circuit</span><span class="s2">.</span><span class="s1">arrayList</span><span class="s2">.</span><span class="s1">size</span><span class="s2">()];</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">dfs</span><span class="s2">(</span><span class="s0">int </span><span class="s1">current</span><span class="s2">, </span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">Component</span><span class="s2">&gt; </span><span class="s1">path</span><span class="s2">) {</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">visited</span><span class="s2">[</span><span class="s1">current</span><span class="s2">]) </span><span class="s0">return</span><span class="s2">;</span>
+        <span class="s1">visited</span><span class="s2">[</span><span class="s1">current</span><span class="s2">] = </span><span class="s0">true</span><span class="s2">;</span>
+
+        <span class="s1">Component component </span><span class="s2">= </span><span class="s1">circuit</span><span class="s2">.</span><span class="s1">arrayList</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">current</span><span class="s2">).</span><span class="s1">getFirst</span><span class="s2">();</span>
+        <span class="s1">path</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">component</span><span class="s2">);</span>
+
+        <span class="s0">for </span><span class="s2">(</span><span class="s0">int </span><span class="s1">i </span><span class="s2">= </span><span class="s3">0</span><span class="s2">; </span><span class="s1">i </span><span class="s2">&lt; </span><span class="s1">circuit</span><span class="s2">.</span><span class="s1">arrayList</span><span class="s2">.</span><span class="s1">size</span><span class="s2">(); </span><span class="s1">i</span><span class="s2">++) {</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">circuit</span><span class="s2">.</span><span class="s1">checkEdge</span><span class="s2">(</span><span class="s1">current</span><span class="s2">, </span><span class="s1">i</span><span class="s2">)) {</span>
+                <span class="s1">dfs</span><span class="s2">(</span><span class="s1">i</span><span class="s2">, </span><span class="s1">path</span><span class="s2">);</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public </span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">Component</span><span class="s2">&gt; </span><span class="s1">getTraversalPath</span><span class="s2">() {</span>
+        <span class="s1">Arrays</span><span class="s2">.</span><span class="s1">fill</span><span class="s2">(</span><span class="s1">visited</span><span class="s2">, </span><span class="s0">false</span><span class="s2">);</span>
+        <span class="s1">List</span><span class="s2">&lt;</span><span class="s1">Component</span><span class="s2">&gt; </span><span class="s1">path </span><span class="s2">= </span><span class="s0">new </span><span class="s1">ArrayList</span><span class="s2">&lt;&gt;();</span>
+
+        <span class="s0">for </span><span class="s2">(</span><span class="s0">int </span><span class="s1">i </span><span class="s2">= </span><span class="s3">0</span><span class="s2">; </span><span class="s1">i </span><span class="s2">&lt; </span><span class="s1">circuit</span><span class="s2">.</span><span class="s1">arrayList</span><span class="s2">.</span><span class="s1">size</span><span class="s2">(); </span><span class="s1">i</span><span class="s2">++) {</span>
+            <span class="s1">Component c </span><span class="s2">= </span><span class="s1">circuit</span><span class="s2">.</span><span class="s1">arrayList</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">i</span><span class="s2">).</span><span class="s1">getFirst</span><span class="s2">();</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">c </span><span class="s0">instanceof </span><span class="s1">Battery </span><span class="s2">|| </span><span class="s1">circuit</span><span class="s2">.</span><span class="s1">arrayList</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">i</span><span class="s2">).</span><span class="s1">size</span><span class="s2">() &gt; </span><span class="s3">1</span><span class="s2">) {</span>
+                <span class="s1">dfs</span><span class="s2">(</span><span class="s1">i</span><span class="s2">, </span><span class="s1">path</span><span class="s2">);</span>
+                <span class="s0">break</span><span class="s2">;</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+        <span class="s0">return </span><span class="s1">path</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public double </span><span class="s1">getTotalResistance</span><span class="s2">() {</span>
+        <span class="s1">List</span><span class="s2">&lt;</span><span class="s1">Component</span><span class="s2">&gt; </span><span class="s1">path </span><span class="s2">= </span><span class="s1">getTraversalPath</span><span class="s2">();</span>
+        <span class="s0">double </span><span class="s1">seriesResistance </span><span class="s2">= </span><span class="s3">0.0</span><span class="s2">;</span>
+        <span class="s0">double </span><span class="s1">reciprocalSum </span><span class="s2">= </span><span class="s3">0.0</span><span class="s2">;</span>
+        <span class="s0">int </span><span class="s1">resistorCount </span><span class="s2">= </span><span class="s3">0</span><span class="s2">;</span>
+
+        <span class="s0">for </span><span class="s2">(</span><span class="s1">Component c </span><span class="s2">: </span><span class="s1">path</span><span class="s2">) {</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">c </span><span class="s0">instanceof </span><span class="s1">Resistor r</span><span class="s2">) {</span>
+                <span class="s1">resistorCount</span><span class="s2">++;</span>
+                <span class="s1">reciprocalSum </span><span class="s2">+= </span><span class="s3">1.0 </span><span class="s2">/ </span><span class="s1">r</span><span class="s2">.</span><span class="s1">getResistance</span><span class="s2">();</span>
+                <span class="s1">seriesResistance </span><span class="s2">+= </span><span class="s1">r</span><span class="s2">.</span><span class="s1">getResistance</span><span class="s2">();</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">resistorCount </span><span class="s2">&gt; </span><span class="s3">1</span><span class="s2">) {</span>
+            <span class="s0">return </span><span class="s3">1.0 </span><span class="s2">/ </span><span class="s1">reciprocalSum</span><span class="s2">;  </span><span class="s4">// Parallel Resistance</span>
+        <span class="s2">}</span>
+        <span class="s0">return </span><span class="s1">seriesResistance</span><span class="s2">; </span><span class="s4">// Series Resistance</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public double </span><span class="s1">getTotalVoltage</span><span class="s2">() {</span>
+        <span class="s1">List</span><span class="s2">&lt;</span><span class="s1">Component</span><span class="s2">&gt; </span><span class="s1">path </span><span class="s2">= </span><span class="s1">getTraversalPath</span><span class="s2">();</span>
+        <span class="s0">double </span><span class="s1">voltage </span><span class="s2">= </span><span class="s3">0.0</span><span class="s2">;</span>
+        <span class="s0">for </span><span class="s2">(</span><span class="s1">Component c </span><span class="s2">: </span><span class="s1">path</span><span class="s2">) {</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">c </span><span class="s0">instanceof </span><span class="s1">Battery b</span><span class="s2">) {</span>
+                <span class="s1">voltage </span><span class="s2">+= </span><span class="s1">b</span><span class="s2">.</span><span class="s1">getPotential</span><span class="s2">();</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+        <span class="s0">return </span><span class="s1">voltage</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public double </span><span class="s1">getTotalCurrent</span><span class="s2">() {</span>
+        <span class="s0">double </span><span class="s1">R </span><span class="s2">= </span><span class="s1">getTotalResistance</span><span class="s2">();</span>
+        <span class="s0">double </span><span class="s1">V </span><span class="s2">= </span><span class="s1">getTotalVoltage</span><span class="s2">();</span>
+        <span class="s0">return </span><span class="s1">R </span><span class="s2">== </span><span class="s3">0 </span><span class="s2">? </span><span class="s3">0 </span><span class="s2">: </span><span class="s1">V </span><span class="s2">/ </span><span class="s1">R</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public void </span><span class="s1">assignValuesToComponents</span><span class="s2">() {</span>
+        <span class="s0">double </span><span class="s1">totalCurrent </span><span class="s2">= </span><span class="s1">getTotalCurrent</span><span class="s2">();</span>
+        <span class="s0">double </span><span class="s1">totalVoltage </span><span class="s2">= </span><span class="s1">getTotalVoltage</span><span class="s2">();</span>
+
+        <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s5">&quot; Total voltage: &quot; </span><span class="s2">+ </span><span class="s1">totalVoltage </span><span class="s2">+ </span><span class="s5">&quot; V&quot;</span><span class="s2">);</span>
+        <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s5">&quot; Total current: &quot; </span><span class="s2">+ </span><span class="s1">totalCurrent </span><span class="s2">+ </span><span class="s5">&quot; A&quot;</span><span class="s2">);</span>
+
+        <span class="s0">for </span><span class="s2">(</span><span class="s1">LinkedList</span><span class="s2">&lt;</span><span class="s1">Component</span><span class="s2">&gt; </span><span class="s1">list </span><span class="s2">: </span><span class="s1">circuit</span><span class="s2">.</span><span class="s1">arrayList</span><span class="s2">) {</span>
+            <span class="s1">Component c </span><span class="s2">= </span><span class="s1">list</span><span class="s2">.</span><span class="s1">getFirst</span><span class="s2">();</span>
+
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">c </span><span class="s0">instanceof </span><span class="s1">Wire wire</span><span class="s2">) {</span>
+                <span class="s1">wire</span><span class="s2">.</span><span class="s1">setCurrent</span><span class="s2">(</span><span class="s1">totalCurrent</span><span class="s2">);</span>
+                <span class="s1">wire</span><span class="s2">.</span><span class="s1">setVoltage</span><span class="s2">(</span><span class="s3">0</span><span class="s2">);</span>
+            <span class="s2">}</span>
+
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">c </span><span class="s0">instanceof </span><span class="s1">Resistor resistor</span><span class="s2">) {</span>
+                <span class="s0">if </span><span class="s2">(!</span><span class="s1">resistor</span><span class="s2">.</span><span class="s1">isConnected</span><span class="s2">(</span><span class="s1">circuit</span><span class="s2">)) {</span>
+                    <span class="s1">Alert alert </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Alert</span><span class="s2">(</span><span class="s1">Alert</span><span class="s2">.</span><span class="s1">AlertType</span><span class="s2">.</span><span class="s1">WARNING</span><span class="s2">);</span>
+                    <span class="s1">alert</span><span class="s2">.</span><span class="s1">setTitle</span><span class="s2">(</span><span class="s5">&quot;Unconnected Resistor&quot;</span><span class="s2">);</span>
+                    <span class="s1">alert</span><span class="s2">.</span><span class="s1">setHeaderText</span><span class="s2">(</span><span class="s0">null</span><span class="s2">);</span>
+                    <span class="s1">alert</span><span class="s2">.</span><span class="s1">setContentText</span><span class="s2">(</span><span class="s5">&quot;A resistor is not connected to any components.&quot;</span><span class="s2">);</span>
+                    <span class="s1">alert</span><span class="s2">.</span><span class="s1">showAndWait</span><span class="s2">();</span>
+                <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                    <span class="s0">double </span><span class="s1">R </span><span class="s2">= </span><span class="s1">resistor</span><span class="s2">.</span><span class="s1">getResistance</span><span class="s2">();</span>
+                    <span class="s1">resistor</span><span class="s2">.</span><span class="s1">setCurrent</span><span class="s2">(</span><span class="s1">totalVoltage </span><span class="s2">/ </span><span class="s1">R</span><span class="s2">);</span>
+                    <span class="s1">resistor</span><span class="s2">.</span><span class="s1">setVoltage</span><span class="s2">(</span><span class="s1">totalVoltage</span><span class="s2">);</span>
+                    <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s5">&quot;Resistor updated: V=&quot; </span><span class="s2">+ </span><span class="s1">resistor</span><span class="s2">.</span><span class="s1">getVoltage</span><span class="s2">() + </span><span class="s5">&quot;V, I=&quot; </span><span class="s2">+ </span><span class="s1">resistor</span><span class="s2">.</span><span class="s1">getCurrent</span><span class="s2">() + </span><span class="s5">&quot;A&quot;</span><span class="s2">);</span>
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">c </span><span class="s0">instanceof </span><span class="s1">Battery battery</span><span class="s2">) {</span>
+                <span class="s1">System</span><span class="s2">.</span><span class="s1">out</span><span class="s2">.</span><span class="s1">println</span><span class="s2">(</span><span class="s5">&quot;Battery detected with potential: &quot; </span><span class="s2">+ </span><span class="s1">battery</span><span class="s2">.</span><span class="s1">getPotential</span><span class="s2">() + </span><span class="s5">&quot; V&quot;</span><span class="s2">);</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

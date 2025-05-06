@@ -1,0 +1,122 @@
+<html>
+<head>
+<title>MenuBar.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #6aab73;}
+.s4 { color: #7a7e85;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+MenuBar.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">edu</span><span class="s2">.</span><span class="s1">vanier</span><span class="s2">.</span><span class="s1">strawberries</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">geometry</span><span class="s2">.</span><span class="s1">Insets</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">Scene</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">control</span><span class="s2">.*;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">VBox</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">stage</span><span class="s2">.</span><span class="s1">Stage</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">Objects</span><span class="s2">;</span>
+
+<span class="s0">public class </span><span class="s1">MenuBar </span><span class="s2">{</span>
+    <span class="s0">private </span><span class="s1">String currentTheme</span><span class="s2">;</span>
+    <span class="s0">private </span><span class="s1">String currentFont</span><span class="s2">;</span>
+    <span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">control</span><span class="s2">.</span><span class="s1">MenuBar menuBar</span><span class="s2">;</span>
+
+    <span class="s0">public </span><span class="s1">MenuBar</span><span class="s2">(</span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">control</span><span class="s2">.</span><span class="s1">MenuBar menuBar</span><span class="s2">) {</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">currentTheme </span><span class="s2">= </span><span class="s3">&quot;light&quot;</span><span class="s2">; </span><span class="s4">// Default theme</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">currentFont </span><span class="s2">= </span><span class="s3">&quot;Monospace&quot;</span><span class="s2">;</span>
+        <span class="s0">this</span><span class="s2">.</span><span class="s1">menuBar </span><span class="s2">= </span><span class="s1">menuBar</span><span class="s2">;</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">control</span><span class="s2">.</span><span class="s1">MenuBar make</span><span class="s2">() {</span>
+<span class="s4">//        about.setOnAction(e -&gt; {</span>
+<span class="s4">//            Alert aboutDialog = new Alert(Alert.AlertType.INFORMATION);</span>
+<span class="s4">//            aboutDialog.setTitle(&quot;About&quot;);</span>
+<span class="s4">//            aboutDialog.setHeaderText(&quot;Fractal Application&quot;);</span>
+<span class="s4">//            aboutDialog.setContentText(&quot;This is a simple fractal generation application.\nVersion 1.0&quot;);</span>
+<span class="s4">//            aboutDialog.show();</span>
+<span class="s4">//        });</span>
+
+<span class="s4">//        preferences.setOnAction(e -&gt; {</span>
+<span class="s4">//            Stage preferencesStage = new Stage();</span>
+<span class="s4">//            preferencesStage.setTitle(&quot;Preferences&quot;);</span>
+<span class="s4">//</span>
+<span class="s4">//            VBox layout = new VBox(10);</span>
+<span class="s4">//            layout.setPadding(new Insets(10));</span>
+<span class="s4">//</span>
+<span class="s4">//            // Elements</span>
+<span class="s4">//            Label label = new Label(&quot;Modify your preferences here.&quot;);</span>
+<span class="s4">//            Button saveButton = new Button(&quot;Save&quot;);</span>
+<span class="s4">//</span>
+<span class="s4">//            layout.getChildren().addAll(label, saveButton);</span>
+<span class="s4">//            Scene preferencesScene = new Scene(layout, 300, 200);</span>
+<span class="s4">//            preferencesStage.setScene(preferencesScene);</span>
+<span class="s4">//            preferencesStage.show();</span>
+<span class="s4">//        });</span>
+
+<span class="s4">//        // Themes</span>
+<span class="s4">//        light.setOnAction(e -&gt; {</span>
+<span class="s4">//            if (!&quot;light&quot;.equals(currentTheme)) {</span>
+<span class="s4">//                scene.getStylesheets().remove(Objects.requireNonNull(getClass().getResource(&quot;dark-mode.css&quot;)).toExternalForm());</span>
+<span class="s4">//                scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(&quot;light-mode.css&quot;)).toExternalForm());</span>
+<span class="s4">//                currentTheme = &quot;light&quot;;</span>
+<span class="s4">//            }</span>
+<span class="s4">//        });</span>
+<span class="s4">//</span>
+<span class="s4">//        dark.setOnAction(e -&gt; {</span>
+<span class="s4">//            if (!&quot;dark&quot;.equals(currentTheme)) {</span>
+<span class="s4">//                scene.getStylesheets().remove(Objects.requireNonNull(getClass().getResource(&quot;light-mode.css&quot;)).toExternalForm());</span>
+<span class="s4">//                scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(&quot;dark-mode.css&quot;)).toExternalForm());</span>
+<span class="s4">//                currentTheme = &quot;dark&quot;;</span>
+<span class="s4">//            }</span>
+<span class="s4">//        });</span>
+
+<span class="s4">//        // Fonts</span>
+<span class="s4">//        comicSans.setOnAction(e -&gt; {</span>
+<span class="s4">//            if (!&quot;Comic Sans&quot;.equals(currentFont)) {</span>
+<span class="s4">//                scene.getStylesheets().remove(Objects.requireNonNull(getClass().getResource(&quot;monospace.css&quot;)).toExternalForm());</span>
+<span class="s4">//                scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(&quot;comic-sans.css&quot;)).toExternalForm());</span>
+<span class="s4">//                currentFont = &quot;Comic Sans&quot;;</span>
+<span class="s4">//            }</span>
+<span class="s4">//        });</span>
+<span class="s4">//</span>
+<span class="s4">//        monospace.setOnAction(e -&gt; {</span>
+<span class="s4">//            if (!&quot;Monospace&quot;.equals(currentFont)) {</span>
+<span class="s4">//                scene.getStylesheets().remove(Objects.requireNonNull(getClass().getResource(&quot;comic-sans.css&quot;)).toExternalForm());</span>
+<span class="s4">//                scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource(&quot;monospace.css&quot;)).toExternalForm());</span>
+<span class="s4">//                currentFont = &quot;Monospace&quot;;</span>
+<span class="s4">//            }</span>
+<span class="s4">//        });</span>
+<span class="s4">//</span>
+<span class="s4">//        // Help Menu Actions</span>
+<span class="s4">//        howToUse.setOnAction(e -&gt; {</span>
+<span class="s4">//            Alert howToUseDialog = new Alert(Alert.AlertType.INFORMATION);</span>
+<span class="s4">//            howToUseDialog.setTitle(&quot;How to Use&quot;);</span>
+<span class="s4">//            howToUseDialog.setHeaderText(&quot;User Guide&quot;);</span>
+<span class="s4">//            howToUseDialog.setContentText(&quot;Follow the instructions to get started.\nFor further assistance, consult the FAQ.&quot;);</span>
+<span class="s4">//            howToUseDialog.show();</span>
+<span class="s4">//        });</span>
+<span class="s4">//</span>
+<span class="s4">//        faq.setOnAction(e -&gt; {</span>
+<span class="s4">//            Alert faqDialog = new Alert(Alert.AlertType.INFORMATION);</span>
+<span class="s4">//            faqDialog.setTitle(&quot;FAQ&quot;);</span>
+<span class="s4">//            faqDialog.setHeaderText(&quot;Frequently Asked Questions&quot;);</span>
+<span class="s4">//            faqDialog.setContentText(&quot;Check here for answers to common questions.\nIf you need more help, contact support.&quot;);</span>
+<span class="s4">//            faqDialog.show();</span>
+<span class="s4">//        });</span>
+
+        <span class="s0">return </span><span class="s1">menuBar</span><span class="s2">;</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

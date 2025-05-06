@@ -1,0 +1,59 @@
+<html>
+<head>
+<title>Launcher.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #5f826b; font-style: italic;}
+.s4 { color: #67a37c; font-style: italic;}
+.s5 { color: #7a7e85;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Launcher.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">edu</span><span class="s2">.</span><span class="s1">vanier</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">edu</span><span class="s2">.</span><span class="s1">vanier</span><span class="s2">.</span><span class="s1">strawberries</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">.</span><span class="s1">MainApp</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">edu</span><span class="s2">.</span><span class="s1">vanier</span><span class="s2">.</span><span class="s1">strawberries</span><span class="s2">.</span><span class="s1">tests</span><span class="s2">.*;</span>
+
+<span class="s3">/**</span>
+ <span class="s3">* The Launcher class serves as the entry point to the application.</span>
+ <span class="s3">*</span>
+ <span class="s3">* Currently, it launches the {</span><span class="s4">@link </span><span class="s3">MainApp} class's main method to start the</span>
+ <span class="s3">* application. A commented-out line suggests the potential to launch another</span>
+ <span class="s3">* class (e.g., {</span><span class="s4">@link </span><span class="s3">Driver}) in the future.</span>
+ <span class="s3">*/</span>
+<span class="s0">public class </span><span class="s1">Launcher </span><span class="s2">{</span>
+
+    <span class="s3">/**</span>
+     <span class="s3">* The entry point of the application that invokes the</span>
+     <span class="s3">* {</span><span class="s4">@link </span><span class="s3">MainApp#main(String[])} method to start the FX main application.</span>
+     <span class="s3">*</span>
+     <span class="s3">* </span><span class="s4">@param </span><span class="s3">args Command-line arguments passed to the application. These are</span>
+     <span class="s3">* forwarded to {</span><span class="s4">@link </span><span class="s3">MainApp#main(String[])}.</span>
+     <span class="s3">*/</span>
+    <span class="s0">public static void </span><span class="s1">main</span><span class="s2">(</span><span class="s1">String</span><span class="s2">[] </span><span class="s1">args</span><span class="s2">) {</span>
+        <span class="s5">//NOTE: This launcher class allows you to run </span>
+        <span class="s5">//      multiple main methods simultaneously (depending on the context).         </span>
+
+        <span class="s5">//NOTE: Comment out the following line if you would like to execute </span>
+        <span class="s5">//      another class' main method.  </span>
+        <span class="s1">MainApp</span><span class="s2">.</span><span class="s1">main</span><span class="s2">(</span><span class="s1">args</span><span class="s2">);</span>
+       
+        <span class="s5">//--</span>
+        <span class="s5">// Uncomment the following line to run the Driver's main method.</span>
+        <span class="s5">//Driver.main(args);        </span>
+        <span class="s5">//TODO: To run a main method of another class (other than the MainApp's)</span>
+        <span class="s5">//      main method, you can add a Java statement as follows:                 </span>
+        <span class="s5">// [ClassName].main(args);        </span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>

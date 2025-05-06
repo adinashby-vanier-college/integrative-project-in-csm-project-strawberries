@@ -1,0 +1,169 @@
+<html>
+<head>
+<title>MainApp.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #5f826b; font-style: italic;}
+.s4 { color: #67a37c; font-style: italic;}
+.s5 { color: #7a7e85;}
+.s6 { color: #6aab73;}
+.s7 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+MainApp.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">edu</span><span class="s2">.</span><span class="s1">vanier</span><span class="s2">.</span><span class="s1">strawberries</span><span class="s2">.</span><span class="s1">ui</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">edu</span><span class="s2">.</span><span class="s1">vanier</span><span class="s2">.</span><span class="s1">strawberries</span><span class="s2">.</span><span class="s1">controllers</span><span class="s2">.*;</span>
+<span class="s0">import </span><span class="s1">edu</span><span class="s2">.</span><span class="s1">vanier</span><span class="s2">.</span><span class="s1">strawberries</span><span class="s2">.</span><span class="s1">helpers</span><span class="s2">.</span><span class="s1">FxUIHelper</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">io</span><span class="s2">.</span><span class="s1">IOException</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">Objects</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">logging</span><span class="s2">.</span><span class="s1">Level</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">animation</span><span class="s2">.</span><span class="s1">AnimationTimer</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">application</span><span class="s2">.</span><span class="s1">Application</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">Parent</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">scene</span><span class="s2">.</span><span class="s1">Scene</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">javafx</span><span class="s2">.</span><span class="s1">stage</span><span class="s2">.</span><span class="s1">Stage</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">org</span><span class="s2">.</span><span class="s1">slf4j</span><span class="s2">.</span><span class="s1">Logger</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">org</span><span class="s2">.</span><span class="s1">slf4j</span><span class="s2">.</span><span class="s1">LoggerFactory</span><span class="s2">;</span>
+
+<span class="s3">/**</span>
+ <span class="s3">* This is a JavaFX project template to be used for creating GUI applications.</span>
+ <span class="s3">*</span>
+ <span class="s3">* The JavaFX GUI framework (version: 22.0.2) is linked to this project in the</span>
+ <span class="s3">* build.gradle file.</span>
+ <span class="s3">* </span><span class="s4">@link: </span><span class="s3">https://openjfx.io/javadoc/22/</span>
+ <span class="s3">* </span><span class="s4">@see: </span><span class="s3">/Build Scripts/build.gradle</span>
+ <span class="s3">* </span><span class="s4">@author </span><span class="s3">frostybee.</span>
+ <span class="s3">*/</span>
+<span class="s0">public class </span><span class="s1">MainApp </span><span class="s0">extends </span><span class="s1">Application </span><span class="s2">{</span>
+
+    <span class="s5">// The FXML file name of the primary scene.</span>
+    <span class="s0">public static final </span><span class="s1">String MAINAPP_SCENE </span><span class="s2">= </span><span class="s6">&quot;MainApp_layout&quot;</span><span class="s2">;</span>
+    <span class="s5">// The FXML file name of the secondary scene.</span>
+    <span class="s0">public static final </span><span class="s1">String START_SCENE </span><span class="s2">= </span><span class="s6">&quot;StartScreen_layout&quot;</span><span class="s2">;</span>
+    <span class="s5">// login scene</span>
+    <span class="s0">public static final </span><span class="s1">String LOGIN_SCENE </span><span class="s2">= </span><span class="s6">&quot;SignonScreen_layout&quot;</span><span class="s2">;</span>
+    <span class="s5">// sign up scene</span>
+    <span class="s0">public static final </span><span class="s1">String SIGNUP_SCENE </span><span class="s2">= </span><span class="s6">&quot;SignupScreen_layout&quot;</span><span class="s2">;</span>
+    <span class="s0">private final static </span><span class="s1">Logger logger </span><span class="s2">= </span><span class="s1">LoggerFactory</span><span class="s2">.</span><span class="s1">getLogger</span><span class="s2">(</span><span class="s1">MainApp</span><span class="s2">.</span><span class="s0">class</span><span class="s2">);</span>
+    <span class="s0">private static </span><span class="s1">Scene scene</span><span class="s2">;</span>
+    <span class="s0">private static </span><span class="s1">SceneController sceneController</span><span class="s2">;</span>
+    <span class="s0">public static </span><span class="s1">Stage stage</span><span class="s2">;</span>
+    <span class="s0">public static </span><span class="s1">MainAppFXMLController mainAppFXMLController</span><span class="s2">;</span>
+    <span class="s0">public static </span><span class="s1">StartScreenFXMLController startScreenFXMLController</span><span class="s2">;</span>
+    <span class="s0">public static </span><span class="s1">SignOnLogInController signOnLogInController</span><span class="s2">;</span>
+    <span class="s0">public static </span><span class="s1">SignUpController signUpController</span><span class="s2">;</span>
+
+    <span class="s0">public static </span><span class="s1">String currentController</span><span class="s2">;</span>
+    <span class="s0">public static </span><span class="s1">AnimationTimer timer</span><span class="s2">;</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">stop</span><span class="s2">() {</span>
+        <span class="s5">//TODO: Here, we need to perform teardown operations such as stopping running animation, etc.</span>
+    <span class="s2">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">start</span><span class="s2">(</span><span class="s1">Stage primaryStage</span><span class="s2">) {</span>
+        <span class="s1">stage </span><span class="s2">= </span><span class="s1">primaryStage</span><span class="s2">;</span>
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s1">logger</span><span class="s2">.</span><span class="s1">info</span><span class="s2">(</span><span class="s6">&quot;Bootstrapping the application...&quot;</span><span class="s2">);</span>
+            <span class="s5">// Load the scene of the primary stage.</span>
+            <span class="s1">startScreenFXMLController </span><span class="s2">= </span><span class="s0">new </span><span class="s1">StartScreenFXMLController</span><span class="s2">();</span>
+            <span class="s1">Parent root </span><span class="s2">= </span><span class="s1">FxUIHelper</span><span class="s2">.</span><span class="s1">loadFXML</span><span class="s2">(</span><span class="s1">START_SCENE</span><span class="s2">, </span><span class="s1">startScreenFXMLController</span><span class="s2">);</span>
+            <span class="s1">scene </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Scene</span><span class="s2">(</span><span class="s1">root</span><span class="s2">, </span><span class="s7">640</span><span class="s2">, </span><span class="s7">480</span><span class="s2">);</span>
+            <span class="s5">// Add the primary scene to the scene-switching controller.</span>
+            <span class="s1">sceneController </span><span class="s2">= </span><span class="s0">new </span><span class="s1">SceneController</span><span class="s2">(</span><span class="s1">scene</span><span class="s2">);</span>
+            <span class="s1">sceneController</span><span class="s2">.</span><span class="s1">addScene</span><span class="s2">(</span><span class="s1">START_SCENE</span><span class="s2">, </span><span class="s1">root</span><span class="s2">);</span>
+            <span class="s1">primaryStage</span><span class="s2">.</span><span class="s1">setMinWidth</span><span class="s2">(</span><span class="s7">650</span><span class="s2">);</span>
+            <span class="s1">primaryStage</span><span class="s2">.</span><span class="s1">setMinHeight</span><span class="s2">(</span><span class="s7">500</span><span class="s2">);</span>
+            <span class="s1">primaryStage</span><span class="s2">.</span><span class="s1">setScene</span><span class="s2">(</span><span class="s1">scene</span><span class="s2">);</span>
+            <span class="s1">primaryStage</span><span class="s2">.</span><span class="s1">sizeToScene</span><span class="s2">();</span>
+            <span class="s1">primaryStage</span><span class="s2">.</span><span class="s1">setTitle</span><span class="s2">(</span><span class="s6">&quot;Circuit Builder!&quot;</span><span class="s2">);</span>
+            <span class="s5">// Request putting this application's main window on top of other already-opened windows upon launching the app.</span>
+            <span class="s1">primaryStage</span><span class="s2">.</span><span class="s1">setAlwaysOnTop</span><span class="s2">(</span><span class="s0">true</span><span class="s2">);</span>
+            <span class="s1">primaryStage</span><span class="s2">.</span><span class="s1">show</span><span class="s2">();</span>
+            <span class="s1">primaryStage</span><span class="s2">.</span><span class="s1">setAlwaysOnTop</span><span class="s2">(</span><span class="s0">false</span><span class="s2">);</span>
+        <span class="s2">} </span><span class="s0">catch </span><span class="s2">(</span><span class="s1">IOException ex</span><span class="s2">) {</span>
+            <span class="s1">logger</span><span class="s2">.</span><span class="s1">error</span><span class="s2">(</span><span class="s1">ex</span><span class="s2">.</span><span class="s1">getMessage</span><span class="s2">(), </span><span class="s1">ex</span><span class="s2">);</span>
+            <span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">logging</span><span class="s2">.</span><span class="s1">Logger</span><span class="s2">.</span><span class="s1">getLogger</span><span class="s2">(</span><span class="s1">MainApp</span><span class="s2">.</span><span class="s0">class</span><span class="s2">.</span><span class="s1">getName</span><span class="s2">()).</span><span class="s1">log</span><span class="s2">(</span><span class="s1">Level</span><span class="s2">.</span><span class="s1">SEVERE</span><span class="s2">, </span><span class="s0">null</span><span class="s2">, </span><span class="s1">ex</span><span class="s2">);</span>
+        <span class="s2">}</span>
+        <span class="s1">timer </span><span class="s2">= </span><span class="s0">new </span><span class="s1">AnimationTimer</span><span class="s2">() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">handle</span><span class="s2">(</span><span class="s0">long </span><span class="s1">now</span><span class="s2">) {</span>
+                <span class="s0">if</span><span class="s2">(</span><span class="s1">Objects</span><span class="s2">.</span><span class="s1">equals</span><span class="s2">(</span><span class="s1">currentController</span><span class="s2">, </span><span class="s6">&quot;mainController&quot;</span><span class="s2">)){</span>
+                        <span class="s1">mainAppFXMLController</span><span class="s2">.</span><span class="s1">update</span><span class="s2">();</span>
+
+                <span class="s2">}</span>
+            <span class="s2">}</span>
+        <span class="s2">};</span>
+
+    <span class="s2">}</span>
+
+    <span class="s3">/**</span>
+     <span class="s3">* Switches between scenes based on the provided FXML file name. This method</span>
+     <span class="s3">* checks the type of scene (primary or secondary) and either activates an</span>
+     <span class="s3">* existing scene or loads the specified FXML scene for the first time and</span>
+     <span class="s3">* adds it to the scene controller.</span>
+     <span class="s3">*</span>
+     <span class="s3">* </span><span class="s4">@param </span><span class="s3">fxmlFileName the name of the FXML file that represents the scene</span>
+     <span class="s3">* to switch to.</span>
+     <span class="s3">*/</span>
+    <span class="s0">public static void </span><span class="s1">switchScene</span><span class="s2">(</span><span class="s1">String fxmlFileName</span><span class="s2">) {</span>
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">fxmlFileName</span><span class="s2">.</span><span class="s1">equals</span><span class="s2">(</span><span class="s1">START_SCENE</span><span class="s2">)) {</span>
+                <span class="s5">// No need to register the start scene as it was already done in the start method.</span>
+                <span class="s1">sceneController</span><span class="s2">.</span><span class="s1">activateScene</span><span class="s2">(</span><span class="s1">fxmlFileName</span><span class="s2">);</span>
+                <span class="s1">currentController </span><span class="s2">= </span><span class="s6">&quot;startController&quot;</span><span class="s2">;</span>
+            <span class="s2">} </span><span class="s0">else if </span><span class="s2">(</span><span class="s1">fxmlFileName</span><span class="s2">.</span><span class="s1">equals</span><span class="s2">(</span><span class="s1">MAINAPP_SCENE</span><span class="s2">)) {</span>
+                <span class="s0">if </span><span class="s2">(!</span><span class="s1">sceneController</span><span class="s2">.</span><span class="s1">sceneExists</span><span class="s2">(</span><span class="s1">fxmlFileName</span><span class="s2">)) {</span>
+                    <span class="s5">// Instantiate the corresponding FXML controller if the</span>
+                    <span class="s5">// specified scene is being loaded for the first time.</span>
+                    <span class="s1">mainAppFXMLController </span><span class="s2">= </span><span class="s0">new </span><span class="s1">MainAppFXMLController</span><span class="s2">();</span>
+                    <span class="s1">Parent root </span><span class="s2">= </span><span class="s1">FxUIHelper</span><span class="s2">.</span><span class="s1">loadFXML</span><span class="s2">(</span><span class="s1">fxmlFileName</span><span class="s2">, </span><span class="s1">mainAppFXMLController</span><span class="s2">);</span>
+                    <span class="s1">sceneController</span><span class="s2">.</span><span class="s1">addScene</span><span class="s2">(</span><span class="s1">MAINAPP_SCENE</span><span class="s2">, </span><span class="s1">root</span><span class="s2">);</span>
+                <span class="s2">}</span>
+                <span class="s5">// The scene has been previously added, we activate it.</span>
+                <span class="s1">sceneController</span><span class="s2">.</span><span class="s1">activateScene</span><span class="s2">(</span><span class="s1">fxmlFileName</span><span class="s2">);</span>
+                <span class="s1">currentController </span><span class="s2">= </span><span class="s6">&quot;mainController&quot;</span><span class="s2">;</span>
+                <span class="s1">stage</span><span class="s2">.</span><span class="s1">setHeight</span><span class="s2">(</span><span class="s7">550</span><span class="s2">);</span>
+                <span class="s1">stage</span><span class="s2">.</span><span class="s1">setWidth</span><span class="s2">(</span><span class="s7">860</span><span class="s2">);</span>
+                <span class="s1">timer</span><span class="s2">.</span><span class="s1">start</span><span class="s2">();</span>
+            <span class="s2">} </span><span class="s0">else if </span><span class="s2">(</span><span class="s1">fxmlFileName</span><span class="s2">.</span><span class="s1">equals</span><span class="s2">(</span><span class="s1">LOGIN_SCENE</span><span class="s2">)) {</span>
+                <span class="s0">if </span><span class="s2">(!</span><span class="s1">sceneController</span><span class="s2">.</span><span class="s1">sceneExists</span><span class="s2">(</span><span class="s1">fxmlFileName</span><span class="s2">)) {</span>
+                    <span class="s1">SignOnLogInController loginController </span><span class="s2">= </span><span class="s0">new </span><span class="s1">SignOnLogInController</span><span class="s2">();</span>
+                    <span class="s1">Parent root </span><span class="s2">= </span><span class="s1">FxUIHelper</span><span class="s2">.</span><span class="s1">loadFXML</span><span class="s2">(</span><span class="s1">fxmlFileName</span><span class="s2">, </span><span class="s1">loginController</span><span class="s2">);</span>
+                    <span class="s1">sceneController</span><span class="s2">.</span><span class="s1">addScene</span><span class="s2">(</span><span class="s1">LOGIN_SCENE</span><span class="s2">, </span><span class="s1">root</span><span class="s2">);</span>
+                <span class="s2">}</span>
+                <span class="s1">sceneController</span><span class="s2">.</span><span class="s1">activateScene</span><span class="s2">(</span><span class="s1">fxmlFileName</span><span class="s2">);</span>
+                <span class="s1">currentController </span><span class="s2">= </span><span class="s6">&quot;loginController&quot;</span><span class="s2">;</span>
+            <span class="s2">} </span><span class="s0">else if </span><span class="s2">(</span><span class="s1">fxmlFileName</span><span class="s2">.</span><span class="s1">equals</span><span class="s2">(</span><span class="s1">SIGNUP_SCENE</span><span class="s2">)) {</span>
+                <span class="s0">if </span><span class="s2">(!</span><span class="s1">sceneController</span><span class="s2">.</span><span class="s1">sceneExists</span><span class="s2">(</span><span class="s1">fxmlFileName</span><span class="s2">)) {</span>
+                    <span class="s1">SignUpController signupController </span><span class="s2">= </span><span class="s0">new </span><span class="s1">SignUpController</span><span class="s2">();</span>
+                    <span class="s1">Parent root </span><span class="s2">= </span><span class="s1">FxUIHelper</span><span class="s2">.</span><span class="s1">loadFXML</span><span class="s2">(</span><span class="s1">fxmlFileName</span><span class="s2">, </span><span class="s1">signupController</span><span class="s2">);</span>
+                    <span class="s1">sceneController</span><span class="s2">.</span><span class="s1">addScene</span><span class="s2">(</span><span class="s1">SIGNUP_SCENE</span><span class="s2">, </span><span class="s1">root</span><span class="s2">);</span>
+                <span class="s2">}</span>
+                <span class="s1">sceneController</span><span class="s2">.</span><span class="s1">activateScene</span><span class="s2">(</span><span class="s1">fxmlFileName</span><span class="s2">);</span>
+                <span class="s1">currentController </span><span class="s2">= </span><span class="s6">&quot;signupController&quot;</span><span class="s2">;</span>
+            <span class="s2">}</span>
+            <span class="s5">//You can register or activate additional scenes here, based on the logic used to add the secondary scene (as shown above).</span>
+        <span class="s2">} </span><span class="s0">catch </span><span class="s2">(</span><span class="s1">IOException ex</span><span class="s2">) {</span>
+            <span class="s1">logger</span><span class="s2">.</span><span class="s1">error</span><span class="s2">(</span><span class="s1">ex</span><span class="s2">.</span><span class="s1">getMessage</span><span class="s2">(), </span><span class="s1">ex</span><span class="s2">);</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">public static void </span><span class="s1">main</span><span class="s2">(</span><span class="s1">String</span><span class="s2">[] </span><span class="s1">args</span><span class="s2">) {</span>
+        <span class="s1">launch</span><span class="s2">(</span><span class="s1">args</span><span class="s2">);</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>
