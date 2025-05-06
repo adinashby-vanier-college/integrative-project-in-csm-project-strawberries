@@ -102,6 +102,7 @@ public class DrawingArea {
                 gc.save();
                 gc.setTransform(new Affine(rotateTransform));
 
+
                 if(!component.diagramView && component instanceof Lightbulb lightbulb) {
                     gc.drawImage(img, component.begin.getX(), component.begin.getY() - (img.getHeight()), img.getWidth() * zoom, img.getHeight() * zoom);
                 }
@@ -110,6 +111,10 @@ public class DrawingArea {
                 }
                 if(component.isEdit()) {
                     // SHOW IF THE COMPONENT IS BEING EDITED
+
+                if (component.isEdit()) {
+                   
+
                     gc.setStroke(Color.BLUE);
                     gc.setLineWidth(1.2);
                     gc.strokeRect(component.begin.getX(), component.begin.getY() - (img.getHeight()) / 2, img.getWidth() * zoom, img.getHeight() * zoom);
@@ -130,25 +135,27 @@ public class DrawingArea {
             }
         }
     }
+    }
 
     /**
      * Allows the component nodes to snap to the closed grid intersection when dragging
      * @param pos the un-snapped position of the node
      * @return The updated, snapped position relative to the grid.
      */
-    public double snap(double pos) {
-        double remainder = pos % (squareSize);
-        if (remainder == 0) {
-            return pos;
-        } else if (remainder <= (double) squareSize / 2) {
-            return pos - remainder;
-        } else {
-            return pos + (squareSize - remainder);
-        }
+   public double snap(double pos) {
+    double remainder = pos % squareSize;
+    if (remainder == 0) {
+        return pos;
+    } else if (remainder <= squareSize / 2.0) {
+        return pos - remainder;
+    } else {
+        return pos + (squareSize - remainder);
     }
+}
+
 
     /**
-     * INSERT JAVADOC COMMENT HERE
+     * Class that handles the creation of red circles representing electrons
      */
     private static class Electron {
         private final Wire wire;
