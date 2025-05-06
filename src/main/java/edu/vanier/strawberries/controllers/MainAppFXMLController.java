@@ -154,7 +154,6 @@ public class MainAppFXMLController {
             for (Component component : list) {
                 CircuitMath.setVoltageAcross(component);
                 if (component instanceof Lightbulb lightbulb) {
-                    System.out.println("lightbulb voltage: " + lightbulb.getVoltage());
                     if (lightbulb.getVoltage() >= lightbulb.getMinVoltage()) {
                         lightbulb.turnOn(true);
                     }
