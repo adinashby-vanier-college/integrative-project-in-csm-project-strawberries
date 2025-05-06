@@ -9,7 +9,6 @@ public class Lightbulb extends Component {
     private boolean on;
     private double minVoltage;
     private Color color;
-    private Image diagramOff, diagramOn, imageOff, imageOn;
 
     // Shared image references
     private static final Image DIAGRAM_OFF_IMAGE, REALISTIC_OFF_IMAGE, REALISTIC_ON_IMAGE;
@@ -36,6 +35,7 @@ public class Lightbulb extends Component {
         super(begin, end, diagramView);
         this.color = color;
         minVoltage = 10;
+        this.resistance = resistance;
 
         DIAGRAM_DISPLAY = DIAGRAM_OFF_IMAGE;
         IMAGE_DISPLAY = REALISTIC_OFF_IMAGE;

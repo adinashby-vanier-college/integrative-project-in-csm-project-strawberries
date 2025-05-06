@@ -1,12 +1,9 @@
 package edu.vanier.strawberries.controllers;
 
 
-import edu.vanier.strawberries.Models.*;
 import edu.vanier.strawberries.ui.MainApp;
 import javafx.event.Event;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.control.*;
 
 import java.io.BufferedReader;
@@ -15,7 +12,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
-import java.util.LinkedList;
 
 public class SignOnLogInController {
     @FXML
@@ -44,12 +40,11 @@ public class SignOnLogInController {
 
     /**
      * Checks the username and password field to display corresponding information on statusLabel
-     * @return
+     * @return The user's recent projects
      */
     public String Login() {
         String recentProject = "";
         String username = this.username.getText().trim();
-        System.out.println("WORKS: " + username);
         String password = this.password.getText();
 
         if (username.isEmpty() || password.isEmpty()) {
@@ -79,7 +74,6 @@ public class SignOnLogInController {
 
         } catch (Exception e) {
             statusLabel.setText("Error: " + e.getMessage());
-            e.printStackTrace();
         }
         return recentProject;
     }
@@ -191,18 +185,5 @@ public class SignOnLogInController {
 
     private void loadMainScene() {
         MainApp.switchScene(MainApp.MAINAPP_SCENE);
-    }
-
-    private void styleButton(Button btn) {
-        btn.setStyle("""
-                    -fx-background-color: linear-gradient(to bottom, #f4f4f4, #e8e8e8);
-                    -fx-text-fill: #222222;
-                    -fx-background-radius: 6;
-                    -fx-border-radius: 6;
-                    -fx-border-color: #cccccc;
-                    -fx-border-width: 1px;
-                    -fx-cursor: hand;
-                    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 1, 0.0, 0, 1);
-                """);
     }
 }

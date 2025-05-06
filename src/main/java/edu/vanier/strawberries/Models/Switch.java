@@ -1,16 +1,12 @@
 package edu.vanier.strawberries.Models;
 
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.transform.Rotate;
 
 import java.net.URL;
 import java.util.Objects;
 
 public class Switch extends Component {
     private boolean isClosed;
-    private double mouseOffsetX;
-    private double mouseOffsetY;
     private Image openImg, closedImg, rOpenImg, rClosedImg;
 
     public Switch(Node begin, Node end, boolean isClosed, boolean diagramView) {

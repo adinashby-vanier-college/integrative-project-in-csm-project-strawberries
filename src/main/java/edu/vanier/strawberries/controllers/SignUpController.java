@@ -1,12 +1,9 @@
 package edu.vanier.strawberries.controllers;
 
-
 import edu.vanier.strawberries.ui.MainApp;
-import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -63,11 +60,13 @@ public class SignUpController {
             }
 
             String newUserBlock = String.format( // json format
-                    "    {\n" +
-                            "      \"username\": \"%s\",\n" +
-                            "      \"password\": \"%s\",\n" +
-                            "      \"recoveryCode\": \"%s\"\n" +
-                            "    }",
+                    """
+                        {
+                          "username": "%s",
+                          "password": "%s",
+                          "recoveryCode": "%s"
+                        }\
+                    """,
                     username, hashedPassword, recoveryCode
             );
 
@@ -98,7 +97,6 @@ public class SignUpController {
         } catch (Exception e) {
             statusLabel.setText("Error: " + e.getMessage());
             System.out.println("Error: " + e.getMessage());
-            e.printStackTrace();
         }
 
     }
@@ -162,18 +160,5 @@ public class SignUpController {
 
     private void loadSingOnScene(Event e) {
         MainApp.switchScene(MainApp.LOGIN_SCENE);
-    }
-
-    private void styleButton(Button btn) {
-        btn.setStyle("""
-                    -fx-background-color: linear-gradient(to bottom, #f4f4f4, #e8e8e8);
-                    -fx-text-fill: #222222;
-                    -fx-background-radius: 6;
-                    -fx-border-radius: 6;
-                    -fx-border-color: #cccccc;
-                    -fx-border-width: 1px;
-                    -fx-cursor: hand;
-                    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 1, 0.0, 0, 1);
-                """);
     }
 }

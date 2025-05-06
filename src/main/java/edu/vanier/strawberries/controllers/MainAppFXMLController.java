@@ -4,12 +4,15 @@ import edu.vanier.math.CircuitMath;
 import edu.vanier.strawberries.Models.*;
 import edu.vanier.strawberries.Models.DrawingArea;
 import edu.vanier.strawberries.Models.UndoRedo.*;
+import edu.vanier.strawberries.helpers.FxUIHelper;
 import edu.vanier.strawberries.ui.MainApp;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.chart.*;
@@ -30,11 +33,9 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -665,7 +666,7 @@ public class MainAppFXMLController {
                     }
                     case W -> drawingTool.setCurrentAction("place-wire");
                     case B -> drawingTool.setCurrentAction("place-battery");
-                    case C -> drawingTool.setCurrentAction("place-capacitor");
+                    case F -> drawingTool.setCurrentAction("place-fuse");
                     case L -> drawingTool.setCurrentAction("place-lightbulb");
                     case T -> drawingTool.setCurrentAction("place-switch");
                     case R -> drawingTool.setCurrentAction("place-resistor");
@@ -786,8 +787,7 @@ public class MainAppFXMLController {
         menuToggleGrid.setOnAction(_ -> drawingArea.toggleGrid());
         String username = MainApp.loggedInUsername;
         if (!Objects.equals(username, "")) {
-            String finalUsername1 = username;
-            exportBtn.setOnAction(_ -> exportToJson(finalUsername1)); // if logged in, export to json file
+            exportBtn.setOnAction(_ -> exportToJson(username)); // if logged in, export to json file
         } else {
             exportBtn.setOnAction(_ -> {
                 circuitName.set(circuitNameField.getText()); // update value
@@ -795,10 +795,8 @@ public class MainAppFXMLController {
             }); // if not logged in, export to txt (local)
         }
         //String recentProject = MainApp.signOnLogInController.getRecent();
-        //menuOpenRecent.setOnAction(_->openRecent(recentProject));
-        String finalUsername = username;
         menuOpenRecent.setOnAction(_ -> {
-            importFromJson(finalUsername, drawingArea, diagramView);
+            importFromJson(username, drawingArea, diagramView);
             update();
         });
 
@@ -831,11 +829,15 @@ public class MainAppFXMLController {
         menuPaste.setOnAction(_-> paste(copied,20,20));
         menuDelete.setOnAction(_-> history.add(new RemoveComponentAction(editing)));
         menuSelect.setOnAction(_-> drawingTool.setCurrentAction("select"));
-        menuUnselectAll.setOnAction(_-> select(null));
+        menuUnselectAll.setOnAction(_-> unselect(selection));
 
         // HELP MENU
         menuHowToUse.setOnAction(_-> {
-            getHelpWindow();
+            try {
+                getHelpWindow();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         });
     }
 
@@ -863,8 +865,6 @@ public class MainAppFXMLController {
                 .replace("\n", "\\n");
         File jsonFile = new File("src/main/resources/users.json");
 
-        String content = "";
-
         // read json
         if (!jsonFile.exists()) {
             JOptionPane.showMessageDialog(null, "JSON file does not exist.");
@@ -878,7 +878,6 @@ public class MainAppFXMLController {
                 contentBuilder.append(line).append("\n");
             }
         } catch (IOException e) {
-            e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Failed to read JSON file.");
             return;
         }
@@ -889,9 +888,7 @@ public class MainAppFXMLController {
         boolean insideUser = false;
         boolean recentReplaced = false;
 
-        for (int i = 0; i < lines.length; i++) {
-            String line = lines[i];
-
+        for (String line : lines) {
             // Detect start of target user
             if (line.trim().startsWith("\"username\":")) {
                 String foundUsername = line.trim().replace("\"username\":", "")
@@ -932,7 +929,6 @@ public class MainAppFXMLController {
             writer.write(updated.toString());
             JOptionPane.showMessageDialog(null, "Exported circuit to JSON for user: " + username);
         } catch (IOException e) {
-            e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Failed to write to JSON file.");
         }
     }
@@ -964,8 +960,8 @@ public class MainAppFXMLController {
 
     /**
      * Imports the circuit from the json user data to the Drawing Area
-     * @param username
-     * @param drawingArea
+     * @param username The username of the currently logged-in user
+     * @param drawingArea The drawingArea where the imported circuit should be displayed
      */
     public void importFromJson(String username, DrawingArea drawingArea, boolean diagramView) {
         File jsonFile = new File("src/main/resources/users.json");
@@ -985,7 +981,6 @@ public class MainAppFXMLController {
         String[] lines = recent.split("\n");
 
         Circuit circuit = new Circuit(true);  // reset the circuit
-        ArrayList<Component> components = new ArrayList<>(); // temp component holder
 
         for (String line : lines) {
 
@@ -996,7 +991,6 @@ public class MainAppFXMLController {
 
             if (line.contains("wire|")) {
                 // wire format: wire|color|x1|y1|x2|y2|current|voltage
-                // fix!! wire does not appear
                 String[] parts = line.split("\\|");
                 if (parts.length == 8) {
                     try {
@@ -1060,7 +1054,6 @@ public class MainAppFXMLController {
                         if (component != null) {
                             component.setRotate(angle);
                             circuit.addComponent(component);
-                            components.add(component);
                         }
                     } catch (Exception e) {
                         System.out.println("[ERROR] Failed to parse component: " + e.getMessage());
@@ -1086,13 +1079,12 @@ public class MainAppFXMLController {
         history = new History();
     }
 
-    private void getHelpWindow() {
+    private void getHelpWindow() throws IOException {
         Stage helpStage = new Stage();
-        GridPane helpGrid = new GridPane(5,5);
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/helpScreen_layout.fxml"));
 
-
-
-        Scene helpScene = new Scene(helpGrid);
+        Scene helpScene = new Scene(root);
+        helpStage.setTitle("Help - How To Use");
         helpStage.setScene(helpScene);
         helpStage.setAlwaysOnTop(true);
         helpStage.show();

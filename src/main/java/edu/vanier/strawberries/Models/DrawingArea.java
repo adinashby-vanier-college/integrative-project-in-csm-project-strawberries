@@ -1,8 +1,6 @@
 package edu.vanier.strawberries.Models;
 
 import edu.vanier.math.CircuitMath;
-import edu.vanier.strawberries.controllers.MainAppFXMLController;
-import edu.vanier.strawberries.controllers.SignOnLogInController;
 import edu.vanier.strawberries.ui.MainApp;
 import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
@@ -10,20 +8,14 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.animation.PathTransition;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Rotate;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+
 import java.util.*;
-import javafx.scene.paint.Color;
 
 public class DrawingArea {
 
     public DrawingTool drawingTool = new DrawingTool();
-    private Component selection;
     public Circuit circuit;
     public Canvas canvas;
     public GraphicsContext gc;
@@ -31,7 +23,6 @@ public class DrawingArea {
     private double squareSize;
     private boolean showGrid;
 
-    private final List<PathTransition> activeTransitions = new ArrayList<>();
     // Make a list to store the electrons to that are going to get animated
     private final List<Electron> animatedElectrons = new ArrayList<>();
     private boolean animateCurrent = false;
@@ -103,20 +94,16 @@ public class DrawingArea {
                 gc.save();
                 gc.setTransform(new Affine(rotateTransform));
 
-                if (!component.diagramView && component instanceof Lightbulb lightbulb) {
+                if (!component.diagramView && component instanceof Lightbulb) {
                     gc.drawImage(img, component.begin.getX(), component.begin.getY() - (img.getHeight()), img.getWidth() * zoom, img.getHeight() * zoom);
                 } else {
                     gc.drawImage(img, component.begin.getX(), component.begin.getY() - (img.getHeight()) / 2, img.getWidth() * zoom, img.getHeight() * zoom);
                 }
                 if (component.isEdit()) {
                     // SHOW IF THE COMPONENT IS BEING EDITED
-
-                    if (component.isEdit()) {
-
-                        gc.setStroke(Color.BLUE);
-                        gc.setLineWidth(1.2);
-                        gc.strokeRect(component.begin.getX(), component.begin.getY() - (img.getHeight()) / 2, img.getWidth() * zoom, img.getHeight() * zoom);
-                    }
+                    gc.setStroke(Color.BLUE);
+                    gc.setLineWidth(1.2);
+                    gc.strokeRect(component.begin.getX(), component.begin.getY() - (img.getHeight()) / 2, img.getWidth() * zoom, img.getHeight() * zoom);
                     gc.restore();
 
                     if (component instanceof Lightbulb lightbulb && lightbulb.isOn()) {
@@ -216,7 +203,7 @@ public class DrawingArea {
                     case Fuse fuse ->
                         output.append(component.getType()).append("|").append(component.begin.getX()).append("|").append(component.begin.getY()).append("|").append(component.getAngle()).append("|").append(fuse.getMaxCurrent()).append("\n");
                     case Switch switchh ->
-                        output.append(component.getType()).append("|").append(component.begin.getX()).append("|").append(component.begin.getY()).append("|").append(component.getAngle()).append("|").append(switchh.getCurrent()).append("\n"); // curent not used, but it is here to not break formatting
+                        output.append(component.getType()).append("|").append(component.begin.getX()).append("|").append(component.begin.getY()).append("|").append(component.getAngle()).append("|").append(switchh.getCurrent()).append("\n"); // current not used, but it is here to not break formatting
                     default -> {
                     }
                 }
@@ -224,7 +211,7 @@ public class DrawingArea {
         }
         // remove duplicate lines
         StringBuilder builder = new StringBuilder();
-        for (String line : new LinkedHashSet<String>(Arrays.asList(output.toString().split("\n")))) {
+        for (String line : new LinkedHashSet<>(Arrays.asList(output.toString().split("\n")))) {
             builder.append(line).append("\n");
         }
         String result = builder.toString();
@@ -236,10 +223,9 @@ public class DrawingArea {
 
     public void animateCurrentFlow(boolean start) {
         animateCurrent = start;
-        activeTransitions.clear();
         animatedElectrons.clear();
 
-        if (!(canvas.getParent() instanceof Pane parent)) {
+        if (!(canvas.getParent() instanceof Pane)) {
             return;
         }
 

@@ -35,7 +35,6 @@ public class MainApp extends Application {
     // sign up scene
     public static final String SIGNUP_SCENE = "SignupScreen_layout";
     private final static Logger logger = LoggerFactory.getLogger(MainApp.class);
-    private static Scene scene;
     private static SceneController sceneController;
     public static Stage stage;
     public static MainAppFXMLController mainAppFXMLController;
@@ -59,7 +58,7 @@ public class MainApp extends Application {
             // Load the scene of the primary stage.
             startScreenFXMLController = new StartScreenFXMLController();
             Parent root = FxUIHelper.loadFXML(START_SCENE, startScreenFXMLController);
-            scene = new Scene(root, 640, 480);
+            Scene scene = new Scene(root, 640, 480);
             // Add the primary scene to the scene-switching controller.
             sceneController = new SceneController(scene);
             sceneController.addScene(START_SCENE, root);

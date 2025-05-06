@@ -7,7 +7,7 @@ import javafx.scene.control.Alert;
 public class CircuitMath {
 
     private final Circuit circuit;
-    private boolean[] visited;
+    private final boolean[] visited;
 
     public CircuitMath(Circuit circuit) {
         this.circuit = circuit;
@@ -15,9 +15,9 @@ public class CircuitMath {
     }
 
     /**
-     * TODO JAVADOC HERE
-     * @param current
-     * @param path
+     * Search through a certain path of the circuit
+     * @param current The current index of the linkedList in the circuit's arraylist property.
+     * @param path The path to follow, as a LinkedList of Components
      */
     private void search(int current, List<Component> path) {
         if (visited[current]) return;
@@ -35,7 +35,7 @@ public class CircuitMath {
 
     /**
      *
-     * @return
+     * @return The traversal path
      */
     public List<Component> getTraversalPath() {
         Arrays.fill(visited, false);
@@ -89,9 +89,8 @@ public class CircuitMath {
     public double getTotalCurrent() {
         double R = getTotalResistance();
         double V = getTotalVoltage();
-        //System.out.println("Voltage = " + V + ", Resistance = " + R + ", Current = " + V/R );
 
-       return  R == 0 ? 0 : V / R;  //for testing purposese you can remove this after
+       return  R == 0 ? 0 : V / R;
     }
 
     /**
@@ -131,15 +130,7 @@ public class CircuitMath {
         alert.setContentText("This is a short circuit! Add at least one resistor to prevent damage.");
         alert.showAndWait();
         }
-        
-     /*   if (totalCurrent == 0) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("No Current Flowing");
-            alert.setHeaderText(null);
-            alert.setContentText("Total current is zero. Please check the circuit connections!");
-            alert.showAndWait();
-        }
-*/
+
         System.out.println("Total voltage: " + totalVoltage + " V");
         System.out.println("Total current: " + totalCurrent + " A");
 

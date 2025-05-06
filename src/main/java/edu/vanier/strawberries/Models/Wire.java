@@ -1,15 +1,10 @@
 package edu.vanier.strawberries.Models;
 import javafx.animation.PathTransition;
-import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 
 public class Wire extends Component {
     private Color color;
-    private double resistance;
     private PathTransition transition;
-
-    // Used to track the info label
-    private Label infoLabel;
 
     public Wire(Node begin, Node end, Color color, double current, double voltage) {
         super(begin, end, false);

@@ -130,7 +130,7 @@ public class Fuse extends Component {
         inputField.requestFocus();
 
         inputField.setOnAction(_ -> updateMaxCurrentFromField(inputField, parentPane));
-        inputField.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+        inputField.focusedProperty().addListener((_, _, isNowFocused) -> {
             if (!isNowFocused) {
                 updateMaxCurrentFromField(inputField, parentPane);
             }

@@ -12,7 +12,6 @@ import java.util.Objects;
 
 public class Resistor extends Component {
 
-    //contructor
    public Resistor(Node begin, Node end, double resistance, boolean skipUI, boolean diagramView) {
         super(begin, end, diagramView);
         this.resistance = resistance;
@@ -81,7 +80,7 @@ public class Resistor extends Component {
         inputField.requestFocus();
 
         inputField.setOnAction(_ -> updateResistanceFromField(inputField, parentPane));
-        inputField.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+        inputField.focusedProperty().addListener((_, _, isNowFocused) -> {
             if (!isNowFocused) {
                 updateResistanceFromField(inputField, parentPane);
             }
@@ -134,7 +133,7 @@ public class Resistor extends Component {
         infoArea.toFront();
         infoArea.requestFocus();
 
-        infoArea.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+        infoArea.focusedProperty().addListener((_, _, isNowFocused) -> {
             if (!isNowFocused) {
                 parentPane.getChildren().remove(infoArea);
             }
