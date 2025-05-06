@@ -23,6 +23,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -1085,6 +1086,7 @@ public class MainAppFXMLController {
 
         Scene helpScene = new Scene(root);
         helpStage.setTitle("Help - How To Use");
+        helpStage.getIcons().add(new Image(String.valueOf(getClass().getResource("/images/strawberryy.jpg"))));
         helpStage.setScene(helpScene);
         helpStage.setAlwaysOnTop(true);
         helpStage.show();

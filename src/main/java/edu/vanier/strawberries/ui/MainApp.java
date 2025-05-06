@@ -10,6 +10,7 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,6 +68,7 @@ public class MainApp extends Application {
             primaryStage.setScene(scene);
             primaryStage.sizeToScene();
             primaryStage.setTitle("Circuit Builder!");
+            primaryStage.getIcons().add(new Image(String.valueOf(getClass().getResource("/images/strawberryy.jpg"))));
             // Request putting this application's main window on top of other already-opened windows upon launching the app.
             primaryStage.setAlwaysOnTop(true);
             primaryStage.show();
